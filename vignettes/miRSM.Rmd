@@ -1,0 +1,260 @@
+---
+title: "miRSM: inferring miRNA sponge modules by integrating  
+    expression data and miRNA-target binding information" 
+author: "\\
+    
+    Junpeng Zhang (zhangjunpeng_411@yahoo.com)\\
+    
+    School of Engineering, Dali University"
+date: '`r Sys.Date()`'
+output:
+    BiocStyle::html_document:
+      toc: yes
+    BiocStyle::pdf_document:
+      toc: yes
+vignette: >
+    %\VignetteIndexEntry{miRSM: inferring miRNA sponge modules by integrating expression data and miRNA-target binding information} 
+    %\VignettePackage{miRSM} 
+    % \VignetteEngine{knitr::rmarkdown} 
+    % \usepackage[utf8]{inputenc} 
+    % \VignetteEncoding{UTF-8}
+---
+
+```{r style, echo=FALSE, results="asis", message=FALSE}
+BiocStyle::markdown()
+knitr::opts_chunk$set(tidy = FALSE,
+    warning = FALSE,
+    message = FALSE)
+```
+
+```{r echo=FALSE, results='hide', message=FALSE}
+library(miRSM)
+```
+
+
+# Introduction
+MicroRNAs (miRNAs) play key roles in many biological processes including cancers [1-5]. Thus, uncovering miRNA functions and regulatory mechanisms is important for gene diagnosis and therapy.
+
+Previous studies [6-9] have shown that a pool of coding and non-coding RNAs that shares common miRNA biding sites competes with each other, thus alter miRNA activity. The corresponding regulatory mechanism is 
+named competing endogenous RNA (ceRNA) hypothesis [10]. These RNAs are called ceRNAs or miRNA sponges or miRNA decoys, and include long non-coding RNAs (lncRNAs), pseudogenes, circular RNAs (circRNAs) and messenger RNAs (mRNAs), etc. To study the module-level properties of miRNA sponges, it is necessary to identify miRNA sponge modules. The miRNA sponge modules will help to reveal the biological mechanism in cancer. 
+
+To speed up the research of miRNA sponge modules, we develop an R/Bioconductor package 'miRSM' to infer miRNA sponge modules by integrating expression data and miRNA-target binding information.
+    
+# Identification of gene modules
+Given matched ceRNA and mRNA expression data, we infer gene modules by using several methods 
+from 14 packages, including 'WGCNA', 'GFA', 'igraph', 'ProNet', 'NMF', 'biclust', 'runibic', 'iBBiG', 'fabia', 'BicARE', 'isa2', 's4vd', 'BiBitR' and 'rqubic'. We assemble these methods into 6 functions: module_WGCNA, module_GFA, module_igraph, module_ProNet, module_NMF, and module_biclust. 
+
+## module_WGCNA
+By using WGCNA method [11], we identify co-expressed gene modules from matched ceRNA and mRNA expression data.
+
+```{r, eval=TRUE, include=TRUE}
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+modulegenes_WGCNA
+```
+
+## module_GFA
+The gene modules are identified by using GFA method [12, 13] from matched ceRNA and mRNA expression data.
+
+```{r, eval=FALSE, include=TRUE}
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+modulegenes_GFA <- module_GFA(ceRExp, mRExp)
+```
+
+## module_igraph
+By using 'igraph' package [14], we infer gene modules from matched ceRNA and mRNA expression data. In the 'igraph' package, we can select "betweenness", "greedy", "infomap", "prop", "eigen", "louvain", "walktrap" methods for gene module identification. The default method is "greedy".
+
+```{r, eval=FALSE, include=TRUE}
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+modulegenes_igraph <- module_igraph(ceRExp, mRExp)
+```
+
+## module_ProNet
+In the 'ProNet' package, we can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification. The default method is MCL.
+
+```{r, eval=TRUE, include=TRUE}
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
+modulegenes_ProNet
+```
+
+## module_NMF
+By using 'NMF' package [20], we infer gene modules from matched ceRNA and mRNA expression data. In the 'NMF' package, we can select "brunet", "Frobenius", "KL", "lee", "nsNMF", "offset", "siNMF", "snmf/l", "snmf/r" methods for gene module identification. The default method is "brunet".
+
+```{r, eval=FALSE, include=TRUE}
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+# Reimport NMF package to avoid conflicts with DelayedArray package
+library(NMF)
+modulegenes_NMF <- module_NMF(ceRExp, mRExp)
+```
+
+## module_biclust
+We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [21], runibic [22], iBBiG [23], fabia [24], BicARE [25], isa2 [26], s4vd [27], BiBitR [28] and rqubic [29]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "BCPlaid".
+
+```{r, eval=FALSE, include=TRUE}
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+modulegenes_biclust <- module_biclust(ceRExp, mRExp)
+modulegenes_biclust
+```
+
+# Identification of miRNA sponge modules
+The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the cannonical correlation (CC) [30] and sensitivity cannonical correlation (SCC) methods to identify miRNA sponge modules.
+
+```{r, eval=TRUE, include=TRUE}
+miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
+miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
+miRExp <- data_tidy(miRExp)
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
+miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+# Identify miRNA sponge modules using cannonical correlation (CC)
+miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
+                        modulegenes_WGCNA, nperms = 10, num_shared_miRNAs = 3, 
+                        pvalue.cutoff = 0.05, method = "CC", CC.cutoff = 0.8)
+# Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
+miRSM_WGCNA_SCC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
+                         modulegenes_WGCNA, nperms = 10, num_shared_miRNAs = 3, 
+                         pvalue.cutoff = 0.05, method = "SCC", SCC.cutoff = 0.1)
+miRSM_WGCNA_CC
+miRSM_WGCNA_SCC
+```
+
+
+# Functional analysis of miRNA sponge modules
+We implement 'module_FA' function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<http://www.geneontology.org/>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<http://www.genome.jp/kegg/>), and Reactome: Reactome Pathway Database (<http://reactome.org/>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<http://disease-ontology.org/>), DGN: DisGeNET database (<http://www.disgenet.org/>) and NCG: Network of Cancer Genes database (<http://ncg.kcl.ac.uk/>). 
+
+```{r, eval=FALSE, include=TRUE}
+miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
+miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
+miRExp <- data_tidy(miRExp)
+ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
+ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
+ceRExp <- data_tidy(ceRExp)
+mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
+mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
+mRExp <- data_tidy(mRExp)
+miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
+miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+# Identify miRNA sponge modules using cannonical correlation (CC)
+miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
+                        modulegenes_WGCNA, nperms = 10, method = "CC")
+miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = "FEA")
+miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = "DEA")
+```
+
+
+# Conclusions
+miRSM provides several functions to study miRNA sponge modules, including popular methods for inferring gene modules (candidate miRNA sponge modules), and a function to identify miRNA sponge modules, as well as a function to conduct functional analysis of miRNA sponge modules. It could provide a useful tool for the research of miRNA sponge modules.
+
+# References
+[1] Ambros V. microRNAs: tiny regulators with great potential. Cell, 2001, 107:823–6.
+
+[2] Bartel DP. MicroRNAs: genomics, biogenesis, mechanism, and function. Cell, 2004, 116:281–97.
+
+[3] Du T, Zamore PD. Beginning to understand microRNA function. Cell Research, 2007, 17:661–3.
+
+[4] Esquela-Kerscher A, Slack FJ. Oncomirs—microRNAs with a role in cancer. 
+Nature Reviews Cancer, 2006, 6:259–69.
+
+[5] Lin S, Gregory RI. MicroRNA biogenesis pathways in cancer. 
+Nature Reviews Cancer, 2015, 15:321–33.
+
+[6] Cesana M, Cacchiarelli D, Legnini I, et al. A long noncoding RNA 
+controls muscle differentiation by functioning as a competing endogenous 
+RNA. Cell, 2011, 147:358–69.
+
+[7] Poliseno L, Salmena L, Zhang J, et al. A coding-independent function 
+of gene and pseudogene mRNAs regulates tumour biology. Nature, 2010,
+465:1033–8.
+
+[8] Hansen TB, Jensen TI, Clausen BH, et al. Natural RNA circles function 
+as efficient microRNA sponges. Nature, 2013, 495:384–8.
+
+[9] Memczak S, Jens M, Elefsinioti A, et al. Circular RNAs are a large 
+class of animal RNAs with regulatory potency. Nature, 2013, 495:333–8.
+
+[10] Salmena L, Poliseno L, Tay Y, et al. A ceRNA hypothesis: the Rosetta Stone 
+of a hidden RNA language? Cell, 2011, 146(3):353-8.
+
+[11] Langfelder P, Horvath S. WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics, 2008, 9:559.
+
+[12] Bunte K, Lepp\"{a}aho E, Saarinen I, Kaski S. Sparse group factor analysis for biclustering of multiple data sources. Bioinformatics, 2016, 32(16):2457-63.
+
+[13] Lepp\"{a}aho E, Ammad-ud-din M, Kaski S. GFA: exploratory analysis of multiple data sources with group factor analysis. J Mach Learn Res., 2017, 18(39):1-5.
+
+[14] Csardi G, Nepusz T. The igraph software package for complex network research, InterJournal, Complex Systems, 2006:1695.
+
+[15] Clauset A, Newman ME, Moore C. Finding community structure in very large networks. Phys Rev E Stat Nonlin Soft Matter Phys., 2004, 70(6 Pt 2):066111.
+
+[16] Enright AJ, Van Dongen S, Ouzounis CA. An efficient algorithm for large-scale detection of protein families. Nucleic Acids Res., 2002, 30(7):1575-84.
+
+[17] Kalinka AT, Tomancak P. linkcomm: an R package for the generation, visualization, and analysis of link communities in networks of arbitrary size and type. Bioinformatics, 2011, 27(14):2011-2.
+
+[18] Bader GD, Hogue CW. An automated method for finding molecular complexes in large protein interaction networks. BMC Bioinformatics, 2003, 4:2.
+
+[19] Zhang Y, Phillips CA, Rogers GL, Baker EJ, Chesler EJ, Langston MA. On finding bicliques in bipartite graphs: a novel algorithm and its application to the integration of diverse biological data types. BMC Bioinformatics, 2014, 15:110.
+
+[20] Gaujoux R, Seoighe C. A flexible R package for nonnegative matrix factorization. BMC Bioinformatics, 2010, 11:367.
+
+[21] Kaiser S, Santamaria R, Khamiakova T, Sill M, Theron R, Quintales L, Leisch F, De TE. biclust: BiCluster Algorithms. R package version 1.2.0., 2015, <https://CRAN.R-project.org/package=biclust>.
+
+[22] Wang Z, Li G, Robinson RW, Huang X. UniBic: Sequential row-based biclustering algorithm for analysis of gene expression data. Sci Rep., 2016, 6:23466.
+
+[23] Gusenleitner D, Howe EA, Bentink S, Quackenbush J, Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. Bioinformatics, 2012, 28(19):2484-92.
+
+[24] Hochreiter S, Bodenhofer U, Heusel M, Mayr A, Mitterecker A, Kasim A, Khamiakova T, Van Sanden S, Lin D, Talloen W, Bijnens L, G\"{o}hlmann HW, Shkedy Z, Clevert DA. FABIA: factor analysis for bicluster acquisition. Bioinformatics, 2010, 26(12):1520-7.
+
+[25] Yang J, Wang H, Wang W, Yu, PS. An improved biclustering method for analyzing gene expression. Int J Artif Intell Tools, 2005, 14(5): 771-789.
+
+[26] Bergmann S, Ihmels J, Barkai N. Iterative signature algorithm for the analysis of large-scale gene expression data. Phys Rev E Stat Nonlin Soft Matter Phys., 2003, 67(3 Pt 1):031902.
+
+[27] Sill M, Kaiser S, Benner A, Kopp-Schneider A. Robust biclustering by sparse singular value decomposition incorporating stability selection. Bioinformatics, 2011, 27(15):2089-97.
+
+[28] Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics, 2011, 27(19):2738-45.
+
+[29] Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res., 2009, 37(15):e101.
+
+[30] Witten DM, Tibshirani R, Hastie T. A penalized matrix decomposition, with applications to sparse principal components and canonical correlation analysis. Biostatistics, 2009, 10(3):515-34.
+
+# Session information
+```{r}
+sessionInfo()
+```

@@ -1,0 +1,48 @@
+Package: miRSM
+Type: Package
+Title: Inferring miRNA sponge modules by integrating expression data and miRNA-target binding information
+Version: 0.99.0
+Author: Junpeng Zhang
+Maintainer: Junpeng Zhang <zhangjunpeng_411@yahoo.com>
+Description: The package aims to identify miRNA sponge modules by integrating expression data and miRNA-target binding information.
+    It provides several functions to study miRNA sponge modules, including popular methods for inferring gene modules 
+    (candidate miRNA sponge modules), and a function to identify miRNA sponge modules, as well as a function to conduct 
+    functional analysis of miRNA sponge modules.
+Depends: R (>= 3.4.3)
+License: GPL-3
+URL: <https://github.com/zhangjunpeng411/miRSM>
+Encoding: UTF-8
+LazyData: true
+biocViews: GeneExpression, BiomedicalInformatics, 
+           Clustering, GeneSetEnrichment, Microarray, 
+	         Software, GeneRegulation
+RoxygenNote: 6.0.1
+Imports: WGCNA,
+    flashClust,
+    dynamicTreeCut,
+    GFA,
+    igraph,
+    linkcomm,
+    MCL,
+    NMF,
+    biclust,
+    runibic,
+    iBBiG,
+    fabia,
+    BicARE,
+    isa2,
+    s4vd,
+    BiBitR,
+    rqubic,
+    Biobase,
+    varhandle,
+    PMA,
+    stats,
+    miRsponge,
+    Rcpp
+Suggests:BiocStyle, 
+    knitr,
+    rmarkdown,
+    testthat,
+    org.Hs.eg.db
+VignetteBuilder: knitr
