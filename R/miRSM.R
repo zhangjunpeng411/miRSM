@@ -575,11 +575,9 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' @return List object: a list of module genes.
 #'
 #' @examples
-#' \dontrun{
 #' data(ceRExp)
 #' data(mRExp)
 #' modulegenes_biclust <- module_biclust(ceRExp, mRExp)
-#' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Preli\'{c} A, Bleuler S, Zimmermann P, Wille A, B\"{u}hlmann P, Gruissem W, Hennig L, Thiele L, Zitzler E. A systematic comparison and evaluation of biclustering methods for gene expression data. Bioinformatics. 2006, 22(9):1122-9.
@@ -596,7 +594,7 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' @references Lee M, Shen H, Huang JZ, Marron JS. Biclustering via sparse singular value decomposition. Biometrics. 2010, 66(4):1087-95.
 #' @references Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics. 2011, 27(19):2738-45.
 #' @references Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res. 2009, 37(15):e101.
-module_biclust <- function(ceRExp, mRExp, BCmethod = "BCPlaid", num.modules = 10,
+module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
                            num.ModuleceRs = 2, num.ModulemRs = 2){
 
     ExpData <- cbind(assay(ceRExp), assay(mRExp))
