@@ -31,7 +31,8 @@ data(ceRExp)
 data(mRExp)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
-modulegenes_NMF <- module_NMF(ceRExp, mRExp)
+modulegenes_NMF <- module_NMF(ceRExp[, seq_len(100)],
+    mRExp[, seq_len(100)])
 
 }
 \references{

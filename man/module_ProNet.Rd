@@ -32,7 +32,8 @@ Identification of gene modules from matched ceRNA and mRNA expression data using
 \examples{
 data(ceRExp)
 data(mRExp)
-modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
+modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(100)],
+    mRExp[, seq_len(100)])
 
 }
 \references{

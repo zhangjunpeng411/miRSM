@@ -28,7 +28,8 @@ GFA package
 \examples{
 data(ceRExp)
 data(mRExp)
-modulegenes_GFA <- module_GFA(ceRExp, mRExp)
+modulegenes_GFA <- module_GFA(ceRExp[seq_len(30), seq_len(100)],
+    mRExp[seq_len(30), seq_len(100)])
 
 }
 \references{

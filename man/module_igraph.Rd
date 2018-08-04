@@ -32,7 +32,8 @@ Identification of gene modules from matched ceRNA and mRNA expression data using
 \examples{
 data(ceRExp)
 data(mRExp)
-modulegenes_igraph <- module_igraph(ceRExp, mRExp)
+modulegenes_igraph <- module_igraph(ceRExp[, seq_len(100)],
+    mRExp[, seq_len(100)])
 
 }
 \references{

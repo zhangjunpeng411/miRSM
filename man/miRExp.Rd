@@ -4,12 +4,14 @@
 \name{miRExp}
 \alias{miRExp}
 \title{miRNA expression data.}
-\format{A SummarizedExperiment object with 144 samples (rows) and 226 miRNAs (columns).}
+\format{A SummarizedExperiment object with 144 samples
+(rows) and 226 miRNAs (columns).}
 \usage{
 miRExp
 }
 \description{
-A dataset containing the miRNA expressopn levels for 144 TCGA samples (72 cancer samples
-vs 72 normal samples, https://cancergenome.nih.gov/)
+A dataset containing the miRNA expressopn levels for 144
+TCGA samples (72 cancer samples vs 72 normal samples,
+https://cancergenome.nih.gov/)
 }
 \keyword{datasets}

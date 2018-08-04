@@ -29,7 +29,8 @@ Identification of gene modules from matched ceRNA and mRNA expression data using
 \examples{
 data(ceRExp)
 data(mRExp)
-modulegenes_biclust <- module_biclust(ceRExp, mRExp)
+modulegenes_biclust <- module_biclust(ceRExp[, seq_len(100)],
+    mRExp[, seq_len(100)])
 
 }
 \references{

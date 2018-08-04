@@ -4,12 +4,14 @@
 \name{mRExp}
 \alias{mRExp}
 \title{mRNA expression data.}
-\format{A SummarizedExperiment object with 144 samples (rows) and 500 mRNAs (columns).}
+\format{A SummarizedExperiment object with 144 samples
+(rows) and 500 mRNAs (columns).}
 \usage{
 mRExp
 }
 \description{
-A dataset containing the mRNA expressopn levels for 144 TCGA samples (72 cancer samples
-vs 72 normal samples, https://cancergenome.nih.gov/)
+A dataset containing the mRNA expressopn levels for 144
+TCGA samples (72 cancer samples vs 72 normal samples,
+https://cancergenome.nih.gov/)
 }
 \keyword{datasets}

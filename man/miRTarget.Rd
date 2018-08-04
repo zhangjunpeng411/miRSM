@@ -3,14 +3,17 @@
 \docType{data}
 \name{miRTarget}
 \alias{miRTarget}
-\title{miRNA-target (including miRNA-mRNA and miRNA-lncRNA) binding information.}
-\format{A SummarizedExperiment object with 29901 miRNA-target interactions.}
+\title{miRNA-target (including miRNA-mRNA and miRNA-lncRNA)
+binding information.}
+\format{A SummarizedExperiment object with 29901 miRNA-target
+interactions.}
 \usage{
 miRTarget
 }
 \description{
-A dataset containing the miRNA-target binding information from miRTarBase
-(http://mirtarbase.mbc.nctu.edu.tw/php/index.php), and LncBase
+A dataset containing the miRNA-target binding information
+from miRTarBase (http://mirtarbase.mbc.nctu.edu.tw/php/index.php),
+and LncBase
 (http://carolina.imis.athena-innovation.gr/diana_tools/web/index.php?r=lncbasev2/index)
 }
 \keyword{datasets}

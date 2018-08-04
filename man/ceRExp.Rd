@@ -4,12 +4,14 @@
 \name{ceRExp}
 \alias{ceRExp}
 \title{ceRNA expression data.}
-\format{A SummarizedExperiment object with 144 samples (rows) and 305 lncRNAs (columns).}
+\format{A SummarizedExperiment object with 144 samples
+(rows) and 305 lncRNAs (columns).}
 \usage{
 ceRExp
 }
 \description{
-A dataset containing the lncRNA expressopn levels for 144 TCGA samples (72 cancer samples
-vs 72 normal samples, https://cancergenome.nih.gov/)
+A dataset containing the lncRNA expressopn levels for 144
+TCGA samples (72 cancer samples vs 72 normal samples,
+https://cancergenome.nih.gov/)
 }
 \keyword{datasets}
