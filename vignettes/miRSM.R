@@ -18,29 +18,35 @@ modulegenes_WGCNA
 #  data(mRExp)
 #  modulegenes_GFA <- module_GFA(ceRExp, mRExp)
 
-## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  data(ceRExp)
-#  data(mRExp)
-#  modulegenes_igraph <- module_igraph(ceRExp, mRExp)
+## ---- eval=TRUE, include=TRUE----------------------------------------------
+data(ceRExp)
+data(mRExp)
+modulegenes_igraph <- module_igraph(ceRExp[, seq_len(100)],
+                                    mRExp[, seq_len(100)])
+modulegenes_igraph
 
-## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  data(ceRExp)
-#  data(mRExp)
-#  modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
-#  modulegenes_ProNet
+## ---- eval=TRUE, include=TRUE----------------------------------------------
+data(ceRExp)
+data(mRExp)
+modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(100)],
+                                    mRExp[, seq_len(100)])
+modulegenes_ProNet
 
-## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  data(ceRExp)
-#  data(mRExp)
-#  # Reimport NMF package to avoid conflicts with DelayedArray package
-#  library(NMF)
-#  modulegenes_NMF <- module_NMF(ceRExp, mRExp)
+## ---- eval=TRUE, include=TRUE----------------------------------------------
+data(ceRExp)
+data(mRExp)
+# Reimport NMF package to avoid conflicts with DelayedArray package
+library(NMF)
+modulegenes_NMF <- module_NMF(ceRExp[, seq_len(100)],
+                              mRExp[, seq_len(100)])
+modulegenes_NMF
 
-## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  data(ceRExp)
-#  data(mRExp)
-#  modulegenes_biclust <- module_biclust(ceRExp, mRExp)
-#  modulegenes_biclust
+## ---- eval=TRUE, include=TRUE----------------------------------------------
+data(ceRExp)
+data(mRExp)
+modulegenes_biclust <- module_biclust(ceRExp[, seq_len(100)],
+                                      mRExp[, seq_len(100)])
+modulegenes_biclust
 
 ## ---- eval=TRUE, include=TRUE----------------------------------------------
 data(ceRExp)

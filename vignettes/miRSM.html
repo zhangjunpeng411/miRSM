@@ -263,15 +263,94 @@ modulegenes_GFA &lt;- module_GFA(ceRExp, mRExp)</code></pre>
 <p>By using ‘igraph’ package [14], we infer gene modules from matched ceRNA and mRNA expression data. In the ‘igraph’ package, we can select “betweenness”, “greedy”, “infomap”, “prop”, “eigen”, “louvain”, “walktrap” methods for gene module identification. The default method is “greedy”.</p>
 <pre class="r"><code>data(ceRExp)
 data(mRExp)
-modulegenes_igraph &lt;- module_igraph(ceRExp, mRExp)</code></pre>
+modulegenes_igraph &lt;- module_igraph(ceRExp[, seq_len(100)],
+                                    mRExp[, seq_len(100)])
+modulegenes_igraph</code></pre>
+<pre><code>## [[1]]
+##  [1] &quot;ADORA2A-AS1&quot; &quot;AFG3L1P&quot;     &quot;ALOX12P2&quot;    &quot;ANKRD36BP1&quot;  &quot;ARRDC3-AS1&quot; 
+##  [6] &quot;CFL1P1&quot;      &quot;CLUHP3&quot;      &quot;DPY19L2P2&quot;   &quot;FAM86B3P&quot;    &quot;FIRRE&quot;      
+## [11] &quot;FMO6P&quot;       &quot;GAS5&quot;        &quot;HNRNPU-AS1&quot;  &quot;IDI2-AS1&quot;    &quot;C10orf90&quot;   
+## [16] &quot;FGF1&quot;        &quot;FGF17&quot;       &quot;GABRE&quot;       &quot;GAS2&quot;        &quot;GFAP&quot;       
+## [21] &quot;GOLGA6L10&quot;   &quot;GPR17&quot;       &quot;GPRC5B&quot;      &quot;HIF3A&quot;      
+## 
+## [[2]]
+##   [1] &quot;A2M-AS1&quot;      &quot;ABCA11P&quot;      &quot;ACVR2B-AS1&quot;   &quot;ADCY10P1&quot;    
+##   [5] &quot;AGPAT4-IT1&quot;   &quot;ANKRD36BP2&quot;   &quot;ATP6V0E2-AS1&quot; &quot;BCDIN3D-AS1&quot; 
+##   [9] &quot;BDNF-AS&quot;      &quot;BTN2A3P&quot;      &quot;C1RL-AS1&quot;     &quot;C22orf34&quot;    
+##  [13] &quot;CASC15&quot;       &quot;CATSPER2P1&quot;   &quot;CCDC144B&quot;     &quot;CEBPA-AS1&quot;   
+##  [17] &quot;CECR5-AS1&quot;    &quot;CECR7&quot;        &quot;CENPBD1P1&quot;    &quot;CRHR1-IT1&quot;   
+##  [21] &quot;CROCCP3&quot;      &quot;DICER1-AS1&quot;   &quot;EMBP1&quot;        &quot;EMX2OS&quot;      
+##  [25] &quot;ESRG&quot;         &quot;FAM13A-AS1&quot;   &quot;FAM182B&quot;      &quot;FAM35BP&quot;     
+##  [29] &quot;FAM86DP&quot;      &quot;FKBP9P1&quot;      &quot;FTX&quot;          &quot;GABPB1&quot;      
+##  [33] &quot;GGTA1P&quot;       &quot;GHRLOS&quot;       &quot;GLIDR&quot;        &quot;GUSBP11&quot;     
+##  [37] &quot;GVINP1&quot;       &quot;H19&quot;          &quot;HCP5&quot;         &quot;HLA-F-AS1&quot;   
+##  [41] &quot;IGF2-AS&quot;      &quot;ILF3-AS1&quot;     &quot;INE1&quot;         &quot;C10orf10&quot;    
+##  [45] &quot;C10orf54&quot;     &quot;C14orf180&quot;    &quot;C17orf51&quot;     &quot;EBF1&quot;        
+##  [49] &quot;EBF3&quot;         &quot;ECHDC1&quot;       &quot;FBLN5&quot;        &quot;FBXO31&quot;      
+##  [53] &quot;FBXW7&quot;        &quot;FERMT2&quot;       &quot;FGD4&quot;         &quot;FGF2&quot;        
+##  [57] &quot;FGF9&quot;         &quot;FHL1&quot;         &quot;FHL5&quot;         &quot;FIGF&quot;        
+##  [61] &quot;FIGN&quot;         &quot;FLRT2&quot;        &quot;FOSB&quot;         &quot;FOXN3&quot;       
+##  [65] &quot;FOXO1&quot;        &quot;FOXO4&quot;        &quot;FREM1&quot;        &quot;FRMD1&quot;       
+##  [69] &quot;FRMD3&quot;        &quot;FRMD4A&quot;       &quot;FXYD6&quot;        &quot;FZD4&quot;        
+##  [73] &quot;GABARAPL1&quot;    &quot;GALNT15&quot;      &quot;GCOM1&quot;        &quot;GDF10&quot;       
+##  [77] &quot;GDF5&quot;         &quot;GHR&quot;          &quot;GID4&quot;         &quot;GIMAP6&quot;      
+##  [81] &quot;GIMAP8&quot;       &quot;GIPC2&quot;        &quot;GLYAT&quot;        &quot;GNAI1&quot;       
+##  [85] &quot;GNAL&quot;         &quot;GNE&quot;          &quot;GPAM&quot;         &quot;GPD1&quot;        
+##  [89] &quot;GPIHBP1&quot;      &quot;GPLD1&quot;        &quot;GPR146&quot;       &quot;GPRASP1&quot;     
+##  [93] &quot;GPRASP2&quot;      &quot;GPX3&quot;         &quot;GRASP&quot;        &quot;GRIA1&quot;       
+##  [97] &quot;GSTM5&quot;        &quot;GULP1&quot;        &quot;GYG2&quot;         &quot;GYPC&quot;        
+## [101] &quot;HLF&quot;          &quot;HOXA3&quot;        &quot;HOXA7&quot;        &quot;HOXA9&quot;       
+## [105] &quot;HRCT1&quot;       
+## 
+## [[3]]
+##  [1] &quot;A1BG-AS1&quot;    &quot;ABCA17P&quot;     &quot;ABCC13&quot;      &quot;ADAM21P1&quot;    &quot;AFAP1-AS1&quot;  
+##  [6] &quot;AGAP2-AS1&quot;   &quot;ANKRD20A11P&quot; &quot;ASB16-AS1&quot;   &quot;ATP8B5P&quot;     &quot;BAIAP2-AS1&quot; 
+## [11] &quot;C1orf220&quot;    &quot;CA5BP1&quot;      &quot;CCDC183-AS1&quot; &quot;CD27-AS1&quot;    &quot;CDKN2B-AS1&quot; 
+## [16] &quot;CHKB-AS1&quot;    &quot;CYP2B7P&quot;     &quot;DANCR&quot;       &quot;DCTN1-AS1&quot;   &quot;DGCR11&quot;     
+## [21] &quot;DGCR5&quot;       &quot;DHRS4-AS1&quot;   &quot;DSCR9&quot;       &quot;EHMT1-IT1&quot;   &quot;EIF3IP1&quot;    
+## [26] &quot;FAM86C2P&quot;    &quot;FBXL19-AS1&quot;  &quot;FLVCR1-AS1&quot;  &quot;FOXD2-AS1&quot;   &quot;GOLGA2P5&quot;   
+## [31] &quot;HOTAIR&quot;      &quot;HOXA11-AS&quot;   &quot;HPN-AS1&quot;     &quot;HSD17B7P2&quot;   &quot;INHBA-AS1&quot;  
+## [36] &quot;C1orf43&quot;     &quot;COL10A1&quot;     &quot;E2F7&quot;        &quot;E2F8&quot;        &quot;ECE2&quot;       
+## [41] &quot;FEN1&quot;        &quot;FLVCR1&quot;      &quot;FN1&quot;         &quot;FOXM1&quot;       &quot;GBA&quot;        
+## [46] &quot;GINS1&quot;       &quot;GJB2&quot;        &quot;GPRC5A&quot;      &quot;GPRIN1&quot;      &quot;GRM4&quot;       
+## [51] &quot;GRM8&quot;        &quot;GTSE1&quot;       &quot;HGH1&quot;        &quot;HJURP&quot;       &quot;HM13&quot;       
+## [56] &quot;HMGB3&quot;       &quot;HMMR&quot;        &quot;HN1&quot;         &quot;HN1L&quot;        &quot;HNRNPA2B1&quot;  
+## [61] &quot;HNRNPAB&quot;     &quot;HNRNPU&quot;      &quot;HSPA5&quot;</code></pre>
 </div>
 <div id="module_pronet" class="section level2">
 <h2><span class="header-section-number">2.4</span> module_ProNet</h2>
 <p>In the ‘ProNet’ package, we can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification. The default method is MCL.</p>
 <pre class="r"><code>data(ceRExp)
 data(mRExp)
-modulegenes_ProNet &lt;- module_ProNet(ceRExp, mRExp)
+modulegenes_ProNet &lt;- module_ProNet(ceRExp[, seq_len(100)],
+                                    mRExp[, seq_len(100)])
 modulegenes_ProNet</code></pre>
+<pre><code>## [[1]]
+##  [1] &quot;ADORA2A-AS1&quot; &quot;ARRDC3-AS1&quot;  &quot;CD27-AS1&quot;    &quot;CENPBD1P1&quot;   &quot;EMBP1&quot;      
+##  [6] &quot;FAM35BP&quot;     &quot;GAS5&quot;        &quot;HCP5&quot;        &quot;C10orf10&quot;    &quot;C10orf54&quot;   
+## [11] &quot;C10orf90&quot;    &quot;C14orf180&quot;   &quot;C17orf51&quot;    &quot;EBF1&quot;        &quot;EBF3&quot;       
+## [16] &quot;ECHDC1&quot;      &quot;FBLN5&quot;       &quot;FBXO31&quot;      &quot;FBXW7&quot;       &quot;FERMT2&quot;     
+## [21] &quot;FGD4&quot;        &quot;FGF1&quot;        &quot;FGF17&quot;       &quot;FGF2&quot;        &quot;FGF9&quot;       
+## [26] &quot;FHL1&quot;        &quot;FHL5&quot;        &quot;FIGF&quot;        &quot;FIGN&quot;        &quot;FLRT2&quot;      
+## [31] &quot;FOSB&quot;        &quot;FOXN3&quot;       &quot;FOXO1&quot;       &quot;FOXO4&quot;       &quot;FREM1&quot;      
+## [36] &quot;FRMD1&quot;       &quot;FRMD3&quot;       &quot;FRMD4A&quot;      &quot;FXYD6&quot;       &quot;FZD4&quot;       
+## [41] &quot;GABARAPL1&quot;   &quot;GABRE&quot;       &quot;GALNT15&quot;     &quot;GAS2&quot;        &quot;GCOM1&quot;      
+## [46] &quot;GDF10&quot;       &quot;GDF5&quot;        &quot;GFAP&quot;        &quot;GHR&quot;         &quot;GID4&quot;       
+## [51] &quot;GIMAP6&quot;      &quot;GIMAP8&quot;      &quot;GIPC2&quot;       &quot;GLYAT&quot;       &quot;GNAI1&quot;      
+## [56] &quot;GNAL&quot;        &quot;GNE&quot;         &quot;GOLGA6L10&quot;   &quot;GPAM&quot;        &quot;GPD1&quot;       
+## [61] &quot;GPIHBP1&quot;     &quot;GPLD1&quot;       &quot;GPR146&quot;      &quot;GPR17&quot;       &quot;GPRASP1&quot;    
+## [66] &quot;GPRASP2&quot;     &quot;GPRC5B&quot;      &quot;GPX3&quot;        &quot;GRASP&quot;       &quot;GRIA1&quot;      
+## [71] &quot;GSTM5&quot;       &quot;GULP1&quot;       &quot;GYG2&quot;        &quot;GYPC&quot;        &quot;HIF3A&quot;      
+## [76] &quot;HLF&quot;         &quot;HOXA3&quot;       &quot;HOXA7&quot;       &quot;HOXA9&quot;       &quot;HRCT1&quot;      
+## 
+## [[2]]
+##  [1] &quot;ADAM21P1&quot;    &quot;AGAP2-AS1&quot;   &quot;ANKRD20A11P&quot; &quot;ATP8B5P&quot;     &quot;EHMT1-IT1&quot;  
+##  [6] &quot;HSD17B7P2&quot;   &quot;C1orf43&quot;     &quot;COL10A1&quot;     &quot;E2F7&quot;        &quot;E2F8&quot;       
+## [11] &quot;ECE2&quot;        &quot;FEN1&quot;        &quot;FLVCR1&quot;      &quot;FN1&quot;         &quot;FOXM1&quot;      
+## [16] &quot;GBA&quot;         &quot;GINS1&quot;       &quot;GJB2&quot;        &quot;GPRC5A&quot;      &quot;GPRIN1&quot;     
+## [21] &quot;GRM4&quot;        &quot;GRM8&quot;        &quot;GTSE1&quot;       &quot;HGH1&quot;        &quot;HJURP&quot;      
+## [26] &quot;HM13&quot;        &quot;HMGB3&quot;       &quot;HMMR&quot;        &quot;HN1&quot;         &quot;HN1L&quot;       
+## [31] &quot;HNRNPA2B1&quot;   &quot;HNRNPAB&quot;     &quot;HNRNPU&quot;      &quot;HSPA5&quot;</code></pre>
 </div>
 <div id="module_nmf" class="section level2">
 <h2><span class="header-section-number">2.5</span> module_NMF</h2>
@@ -280,15 +359,108 @@ modulegenes_ProNet</code></pre>
 data(mRExp)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
-modulegenes_NMF &lt;- module_NMF(ceRExp, mRExp)</code></pre>
+modulegenes_NMF &lt;- module_NMF(ceRExp[, seq_len(100)],
+                              mRExp[, seq_len(100)])
+modulegenes_NMF</code></pre>
+<pre><code>## [[1]]
+##  [1] &quot;A1BG-AS1&quot;   &quot;ABCC13&quot;     &quot;AGAP2-AS1&quot;  &quot;ANKRD36BP1&quot; &quot;ASB16-AS1&quot; 
+##  [6] &quot;CRHR1-IT1&quot;  &quot;EMBP1&quot;      &quot;FAM35BP&quot;    &quot;C1orf43&quot;    &quot;E2F7&quot;      
+## [11] &quot;E2F8&quot;       &quot;FEN1&quot;       &quot;FLVCR1&quot;     &quot;FN1&quot;        &quot;FOXM1&quot;     
+## [16] &quot;GINS1&quot;      &quot;GPRC5A&quot;     &quot;GPRIN1&quot;     &quot;HGH1&quot;       &quot;HJURP&quot;     
+## [21] &quot;HMGB3&quot;      &quot;HMMR&quot;       &quot;HN1L&quot;      
+## 
+## [[2]]
+##  [1] &quot;AFG3L1P&quot;      &quot;AMZ2P1&quot;       &quot;ATP6V0E2-AS1&quot; &quot;BAIAP2-AS1&quot;  
+##  [5] &quot;CASC2&quot;        &quot;CATSPER2P1&quot;   &quot;CCDC183-AS1&quot;  &quot;CD27-AS1&quot;    
+##  [9] &quot;CEBPA-AS1&quot;    &quot;CENPBD1P1&quot;    &quot;CHKB-AS1&quot;     &quot;DGCR11&quot;      
+## [13] &quot;DHRS4-AS1&quot;    &quot;EIF3IP1&quot;      &quot;ESRG&quot;         &quot;FBXL19-AS1&quot;  
+## [17] &quot;FKBP9P1&quot;      &quot;FLVCR1-AS1&quot;   &quot;FOXD2-AS1&quot;    &quot;GABPB1&quot;      
+## [21] &quot;HTR7P1&quot;       &quot;ILF3-AS1&quot;     &quot;ITPK1-AS1&quot;    &quot;ECHDC1&quot;      
+## [25] &quot;FBXO31&quot;       &quot;FOXO4&quot;        &quot;FRMD4A&quot;       &quot;GABARAPL1&quot;   
+## [29] &quot;GBA&quot;          &quot;GID4&quot;         &quot;GPLD1&quot;        &quot;GRIA1&quot;       
+## [33] &quot;HNRNPA2B1&quot;    &quot;HNRNPU&quot;       &quot;HSPA5&quot;       
+## 
+## [[3]]
+##  [1] &quot;ABCA11P&quot;    &quot;ABCA17P&quot;    &quot;ACVR2B-AS1&quot; &quot;ALOX12P2&quot;   &quot;ATP8B5P&quot;   
+##  [6] &quot;BDNF-AS&quot;    &quot;DANCR&quot;      &quot;FAM86C2P&quot;   &quot;FAM86DP&quot;    &quot;FIRRE&quot;     
+## [11] &quot;GAS5&quot;       &quot;GLIDR&quot;      &quot;GNAS-AS1&quot;   &quot;C10orf90&quot;   &quot;FBXW7&quot;     
+## [16] &quot;FGD4&quot;       &quot;GFAP&quot;       &quot;GNE&quot;        &quot;GPRASP2&quot;    &quot;GPRC5B&quot;    
+## 
+## [[4]]
+##  [1] &quot;ADORA2A-AS1&quot; &quot;ARRDC3-AS1&quot;  &quot;BTN2A3P&quot;     &quot;C1RL-AS1&quot;    &quot;CASC15&quot;     
+##  [6] &quot;CCDC144B&quot;    &quot;CECR7&quot;       &quot;CLUHP3&quot;      &quot;CROCCP3&quot;     &quot;DGCR5&quot;      
+## [11] &quot;FAM182B&quot;     &quot;FAM86B3P&quot;    &quot;GOLGA2P5&quot;    &quot;GUSBP11&quot;     &quot;GVINP1&quot;     
+## [16] &quot;HLA-L&quot;       &quot;FGF1&quot;        &quot;FGF17&quot;       &quot;FLRT2&quot;       &quot;GAS2&quot;       
+## [21] &quot;GNAL&quot;        &quot;GPR17&quot;       &quot;GPRASP1&quot;     &quot;GSTM5&quot;       &quot;HOXA9&quot;      
+## 
+## [[5]]
+##  [1] &quot;A2M-AS1&quot;    &quot;AGPAT4-IT1&quot; &quot;C22orf34&quot;   &quot;EMX2OS&quot;     &quot;GGTA1P&quot;    
+##  [6] &quot;H19&quot;        &quot;HLA-F-AS1&quot;  &quot;C10orf10&quot;   &quot;C10orf54&quot;   &quot;C14orf180&quot; 
+## [11] &quot;C17orf51&quot;   &quot;EBF1&quot;       &quot;EBF3&quot;       &quot;FBLN5&quot;      &quot;FERMT2&quot;    
+## [16] &quot;FGF2&quot;       &quot;FGF9&quot;       &quot;FHL1&quot;       &quot;FHL5&quot;       &quot;FIGF&quot;      
+## [21] &quot;FIGN&quot;       &quot;FOSB&quot;       &quot;FOXN3&quot;      &quot;FOXO1&quot;      &quot;FREM1&quot;     
+## [26] &quot;FRMD1&quot;      &quot;FRMD3&quot;      &quot;FXYD6&quot;      &quot;FZD4&quot;       &quot;GABRE&quot;     
+## [31] &quot;GALNT15&quot;    &quot;GCOM1&quot;      &quot;GDF10&quot;      &quot;GDF5&quot;       &quot;GHR&quot;       
+## [36] &quot;GIMAP6&quot;     &quot;GIMAP8&quot;     &quot;GIPC2&quot;      &quot;GLYAT&quot;      &quot;GNAI1&quot;     
+## [41] &quot;GOLGA6L10&quot;  &quot;GPAM&quot;       &quot;GPD1&quot;       &quot;GPIHBP1&quot;    &quot;GPR146&quot;    
+## [46] &quot;GPX3&quot;       &quot;GRASP&quot;      &quot;GULP1&quot;      &quot;GYG2&quot;       &quot;GYPC&quot;      
+## [51] &quot;HIF3A&quot;      &quot;HLF&quot;        &quot;HOXA3&quot;      &quot;HOXA7&quot;      &quot;HRCT1&quot;     
+## 
+## [[6]]
+##  [1] &quot;CA5BP1&quot;  &quot;DSCR9&quot;   &quot;HCP5&quot;    &quot;COL10A1&quot; &quot;ECE2&quot;    &quot;GJB2&quot;    &quot;GTSE1&quot;  
+##  [8] &quot;HM13&quot;    &quot;HN1&quot;     &quot;HNRNPAB&quot;</code></pre>
 </div>
 <div id="module_biclust" class="section level2">
 <h2><span class="header-section-number">2.6</span> module_biclust</h2>
 <p>We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [21], runibic [22], iBBiG [23], fabia [24], BicARE [25], isa2 [26], s4vd [27], BiBitR [28] and rqubic [29]. The biclustering methods include “BCBimax”, “BCCC”, “BCPlaid”, “BCQuest”, “BCSpectral”, “BCXmotifs”, “iBBiG”, “fabia”, “fabiap”, “fabias”, “mfsc”, “nmfdiv”, “nmfeu”, “nmfsc”, “FLOC”, “isa”, “BCs4vd”, “BCssvd”, “bibit” and “quBicluster”. The default method is “fabia”.</p>
 <pre class="r"><code>data(ceRExp)
 data(mRExp)
-modulegenes_biclust &lt;- module_biclust(ceRExp, mRExp)
-modulegenes_biclust</code></pre>
+modulegenes_biclust &lt;- module_biclust(ceRExp[, seq_len(100)],
+                                      mRExp[, seq_len(100)])</code></pre>
+<pre><code>## Cycle: 0
+Cycle: 20
+Cycle: 40
+Cycle: 60
+Cycle: 80
+Cycle: 100
+Cycle: 120
+Cycle: 140
+Cycle: 160
+Cycle: 180
+Cycle: 200
+Cycle: 220
+Cycle: 240
+Cycle: 260
+Cycle: 280
+Cycle: 300
+Cycle: 320
+Cycle: 340
+Cycle: 360
+Cycle: 380
+Cycle: 400
+Cycle: 420
+Cycle: 440
+Cycle: 460
+Cycle: 480
+Cycle: 500</code></pre>
+<pre class="r"><code>modulegenes_biclust</code></pre>
+<pre><code>## [[1]]
+##  [1] &quot;GDF10&quot;     &quot;FREM1&quot;     &quot;FIGF&quot;      &quot;GPIHBP1&quot;   &quot;ABCC13&quot;    &quot;GSTM5&quot;    
+##  [7] &quot;EMX2OS&quot;    &quot;GPD1&quot;      &quot;FHL1&quot;      &quot;HIF3A&quot;     &quot;HOXA3&quot;     &quot;FLRT2&quot;    
+## [13] &quot;HRCT1&quot;     &quot;GIPC2&quot;     &quot;GRM4&quot;      &quot;HOXA7&quot;     &quot;FHL5&quot;      &quot;EBF3&quot;     
+## [19] &quot;GNAL&quot;      &quot;EBF1&quot;      &quot;FBLN5&quot;     &quot;C10orf10&quot;  &quot;GYPC&quot;      &quot;GPX3&quot;     
+## [25] &quot;GGTA1P&quot;    &quot;HOXA9&quot;     &quot;HLF&quot;       &quot;GALNT15&quot;   &quot;GIMAP8&quot;    &quot;GULP1&quot;    
+## [31] &quot;C17orf51&quot;  &quot;FXYD6&quot;     &quot;FGF2&quot;      &quot;GLYAT&quot;     &quot;FGF9&quot;      &quot;C10orf54&quot; 
+## [37] &quot;FIGN&quot;      &quot;FOXO1&quot;     &quot;FOSB&quot;      &quot;CYP2B7P&quot;   &quot;C14orf180&quot; &quot;GNAI1&quot;    
+## [43] &quot;FLVCR1&quot;    &quot;GHR&quot;       &quot;GRASP&quot;     &quot;GPR146&quot;    &quot;FERMT2&quot;    &quot;GIMAP6&quot;   
+## [49] &quot;GCOM1&quot;     &quot;COL10A1&quot;   &quot;FRMD3&quot;     &quot;E2F7&quot;      &quot;C10orf90&quot;  &quot;GVINP1&quot;   
+## [55] &quot;GABRE&quot;    
+## 
+## [[2]]
+##  [1] &quot;COL10A1&quot;    &quot;FN1&quot;        &quot;HJURP&quot;      &quot;HMMR&quot;       &quot;GAS2&quot;      
+##  [6] &quot;GPRIN1&quot;     &quot;GTSE1&quot;      &quot;FOXM1&quot;      &quot;GJB2&quot;       &quot;GFAP&quot;      
+## [11] &quot;FIGF&quot;       &quot;C10orf90&quot;   &quot;E2F8&quot;       &quot;FOSB&quot;       &quot;GSTM5&quot;     
+## [16] &quot;HLF&quot;        &quot;E2F7&quot;       &quot;ACVR2B-AS1&quot; &quot;ADCY10P1&quot;</code></pre>
 </div>
 </div>
 <div id="identification-of-mirna-sponge-modules" class="section level1">
@@ -334,17 +506,17 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                          pvalue.cutoff = 0.05, 
                          method = &quot;SCC&quot;, SCC.cutoff = 0.1)</code></pre>
 <pre><code>## 
-## 123456789101112
-## 
-## 123456789101112131415
+## 1234567891011
 ## 
 ## 123456789101112131415
 ## 
 ## 12
 ## 
+## 12
+## 
 ## 1234567
 ## 
-## 12</code></pre>
+## 1234567891011</code></pre>
 <pre class="r"><code>miRSM_WGCNA_CC</code></pre>
 <pre><code>## [[1]]
 ##          #miRNAs regulating ceRNAs #miRNAs regulating mRNAs #Shared miRNAs
@@ -415,65 +587,28 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 ## [103] &quot;ZWILCH&quot;    &quot;ZWINT&quot;</code></pre>
 <pre class="r"><code>miRSM_WGCNA_SCC</code></pre>
 <pre><code>## [[1]]
-##          #miRNAs regulating ceRNAs #miRNAs regulating mRNAs #Shared miRNAs
-## Module 1                       104                      184            101
-## Module 2                        33                      187             33
-##          #Background miRNAs Sig. p.value of sharing miRNAs
-## Module 1                226                   2.613925e-09
-## Module 2                226                   1.117155e-03
-##          Cannonical correlation of ceRNAs:mRNAs
-## Module 1                              0.9749016
-## Module 2                              0.8800722
-##          Cannonical correlation of miRNAs:mRNAs
-## Module 1                              0.9320725
-## Module 2                              0.8951020
-##          Cannonical correlation of miRNAs:ceRNAs
-## Module 1                               0.8963860
-## Module 2                               0.7492312
-##          partial cannonical correlation of ceRNAs:mRNAs
-## Module 1                                      0.8681020
-## Module 2                                      0.7092291
-##          Sensitivity cannonical correlation of ceRNAs:mRNAs
-## Module 1                                          0.1067996
-## Module 2                                          0.1708431
+##                          #miRNAs regulating ceRNAs 
+##                                       3.300000e+01 
+##                           #miRNAs regulating mRNAs 
+##                                       1.870000e+02 
+##                                     #Shared miRNAs 
+##                                       3.300000e+01 
+##                                 #Background miRNAs 
+##                                       2.260000e+02 
+##                     Sig. p.value of sharing miRNAs 
+##                                       1.117155e-03 
+##             Cannonical correlation of ceRNAs:mRNAs 
+##                                       8.800722e-01 
+##             Cannonical correlation of miRNAs:mRNAs 
+##                                       8.946752e-01 
+##            Cannonical correlation of miRNAs:ceRNAs 
+##                                       8.373160e-01 
+##     partial cannonical correlation of ceRNAs:mRNAs 
+##                                       5.361623e-01 
+## Sensitivity cannonical correlation of ceRNAs:mRNAs 
+##                                       3.439099e-01 
 ## 
 ## [[2]]
-## [[2]]$`Module 1`
-##   [1] &quot;A2M-AS1&quot;     &quot;EMX2OS&quot;      &quot;GGTA1P&quot;      &quot;LINC00961&quot;   &quot;LINC01140&quot;  
-##   [6] &quot;MBNL1-AS1&quot;   &quot;MEG3&quot;        &quot;MIR22HG&quot;     &quot;MIR99AHG&quot;    &quot;ZFHX4-AS1&quot;  
-##  [11] &quot;C10orf10&quot;    &quot;C14orf180&quot;   &quot;C17orf51&quot;    &quot;FERMT2&quot;      &quot;FGF1&quot;       
-##  [16] &quot;FGF2&quot;        &quot;FGF9&quot;        &quot;FHL1&quot;        &quot;FIGN&quot;        &quot;FLRT2&quot;      
-##  [21] &quot;FOXN3&quot;       &quot;FRMD1&quot;       &quot;FRMD3&quot;       &quot;FRMD4A&quot;      &quot;FZD4&quot;       
-##  [26] &quot;GABARAPL1&quot;   &quot;GCOM1&quot;       &quot;GDF5&quot;        &quot;GHR&quot;         &quot;GID4&quot;       
-##  [31] &quot;GLYAT&quot;       &quot;GNAI1&quot;       &quot;GNAL&quot;        &quot;GPAM&quot;        &quot;GPD1&quot;       
-##  [36] &quot;GPLD1&quot;       &quot;GPR146&quot;      &quot;GPR17&quot;       &quot;GPRASP1&quot;     &quot;GPX3&quot;       
-##  [41] &quot;GRASP&quot;       &quot;GSTM5&quot;       &quot;GULP1&quot;       &quot;GYG2&quot;        &quot;HIF3A&quot;      
-##  [46] &quot;HSPB6&quot;       &quot;HSPB7&quot;       &quot;HYAL1&quot;       &quot;IGF2&quot;        &quot;IQSEC3&quot;     
-##  [51] &quot;IRS2&quot;        &quot;ISM1&quot;        &quot;ITIH5&quot;       &quot;KANK1&quot;       &quot;KCNAB1&quot;     
-##  [56] &quot;KCNB1&quot;       &quot;KCNIP2&quot;      &quot;KIAA0355&quot;    &quot;KIAA0408&quot;    &quot;KIAA1614&quot;   
-##  [61] &quot;KIF26A&quot;      &quot;KLB&quot;         &quot;KLF15&quot;       &quot;KLF4&quot;        &quot;KLF9&quot;       
-##  [66] &quot;KLHL29&quot;      &quot;KLHL3&quot;       &quot;KLHL31&quot;      &quot;KNOP1&quot;       &quot;LARP6&quot;      
-##  [71] &quot;LCN10&quot;       &quot;LHX6&quot;        &quot;LIFR&quot;        &quot;LIMS2&quot;       &quot;LMOD1&quot;      
-##  [76] &quot;LPL&quot;         &quot;LRRN3&quot;       &quot;LURAP1&quot;      &quot;MAB21L1&quot;     &quot;MAMDC2&quot;     
-##  [81] &quot;MAOA&quot;        &quot;MAP7D3&quot;      &quot;MRPL3&quot;       &quot;MSRB3&quot;       &quot;MTURN&quot;      
-##  [86] &quot;MYH11&quot;       &quot;MYL9&quot;        &quot;MYOC&quot;        &quot;NAALAD2&quot;     &quot;NAT8L&quot;      
-##  [91] &quot;NATD1&quot;       &quot;NLGN1&quot;       &quot;NLRP1&quot;       &quot;NMNAT2&quot;      &quot;NMT2&quot;       
-##  [96] &quot;NMUR1&quot;       &quot;NNAT&quot;        &quot;NPR1&quot;        &quot;NR3C1&quot;       &quot;NRIP2&quot;      
-## [101] &quot;NRN1&quot;        &quot;OGN&quot;         &quot;PALM2-AKAP2&quot; &quot;PAMR1&quot;       &quot;RAPGEF2&quot;    
-## [106] &quot;RBMS2&quot;       &quot;RBMS3&quot;       &quot;RCBTB2&quot;      &quot;RGL1&quot;        &quot;RGS6&quot;       
-## [111] &quot;RHOJ&quot;        &quot;RNF125&quot;      &quot;RNF150&quot;      &quot;RSPO3&quot;       &quot;RUNX1T1&quot;    
-## [116] &quot;S100B&quot;       &quot;SAMD4A&quot;      &quot;SCN11A&quot;      &quot;SCN2B&quot;       &quot;SCN4A&quot;      
-## [121] &quot;SCN4B&quot;       &quot;SEC14L1&quot;     &quot;SGK2&quot;        &quot;SH3BGRL2&quot;    &quot;SH3D19&quot;     
-## [126] &quot;SIK2&quot;        &quot;SIRPA&quot;       &quot;SLC16A7&quot;     &quot;SLC17A7&quot;     &quot;SLC19A3&quot;    
-## [131] &quot;SLC22A3&quot;     &quot;SLC2A4&quot;      &quot;SMIM10&quot;      &quot;SNCA&quot;        &quot;SNTB2&quot;      
-## [136] &quot;SOBP&quot;        &quot;SOD3&quot;        &quot;SORBS1&quot;      &quot;SOX5&quot;        &quot;SPTBN1&quot;     
-## [141] &quot;SSPN&quot;        &quot;SSTR1&quot;       &quot;STAT5A&quot;      &quot;STAT5B&quot;      &quot;TCEAL7&quot;     
-## [146] &quot;TCF4&quot;        &quot;TENM1&quot;       &quot;TFPI&quot;        &quot;TGFBR3&quot;      &quot;TK2&quot;        
-## [151] &quot;TLN2&quot;        &quot;TMEM100&quot;     &quot;TMEM132C&quot;    &quot;TMEM178A&quot;    &quot;TMEM47&quot;     
-## [156] &quot;TMOD1&quot;       &quot;TTC28&quot;       &quot;TUFT1&quot;       &quot;TUSC5&quot;       &quot;TXNIP&quot;      
-## [161] &quot;UTRN&quot;        &quot;VIT&quot;         &quot;WASF3&quot;       &quot;YPEL4&quot;       &quot;ZC3H12C&quot;    
-## [166] &quot;ZEB1&quot;        &quot;ZEB2&quot;        &quot;ZNF781&quot;     
-## 
 ## [[2]]$`Module 2`
 ##   [1] &quot;MAFG-AS1&quot;  &quot;TMPO-AS1&quot;  &quot;WDFY3-AS2&quot; &quot;E2F7&quot;      &quot;E2F8&quot;      &quot;ECE2&quot;     
 ##   [7] &quot;FBXO31&quot;    &quot;FEN1&quot;      &quot;FGD4&quot;      &quot;FLVCR1&quot;    &quot;FOXM1&quot;     &quot;GABRE&quot;    
@@ -569,8 +704,9 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes,
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] BiocStyle_2.8.2     miRSM_0.99.7        Biobase_2.40.0     
-## [4] BiocGenerics_0.26.0
+## [1] NMF_0.21.0          cluster_2.0.7-1     rngtools_1.3.1     
+## [4] pkgmaker_0.27       registry_0.5        BiocStyle_2.8.2    
+## [7] miRSM_0.99.8        Biobase_2.40.0      BiocGenerics_0.26.0
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] tidyselect_0.2.4            robust_0.4-18              
@@ -586,81 +722,79 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes,
 ##  [21] GOSemSim_2.6.0              knitr_1.20                 
 ##  [23] rstudioapi_0.7              stats4_3.5.1               
 ##  [25] robustbase_0.93-2           DOSE_3.6.1                 
-##  [27] NMF_0.21.0                  GenomeInfoDbData_1.1.0     
-##  [29] bit64_0.9-7                 PMA_1.0.11                 
-##  [31] rprojroot_1.3-2             runibic_1.2.3              
-##  [33] xfun_0.3                    fastcluster_1.1.25         
-##  [35] diptest_0.75-7              R6_2.2.2                   
-##  [37] doParallel_1.0.11           GenomeInfoDb_1.16.0        
-##  [39] flexmix_2.3-14              bitops_1.0-6               
-##  [41] fgsea_1.6.0                 DelayedArray_0.6.3         
-##  [43] assertthat_0.2.0            scales_0.5.0               
-##  [45] ggraph_1.0.2                nnet_7.3-12                
-##  [47] enrichplot_1.0.2            gtable_0.2.0               
-##  [49] WGCNA_1.63                  rlang_0.2.1                
-##  [51] BiBitR_0.3.1                iBBiG_1.24.0               
-##  [53] splines_3.5.1               lazyeval_0.2.1             
-##  [55] acepack_1.4.1               impute_1.54.0              
-##  [57] checkmate_1.8.5             yaml_2.2.0                 
-##  [59] reshape2_1.4.3              fabia_2.26.0               
-##  [61] backports_1.1.2             qvalue_2.12.0              
-##  [63] Hmisc_4.1-1                 clusterProfiler_3.8.1      
-##  [65] tools_3.5.1                 bookdown_0.7               
-##  [67] gridBase_0.4-7              ggplot2_3.0.0              
-##  [69] RColorBrewer_1.1-2          dynamicTreeCut_1.63-1      
-##  [71] ggridges_0.5.0              Rcpp_0.12.18               
-##  [73] plyr_1.8.4                  base64enc_0.1-3            
-##  [75] zlibbioc_1.26.0             purrr_0.2.5                
-##  [77] RCurl_1.95-4.11             rpart_4.1-13               
-##  [79] viridis_0.5.1               cowplot_0.9.3              
-##  [81] S4Vectors_0.18.3            SummarizedExperiment_1.10.1
-##  [83] ggrepel_0.8.0               cluster_2.0.7-1            
-##  [85] magrittr_1.5                data.table_1.11.4          
-##  [87] DO.db_2.9                   reactome.db_1.64.0         
-##  [89] BicARE_1.38.0               mvtnorm_1.0-8              
-##  [91] whisker_0.3-2               matrixStats_0.54.0         
-##  [93] flexclust_1.3-5             randomcoloR_1.1.0          
-##  [95] evaluate_0.11               xtable_1.8-2               
-##  [97] mclust_5.4.1                IRanges_2.14.10            
-##  [99] gridExtra_2.3               testthat_2.0.0             
-## [101] compiler_3.5.1              tibble_1.4.2               
-## [103] V8_1.5                      crayon_1.3.4               
-## [105] GFA_1.0.3                   htmltools_0.3.6            
-## [107] corpcor_1.6.9               pcaPP_1.9-73               
-## [109] Formula_1.2-3               tidyr_0.8.1                
-## [111] rrcov_1.4-4                 expm_0.999-2               
-## [113] MCL_1.0                     ReactomePA_1.24.0          
-## [115] DBI_1.0.0                   tweenr_0.1.5               
-## [117] MASS_7.3-50                 fpc_2.1-11.1               
-## [119] rappdirs_0.3.1              Matrix_1.2-14              
-## [121] ade4_1.7-11                 bindr_0.1.1                
-## [123] igraph_1.2.2                GenomicRanges_1.32.6       
-## [125] pkgconfig_2.0.1             fit.models_0.5-14          
-## [127] flashClust_1.01-2           rvcheck_0.1.0              
-## [129] registry_0.5                s4vd_1.1-1                 
-## [131] foreign_0.8-71              xml2_1.2.0                 
-## [133] roxygen2_6.1.0              foreach_1.4.4              
-## [135] rngtools_1.3.1              pkgmaker_0.27              
-## [137] XVector_0.20.0              bibtex_0.4.2               
-## [139] stringr_1.3.1               digest_0.6.15              
-## [141] varhandle_2.0.3             graph_1.58.0               
-## [143] rmarkdown_1.10              isa2_0.3.5                 
-## [145] fastmatch_1.1-0             htmlTable_1.12             
-## [147] dendextend_1.8.0            linkcomm_1.0-11            
-## [149] curl_3.2                    kernlab_0.9-26             
-## [151] commonmark_1.5              modeltools_0.2-22          
-## [153] graphite_1.26.1             jsonlite_1.5               
-## [155] bindrcpp_0.2.2              desc_1.2.0                 
-## [157] viridisLite_0.3.0           pillar_1.3.0               
-## [159] lattice_0.20-35             httr_1.3.1                 
-## [161] DEoptimR_1.0-8              survival_2.42-6            
-## [163] GO.db_3.6.0                 glue_1.3.0                 
-## [165] UpSetR_1.3.3                prabclus_2.2-6             
-## [167] iterators_1.0.10            bit_1.1-14                 
-## [169] ggforce_0.1.3               class_7.3-14               
-## [171] stringi_1.2.4               blob_1.1.1                 
-## [173] latticeExtra_0.6-28         memoise_1.1.0              
-## [175] dplyr_0.7.6                 irlba_2.3.2</code></pre>
+##  [27] GenomeInfoDbData_1.1.0      bit64_0.9-7                
+##  [29] PMA_1.0.11                  rprojroot_1.3-2            
+##  [31] runibic_1.2.3               xfun_0.3                   
+##  [33] fastcluster_1.1.25          diptest_0.75-7             
+##  [35] R6_2.2.2                    doParallel_1.0.11          
+##  [37] GenomeInfoDb_1.16.0         flexmix_2.3-14             
+##  [39] bitops_1.0-6                fgsea_1.6.0                
+##  [41] DelayedArray_0.6.3          assertthat_0.2.0           
+##  [43] scales_0.5.0                ggraph_1.0.2               
+##  [45] nnet_7.3-12                 enrichplot_1.0.2           
+##  [47] gtable_0.2.0                WGCNA_1.63                 
+##  [49] rlang_0.2.1                 BiBitR_0.3.1               
+##  [51] iBBiG_1.24.0                splines_3.5.1              
+##  [53] lazyeval_0.2.1              acepack_1.4.1              
+##  [55] impute_1.54.0               checkmate_1.8.5            
+##  [57] yaml_2.2.0                  reshape2_1.4.3             
+##  [59] fabia_2.26.0                backports_1.1.2            
+##  [61] qvalue_2.12.0               Hmisc_4.1-1                
+##  [63] clusterProfiler_3.8.1       tools_3.5.1                
+##  [65] bookdown_0.7                gridBase_0.4-7             
+##  [67] ggplot2_3.0.0               RColorBrewer_1.1-2         
+##  [69] dynamicTreeCut_1.63-1       ggridges_0.5.0             
+##  [71] Rcpp_0.12.18                plyr_1.8.4                 
+##  [73] base64enc_0.1-3             zlibbioc_1.26.0            
+##  [75] purrr_0.2.5                 RCurl_1.95-4.11            
+##  [77] rpart_4.1-13                viridis_0.5.1              
+##  [79] cowplot_0.9.3               S4Vectors_0.18.3           
+##  [81] SummarizedExperiment_1.10.1 ggrepel_0.8.0              
+##  [83] magrittr_1.5                data.table_1.11.4          
+##  [85] DO.db_2.9                   reactome.db_1.64.0         
+##  [87] BicARE_1.38.0               mvtnorm_1.0-8              
+##  [89] whisker_0.3-2               matrixStats_0.54.0         
+##  [91] flexclust_1.3-5             randomcoloR_1.1.0          
+##  [93] evaluate_0.11               xtable_1.8-2               
+##  [95] mclust_5.4.1                IRanges_2.14.10            
+##  [97] gridExtra_2.3               testthat_2.0.0             
+##  [99] compiler_3.5.1              tibble_1.4.2               
+## [101] V8_1.5                      crayon_1.3.4               
+## [103] GFA_1.0.3                   htmltools_0.3.6            
+## [105] corpcor_1.6.9               pcaPP_1.9-73               
+## [107] Formula_1.2-3               tidyr_0.8.1                
+## [109] rrcov_1.4-4                 expm_0.999-2               
+## [111] MCL_1.0                     ReactomePA_1.24.0          
+## [113] DBI_1.0.0                   tweenr_0.1.5               
+## [115] MASS_7.3-50                 fpc_2.1-11.1               
+## [117] rappdirs_0.3.1              Matrix_1.2-14              
+## [119] ade4_1.7-11                 bindr_0.1.1                
+## [121] igraph_1.2.2                GenomicRanges_1.32.6       
+## [123] pkgconfig_2.0.1             fit.models_0.5-14          
+## [125] flashClust_1.01-2           rvcheck_0.1.0              
+## [127] s4vd_1.1-1                  foreign_0.8-71             
+## [129] xml2_1.2.0                  roxygen2_6.1.0             
+## [131] foreach_1.4.4               XVector_0.20.0             
+## [133] bibtex_0.4.2                stringr_1.3.1              
+## [135] digest_0.6.15               varhandle_2.0.3            
+## [137] graph_1.58.0                rmarkdown_1.10             
+## [139] isa2_0.3.5                  fastmatch_1.1-0            
+## [141] htmlTable_1.12              dendextend_1.8.0           
+## [143] linkcomm_1.0-11             curl_3.2                   
+## [145] kernlab_0.9-26              commonmark_1.5             
+## [147] modeltools_0.2-22           graphite_1.26.1            
+## [149] jsonlite_1.5                bindrcpp_0.2.2             
+## [151] desc_1.2.0                  viridisLite_0.3.0          
+## [153] pillar_1.3.0                lattice_0.20-35            
+## [155] httr_1.3.1                  DEoptimR_1.0-8             
+## [157] survival_2.42-6             GO.db_3.6.0                
+## [159] glue_1.3.0                  UpSetR_1.3.3               
+## [161] prabclus_2.2-6              iterators_1.0.10           
+## [163] bit_1.1-14                  ggforce_0.1.3              
+## [165] class_7.3-14                stringi_1.2.4              
+## [167] blob_1.1.1                  latticeExtra_0.6-28        
+## [169] memoise_1.1.0               dplyr_0.7.6                
+## [171] irlba_2.3.2</code></pre>
 </div>
 
 

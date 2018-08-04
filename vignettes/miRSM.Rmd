@@ -66,40 +66,46 @@ modulegenes_GFA <- module_GFA(ceRExp, mRExp)
 ## module_igraph
 By using 'igraph' package [14], we infer gene modules from matched ceRNA and mRNA expression data. In the 'igraph' package, we can select "betweenness", "greedy", "infomap", "prop", "eigen", "louvain", "walktrap" methods for gene module identification. The default method is "greedy".
 
-```{r, eval=FALSE, include=TRUE}
+```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_igraph <- module_igraph(ceRExp, mRExp)
+modulegenes_igraph <- module_igraph(ceRExp[, seq_len(100)],
+                                    mRExp[, seq_len(100)])
+modulegenes_igraph
 ```
 
 ## module_ProNet
 In the 'ProNet' package, we can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification. The default method is MCL.
 
-```{r, eval=FALSE, include=TRUE}
+```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
+modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(100)],
+                                    mRExp[, seq_len(100)])
 modulegenes_ProNet
 ```
 
 ## module_NMF
 By using 'NMF' package [20], we infer gene modules from matched ceRNA and mRNA expression data. In the 'NMF' package, we can select "brunet", "Frobenius", "KL", "lee", "nsNMF", "offset", "siNMF", "snmf/l", "snmf/r" methods for gene module identification. The default method is "brunet".
 
-```{r, eval=FALSE, include=TRUE}
+```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
-modulegenes_NMF <- module_NMF(ceRExp, mRExp)
+modulegenes_NMF <- module_NMF(ceRExp[, seq_len(100)],
+                              mRExp[, seq_len(100)])
+modulegenes_NMF
 ```
 
 ## module_biclust
 We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [21], runibic [22], iBBiG [23], fabia [24], BicARE [25], isa2 [26], s4vd [27], BiBitR [28] and rqubic [29]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "fabia".
 
-```{r, eval=FALSE, include=TRUE}
+```{r, eval=TRUE, include=TRUE}
 data(ceRExp)
 data(mRExp)
-modulegenes_biclust <- module_biclust(ceRExp, mRExp)
+modulegenes_biclust <- module_biclust(ceRExp[, seq_len(100)],
+                                      mRExp[, seq_len(100)])
 modulegenes_biclust
 ```
 
