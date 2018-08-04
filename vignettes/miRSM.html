@@ -321,28 +321,30 @@ modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)</code></pre>
 ## ..done.</code></pre>
 <pre class="r"><code># Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_WGCNA, nperms = 10, num_shared_miRNAs = 3, 
-                        pvalue.cutoff = 0.05, method = &quot;CC&quot;, CC.cutoff = 0.8)</code></pre>
+                        modulegenes_WGCNA, nperms = 10, num_shared_miRNAs                         = 3, pvalue.cutoff = 0.05, 
+                        method = &quot;CC&quot;, CC.cutoff = 0.8)</code></pre>
 <pre><code>## 
 ## 1234567891011
 ## 
 ## 12</code></pre>
 <pre class="r"><code># Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
 miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                         modulegenes_WGCNA, nperms = 10, num_shared_miRNAs = 3, 
-                         pvalue.cutoff = 0.05, method = &quot;SCC&quot;, SCC.cutoff = 0.1)</code></pre>
+                         modulegenes_WGCNA, nperms = 10, 
+                         num_shared_miRNAs = 3, 
+                         pvalue.cutoff = 0.05, 
+                         method = &quot;SCC&quot;, SCC.cutoff = 0.1)</code></pre>
 <pre><code>## 
-## 1234567891011
+## 123456789101112
 ## 
-## 12345678
+## 123456789101112131415
 ## 
-## 12
+## 123456789101112131415
 ## 
 ## 12
 ## 
 ## 1234567
 ## 
-## 1234567891011</code></pre>
+## 12</code></pre>
 <pre class="r"><code>miRSM_WGCNA_CC</code></pre>
 <pre><code>## [[1]]
 ##          #miRNAs regulating ceRNAs #miRNAs regulating mRNAs #Shared miRNAs
@@ -413,28 +415,65 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 ## [103] &quot;ZWILCH&quot;    &quot;ZWINT&quot;</code></pre>
 <pre class="r"><code>miRSM_WGCNA_SCC</code></pre>
 <pre><code>## [[1]]
-##                          #miRNAs regulating ceRNAs 
-##                                       3.300000e+01 
-##                           #miRNAs regulating mRNAs 
-##                                       1.870000e+02 
-##                                     #Shared miRNAs 
-##                                       3.300000e+01 
-##                                 #Background miRNAs 
-##                                       2.260000e+02 
-##                     Sig. p.value of sharing miRNAs 
-##                                       1.117155e-03 
-##             Cannonical correlation of ceRNAs:mRNAs 
-##                                       8.800722e-01 
-##             Cannonical correlation of miRNAs:mRNAs 
-##                                       8.951020e-01 
-##            Cannonical correlation of miRNAs:ceRNAs 
-##                                       8.373160e-01 
-##     partial cannonical correlation of ceRNAs:mRNAs 
-##                                       5.357253e-01 
-## Sensitivity cannonical correlation of ceRNAs:mRNAs 
-##                                       3.443469e-01 
+##          #miRNAs regulating ceRNAs #miRNAs regulating mRNAs #Shared miRNAs
+## Module 1                       104                      184            101
+## Module 2                        33                      187             33
+##          #Background miRNAs Sig. p.value of sharing miRNAs
+## Module 1                226                   2.613925e-09
+## Module 2                226                   1.117155e-03
+##          Cannonical correlation of ceRNAs:mRNAs
+## Module 1                              0.9749016
+## Module 2                              0.8800722
+##          Cannonical correlation of miRNAs:mRNAs
+## Module 1                              0.9320725
+## Module 2                              0.8951020
+##          Cannonical correlation of miRNAs:ceRNAs
+## Module 1                               0.8963860
+## Module 2                               0.7492312
+##          partial cannonical correlation of ceRNAs:mRNAs
+## Module 1                                      0.8681020
+## Module 2                                      0.7092291
+##          Sensitivity cannonical correlation of ceRNAs:mRNAs
+## Module 1                                          0.1067996
+## Module 2                                          0.1708431
 ## 
 ## [[2]]
+## [[2]]$`Module 1`
+##   [1] &quot;A2M-AS1&quot;     &quot;EMX2OS&quot;      &quot;GGTA1P&quot;      &quot;LINC00961&quot;   &quot;LINC01140&quot;  
+##   [6] &quot;MBNL1-AS1&quot;   &quot;MEG3&quot;        &quot;MIR22HG&quot;     &quot;MIR99AHG&quot;    &quot;ZFHX4-AS1&quot;  
+##  [11] &quot;C10orf10&quot;    &quot;C14orf180&quot;   &quot;C17orf51&quot;    &quot;FERMT2&quot;      &quot;FGF1&quot;       
+##  [16] &quot;FGF2&quot;        &quot;FGF9&quot;        &quot;FHL1&quot;        &quot;FIGN&quot;        &quot;FLRT2&quot;      
+##  [21] &quot;FOXN3&quot;       &quot;FRMD1&quot;       &quot;FRMD3&quot;       &quot;FRMD4A&quot;      &quot;FZD4&quot;       
+##  [26] &quot;GABARAPL1&quot;   &quot;GCOM1&quot;       &quot;GDF5&quot;        &quot;GHR&quot;         &quot;GID4&quot;       
+##  [31] &quot;GLYAT&quot;       &quot;GNAI1&quot;       &quot;GNAL&quot;        &quot;GPAM&quot;        &quot;GPD1&quot;       
+##  [36] &quot;GPLD1&quot;       &quot;GPR146&quot;      &quot;GPR17&quot;       &quot;GPRASP1&quot;     &quot;GPX3&quot;       
+##  [41] &quot;GRASP&quot;       &quot;GSTM5&quot;       &quot;GULP1&quot;       &quot;GYG2&quot;        &quot;HIF3A&quot;      
+##  [46] &quot;HSPB6&quot;       &quot;HSPB7&quot;       &quot;HYAL1&quot;       &quot;IGF2&quot;        &quot;IQSEC3&quot;     
+##  [51] &quot;IRS2&quot;        &quot;ISM1&quot;        &quot;ITIH5&quot;       &quot;KANK1&quot;       &quot;KCNAB1&quot;     
+##  [56] &quot;KCNB1&quot;       &quot;KCNIP2&quot;      &quot;KIAA0355&quot;    &quot;KIAA0408&quot;    &quot;KIAA1614&quot;   
+##  [61] &quot;KIF26A&quot;      &quot;KLB&quot;         &quot;KLF15&quot;       &quot;KLF4&quot;        &quot;KLF9&quot;       
+##  [66] &quot;KLHL29&quot;      &quot;KLHL3&quot;       &quot;KLHL31&quot;      &quot;KNOP1&quot;       &quot;LARP6&quot;      
+##  [71] &quot;LCN10&quot;       &quot;LHX6&quot;        &quot;LIFR&quot;        &quot;LIMS2&quot;       &quot;LMOD1&quot;      
+##  [76] &quot;LPL&quot;         &quot;LRRN3&quot;       &quot;LURAP1&quot;      &quot;MAB21L1&quot;     &quot;MAMDC2&quot;     
+##  [81] &quot;MAOA&quot;        &quot;MAP7D3&quot;      &quot;MRPL3&quot;       &quot;MSRB3&quot;       &quot;MTURN&quot;      
+##  [86] &quot;MYH11&quot;       &quot;MYL9&quot;        &quot;MYOC&quot;        &quot;NAALAD2&quot;     &quot;NAT8L&quot;      
+##  [91] &quot;NATD1&quot;       &quot;NLGN1&quot;       &quot;NLRP1&quot;       &quot;NMNAT2&quot;      &quot;NMT2&quot;       
+##  [96] &quot;NMUR1&quot;       &quot;NNAT&quot;        &quot;NPR1&quot;        &quot;NR3C1&quot;       &quot;NRIP2&quot;      
+## [101] &quot;NRN1&quot;        &quot;OGN&quot;         &quot;PALM2-AKAP2&quot; &quot;PAMR1&quot;       &quot;RAPGEF2&quot;    
+## [106] &quot;RBMS2&quot;       &quot;RBMS3&quot;       &quot;RCBTB2&quot;      &quot;RGL1&quot;        &quot;RGS6&quot;       
+## [111] &quot;RHOJ&quot;        &quot;RNF125&quot;      &quot;RNF150&quot;      &quot;RSPO3&quot;       &quot;RUNX1T1&quot;    
+## [116] &quot;S100B&quot;       &quot;SAMD4A&quot;      &quot;SCN11A&quot;      &quot;SCN2B&quot;       &quot;SCN4A&quot;      
+## [121] &quot;SCN4B&quot;       &quot;SEC14L1&quot;     &quot;SGK2&quot;        &quot;SH3BGRL2&quot;    &quot;SH3D19&quot;     
+## [126] &quot;SIK2&quot;        &quot;SIRPA&quot;       &quot;SLC16A7&quot;     &quot;SLC17A7&quot;     &quot;SLC19A3&quot;    
+## [131] &quot;SLC22A3&quot;     &quot;SLC2A4&quot;      &quot;SMIM10&quot;      &quot;SNCA&quot;        &quot;SNTB2&quot;      
+## [136] &quot;SOBP&quot;        &quot;SOD3&quot;        &quot;SORBS1&quot;      &quot;SOX5&quot;        &quot;SPTBN1&quot;     
+## [141] &quot;SSPN&quot;        &quot;SSTR1&quot;       &quot;STAT5A&quot;      &quot;STAT5B&quot;      &quot;TCEAL7&quot;     
+## [146] &quot;TCF4&quot;        &quot;TENM1&quot;       &quot;TFPI&quot;        &quot;TGFBR3&quot;      &quot;TK2&quot;        
+## [151] &quot;TLN2&quot;        &quot;TMEM100&quot;     &quot;TMEM132C&quot;    &quot;TMEM178A&quot;    &quot;TMEM47&quot;     
+## [156] &quot;TMOD1&quot;       &quot;TTC28&quot;       &quot;TUFT1&quot;       &quot;TUSC5&quot;       &quot;TXNIP&quot;      
+## [161] &quot;UTRN&quot;        &quot;VIT&quot;         &quot;WASF3&quot;       &quot;YPEL4&quot;       &quot;ZC3H12C&quot;    
+## [166] &quot;ZEB1&quot;        &quot;ZEB2&quot;        &quot;ZNF781&quot;     
+## 
 ## [[2]]$`Module 2`
 ##   [1] &quot;MAFG-AS1&quot;  &quot;TMPO-AS1&quot;  &quot;WDFY3-AS2&quot; &quot;E2F7&quot;      &quot;E2F8&quot;      &quot;ECE2&quot;     
 ##   [7] &quot;FBXO31&quot;    &quot;FEN1&quot;      &quot;FGD4&quot;      &quot;FLVCR1&quot;    &quot;FOXM1&quot;     &quot;GABRE&quot;    
@@ -465,10 +504,12 @@ data(miRTarget)
 modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_WGCNA, nperms = 10, method = &quot;CC&quot;)
+                        modulegenes_WGCNA, nperms = 10, 
+                        method = &quot;CC&quot;)
 miRSM_WGCNA_CC_genes &lt;- miRSM_WGCNA_CC[[2]]
-miRSM_WGCNA_CC_FEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;FEA&quot;)
-miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;DEA&quot;)</code></pre>
+miRSM_WGCNA_CC_FEA &lt;- module_FA(miRSM_WGCNA_CC_genes,                                                    Analysis.type =&quot;FEA&quot;)
+miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, 
+                                Analysis.type = &quot;DEA&quot;)</code></pre>
 </div>
 <div id="conclusions" class="section level1">
 <h1><span class="header-section-number">5</span> Conclusions</h1>
@@ -510,7 +551,7 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 <div id="session-information" class="section level1">
 <h1><span class="header-section-number">7</span> Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.5.0 (2018-04-23)
+<pre><code>## R version 3.5.1 (2018-07-02)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows &gt;= 8 x64 (build 9200)
 ## 
@@ -528,13 +569,13 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] BiocStyle_2.8.2     miRSM_0.99.3        Biobase_2.40.0     
+## [1] BiocStyle_2.8.2     miRSM_0.99.7        Biobase_2.40.0     
 ## [4] BiocGenerics_0.26.0
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] tidyselect_0.2.4            robust_0.4-18              
 ##   [3] RSQLite_2.1.1               AnnotationDbi_1.42.1       
-##   [5] htmlwidgets_1.2             grid_3.5.0                 
+##   [5] htmlwidgets_1.2             grid_3.5.1                 
 ##   [7] trimcluster_0.1-2.1         BiocParallel_1.14.2        
 ##   [9] Rtsne_0.13                  miRsponge_1.7.2            
 ##  [11] additivityTests_1.1-4       biclust_2.0.1              
@@ -543,7 +584,7 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 ##  [17] preprocessCore_1.42.0       units_0.6-0                
 ##  [19] withr_2.1.2                 colorspace_1.3-2           
 ##  [21] GOSemSim_2.6.0              knitr_1.20                 
-##  [23] rstudioapi_0.7              stats4_3.5.0               
+##  [23] rstudioapi_0.7              stats4_3.5.1               
 ##  [25] robustbase_0.93-2           DOSE_3.6.1                 
 ##  [27] NMF_0.21.0                  GenomeInfoDbData_1.1.0     
 ##  [29] bit64_0.9-7                 PMA_1.0.11                 
@@ -558,13 +599,13 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 ##  [47] enrichplot_1.0.2            gtable_0.2.0               
 ##  [49] WGCNA_1.63                  rlang_0.2.1                
 ##  [51] BiBitR_0.3.1                iBBiG_1.24.0               
-##  [53] splines_3.5.0               lazyeval_0.2.1             
+##  [53] splines_3.5.1               lazyeval_0.2.1             
 ##  [55] acepack_1.4.1               impute_1.54.0              
 ##  [57] checkmate_1.8.5             yaml_2.2.0                 
 ##  [59] reshape2_1.4.3              fabia_2.26.0               
 ##  [61] backports_1.1.2             qvalue_2.12.0              
 ##  [63] Hmisc_4.1-1                 clusterProfiler_3.8.1      
-##  [65] tools_3.5.0                 bookdown_0.7               
+##  [65] tools_3.5.1                 bookdown_0.7               
 ##  [67] gridBase_0.4-7              ggplot2_3.0.0              
 ##  [69] RColorBrewer_1.1-2          dynamicTreeCut_1.63-1      
 ##  [71] ggridges_0.5.0              Rcpp_0.12.18               
@@ -582,7 +623,7 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 ##  [95] evaluate_0.11               xtable_1.8-2               
 ##  [97] mclust_5.4.1                IRanges_2.14.10            
 ##  [99] gridExtra_2.3               testthat_2.0.0             
-## [101] compiler_3.5.0              tibble_1.4.2               
+## [101] compiler_3.5.1              tibble_1.4.2               
 ## [103] V8_1.5                      crayon_1.3.4               
 ## [105] GFA_1.0.3                   htmltools_0.3.6            
 ## [107] corpcor_1.6.9               pcaPP_1.9-73               

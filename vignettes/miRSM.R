@@ -50,12 +50,14 @@ data(miRTarget)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_WGCNA, nperms = 10, num_shared_miRNAs = 3, 
-                        pvalue.cutoff = 0.05, method = "CC", CC.cutoff = 0.8)
+                        modulegenes_WGCNA, nperms = 10, num_shared_miRNAs                         = 3, pvalue.cutoff = 0.05, 
+                        method = "CC", CC.cutoff = 0.8)
 # Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
 miRSM_WGCNA_SCC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                         modulegenes_WGCNA, nperms = 10, num_shared_miRNAs = 3, 
-                         pvalue.cutoff = 0.05, method = "SCC", SCC.cutoff = 0.1)
+                         modulegenes_WGCNA, nperms = 10, 
+                         num_shared_miRNAs = 3, 
+                         pvalue.cutoff = 0.05, 
+                         method = "SCC", SCC.cutoff = 0.1)
 miRSM_WGCNA_CC
 miRSM_WGCNA_SCC
 
@@ -67,10 +69,12 @@ miRSM_WGCNA_SCC
 #  modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 #  # Identify miRNA sponge modules using cannonical correlation (CC)
 #  miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#                          modulegenes_WGCNA, nperms = 10, method = "CC")
+#                          modulegenes_WGCNA, nperms = 10,
+#                          method = "CC")
 #  miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#  miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = "FEA")
-#  miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = "DEA")
+#  miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes,                                                    Analysis.type ="FEA")
+#  miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes,
+#                                  Analysis.type = "DEA")
 
 ## --------------------------------------------------------------------------
 sessionInfo()
