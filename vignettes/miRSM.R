@@ -23,11 +23,11 @@ modulegenes_WGCNA
 #  data(mRExp)
 #  modulegenes_igraph <- module_igraph(ceRExp, mRExp)
 
-## ---- eval=TRUE, include=TRUE----------------------------------------------
-data(ceRExp)
-data(mRExp)
-modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
-modulegenes_ProNet
+## ---- eval=FALSE, include=TRUE---------------------------------------------
+#  data(ceRExp)
+#  data(mRExp)
+#  modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
+#  modulegenes_ProNet
 
 ## ---- eval=FALSE, include=TRUE---------------------------------------------
 #  data(ceRExp)

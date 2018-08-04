@@ -75,7 +75,7 @@ modulegenes_igraph <- module_igraph(ceRExp, mRExp)
 ## module_ProNet
 In the 'ProNet' package, we can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification. The default method is MCL.
 
-```{r, eval=TRUE, include=TRUE}
+```{r, eval=FALSE, include=TRUE}
 data(ceRExp)
 data(mRExp)
 modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
