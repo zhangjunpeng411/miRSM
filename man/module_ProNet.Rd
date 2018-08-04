@@ -30,9 +30,11 @@ List object: a list of module genes.
 Identification of gene modules from matched ceRNA and mRNA expression data using ProNet package
 }
 \examples{
+\dontrun{
 data(ceRExp)
 data(mRExp)
 modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
+}
 
 }
 \references{
