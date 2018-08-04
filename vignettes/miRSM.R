@@ -8,76 +8,45 @@ knitr::opts_chunk$set(tidy = FALSE,
 library(miRSM)
 
 ## ---- eval=TRUE, include=TRUE----------------------------------------------
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 modulegenes_WGCNA
 
 ## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#  ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#  ceRExp <- data_tidy(ceRExp)
-#  mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#  mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#  mRExp <- data_tidy(mRExp)
+#  data(ceRExp)
+#  data(mRExp)
 #  modulegenes_GFA <- module_GFA(ceRExp, mRExp)
 
 ## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#  ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#  ceRExp <- data_tidy(ceRExp)
-#  mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#  mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#  mRExp <- data_tidy(mRExp)
+#  data(ceRExp)
+#  data(mRExp)
 #  modulegenes_igraph <- module_igraph(ceRExp, mRExp)
 
 ## ---- eval=TRUE, include=TRUE----------------------------------------------
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
 modulegenes_ProNet
 
 ## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#  ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#  ceRExp <- data_tidy(ceRExp)
-#  mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#  mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#  mRExp <- data_tidy(mRExp)
+#  data(ceRExp)
+#  data(mRExp)
 #  # Reimport NMF package to avoid conflicts with DelayedArray package
 #  library(NMF)
 #  modulegenes_NMF <- module_NMF(ceRExp, mRExp)
 
 ## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#  ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#  ceRExp <- data_tidy(ceRExp)
-#  mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#  mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#  mRExp <- data_tidy(mRExp)
+#  data(ceRExp)
+#  data(mRExp)
 #  modulegenes_biclust <- module_biclust(ceRExp, mRExp)
 #  modulegenes_biclust
 
 ## ---- eval=TRUE, include=TRUE----------------------------------------------
-miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-miRExp <- data_tidy(miRExp)
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
-miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+data(ceRExp)
+data(mRExp)
+data(miRExp)
+data(miRTarget)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
@@ -91,17 +60,10 @@ miRSM_WGCNA_CC
 miRSM_WGCNA_SCC
 
 ## ---- eval=FALSE, include=TRUE---------------------------------------------
-#  miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-#  miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-#  miRExp <- data_tidy(miRExp)
-#  ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#  ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#  ceRExp <- data_tidy(ceRExp)
-#  mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#  mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#  mRExp <- data_tidy(mRExp)
-#  miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-#  miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+#  data(ceRExp)
+#  data(mRExp)
+#  data(miRExp)
+#  data(miRTarget)
 #  modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 #  # Identify miRNA sponge modules using cannonical correlation (CC)
 #  miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,

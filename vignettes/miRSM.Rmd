@@ -48,12 +48,8 @@ from 14 packages, including 'WGCNA', 'GFA', 'igraph', 'ProNet', 'NMF', 'biclust'
 By using WGCNA method [11], we identify co-expressed gene modules from matched ceRNA and mRNA expression data.
 
 ```{r, eval=TRUE, include=TRUE}
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 modulegenes_WGCNA
 ```
@@ -62,12 +58,8 @@ modulegenes_WGCNA
 The gene modules are identified by using GFA method [12, 13] from matched ceRNA and mRNA expression data.
 
 ```{r, eval=FALSE, include=TRUE}
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_GFA <- module_GFA(ceRExp, mRExp)
 ```
 
@@ -75,12 +67,8 @@ modulegenes_GFA <- module_GFA(ceRExp, mRExp)
 By using 'igraph' package [14], we infer gene modules from matched ceRNA and mRNA expression data. In the 'igraph' package, we can select "betweenness", "greedy", "infomap", "prop", "eigen", "louvain", "walktrap" methods for gene module identification. The default method is "greedy".
 
 ```{r, eval=FALSE, include=TRUE}
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_igraph <- module_igraph(ceRExp, mRExp)
 ```
 
@@ -88,12 +76,8 @@ modulegenes_igraph <- module_igraph(ceRExp, mRExp)
 In the 'ProNet' package, we can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification. The default method is MCL.
 
 ```{r, eval=TRUE, include=TRUE}
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
 modulegenes_ProNet
 ```
@@ -102,12 +86,8 @@ modulegenes_ProNet
 By using 'NMF' package [20], we infer gene modules from matched ceRNA and mRNA expression data. In the 'NMF' package, we can select "brunet", "Frobenius", "KL", "lee", "nsNMF", "offset", "siNMF", "snmf/l", "snmf/r" methods for gene module identification. The default method is "brunet".
 
 ```{r, eval=FALSE, include=TRUE}
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
 modulegenes_NMF <- module_NMF(ceRExp, mRExp)
@@ -117,12 +97,8 @@ modulegenes_NMF <- module_NMF(ceRExp, mRExp)
 We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [21], runibic [22], iBBiG [23], fabia [24], BicARE [25], isa2 [26], s4vd [27], BiBitR [28] and rqubic [29]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "BCPlaid".
 
 ```{r, eval=FALSE, include=TRUE}
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_biclust <- module_biclust(ceRExp, mRExp)
 modulegenes_biclust
 ```
@@ -131,17 +107,10 @@ modulegenes_biclust
 The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the cannonical correlation (CC) [30] and sensitivity cannonical correlation (SCC) methods to identify miRNA sponge modules.
 
 ```{r, eval=TRUE, include=TRUE}
-miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-miRExp <- data_tidy(miRExp)
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
-miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+data(ceRExp)
+data(mRExp)
+data(miRExp)
+data(miRTarget)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
@@ -160,17 +129,10 @@ miRSM_WGCNA_SCC
 We implement 'module_FA' function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<http://www.geneontology.org/>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<http://www.genome.jp/kegg/>), and Reactome: Reactome Pathway Database (<http://reactome.org/>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<http://disease-ontology.org/>), DGN: DisGeNET database (<http://www.disgenet.org/>) and NCG: Network of Cancer Genes database (<http://ncg.kcl.ac.uk/>). 
 
 ```{r, eval=FALSE, include=TRUE}
-miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-miRExp <- data_tidy(miRExp)
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
-miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+data(ceRExp)
+data(mRExp)
+data(miRExp)
+data(miRTarget)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 

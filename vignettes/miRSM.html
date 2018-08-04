@@ -11,7 +11,7 @@
 
 <meta name="author" content=" Junpeng Zhang (zhangjunpeng_411@yahoo.com) School of Engineering, Dali University" />
 
-<meta name="date" content="2018-07-29" />
+<meta name="date" content="2018-08-04" />
 
 <title>miRSM: inferring miRNA sponge modules by integrating expression data and miRNA-target binding information</title>
 
@@ -88,6 +88,9 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
 }
@@ -119,7 +122,7 @@ $(document).ready(function () {
 <p class="author-name">\
 Junpeng Zhang (zhangjunpeng_411@yahoo.com)\
 School of Engineering, Dali University</p>
-<h4 class="date"><em>2018-07-29</em></h4>
+<h4 class="date"><em>2018-08-04</em></h4>
 
 </div>
 
@@ -168,12 +171,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <div id="module_wgcna" class="section level2">
 <h2><span class="header-section-number">2.1</span> module_WGCNA</h2>
 <p>By using WGCNA method [11], we identify co-expressed gene modules from matched ceRNA and mRNA expression data.</p>
-<pre class="r"><code>ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
 modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)</code></pre>
 <pre><code>##    Power SFT.R.sq   slope truncated.R.sq mean.k. median.k. max.k.
 ## 1      1  0.18600  0.4990         0.3700  312.00   371.000  461.0
@@ -192,7 +191,7 @@ modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)</code></pre>
 ## 14    18  0.96700 -1.1200         0.9810    1.88     0.399   16.7
 ## 15    20  0.98600 -1.0900         0.9850    1.36     0.203   13.1
 ## ..connectivity..
-## ..matrix multiplication..
+## ..matrix multiplication (system BLAS)..
 ## ..normalization..
 ## ..done.</code></pre>
 <pre class="r"><code>modulegenes_WGCNA</code></pre>
@@ -255,34 +254,22 @@ modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)</code></pre>
 <div id="module_gfa" class="section level2">
 <h2><span class="header-section-number">2.2</span> module_GFA</h2>
 <p>The gene modules are identified by using GFA method [12, 13] from matched ceRNA and mRNA expression data.</p>
-<pre class="r"><code>ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
 modulegenes_GFA &lt;- module_GFA(ceRExp, mRExp)</code></pre>
 </div>
 <div id="module_igraph" class="section level2">
 <h2><span class="header-section-number">2.3</span> module_igraph</h2>
 <p>By using ‘igraph’ package [14], we infer gene modules from matched ceRNA and mRNA expression data. In the ‘igraph’ package, we can select “betweenness”, “greedy”, “infomap”, “prop”, “eigen”, “louvain”, “walktrap” methods for gene module identification. The default method is “greedy”.</p>
-<pre class="r"><code>ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
 modulegenes_igraph &lt;- module_igraph(ceRExp, mRExp)</code></pre>
 </div>
 <div id="module_pronet" class="section level2">
 <h2><span class="header-section-number">2.4</span> module_ProNet</h2>
 <p>In the ‘ProNet’ package, we can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification. The default method is MCL.</p>
-<pre class="r"><code>ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
 modulegenes_ProNet &lt;- module_ProNet(ceRExp, mRExp)
 modulegenes_ProNet</code></pre>
 <pre><code>## [[1]]
@@ -394,12 +381,8 @@ modulegenes_ProNet</code></pre>
 <div id="module_nmf" class="section level2">
 <h2><span class="header-section-number">2.5</span> module_NMF</h2>
 <p>By using ‘NMF’ package [20], we infer gene modules from matched ceRNA and mRNA expression data. In the ‘NMF’ package, we can select “brunet”, “Frobenius”, “KL”, “lee”, “nsNMF”, “offset”, “siNMF”, “snmf/l”, “snmf/r” methods for gene module identification. The default method is “brunet”.</p>
-<pre class="r"><code>ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
 modulegenes_NMF &lt;- module_NMF(ceRExp, mRExp)</code></pre>
@@ -407,12 +390,8 @@ modulegenes_NMF &lt;- module_NMF(ceRExp, mRExp)</code></pre>
 <div id="module_biclust" class="section level2">
 <h2><span class="header-section-number">2.6</span> module_biclust</h2>
 <p>We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [21], runibic [22], iBBiG [23], fabia [24], BicARE [25], isa2 [26], s4vd [27], BiBitR [28] and rqubic [29]. The biclustering methods include “BCBimax”, “BCCC”, “BCPlaid”, “BCQuest”, “BCSpectral”, “BCXmotifs”, “iBBiG”, “fabia”, “fabiap”, “fabias”, “mfsc”, “nmfdiv”, “nmfeu”, “nmfsc”, “FLOC”, “isa”, “BCs4vd”, “BCssvd”, “bibit” and “quBicluster”. The default method is “BCPlaid”.</p>
-<pre class="r"><code>ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
 modulegenes_biclust &lt;- module_biclust(ceRExp, mRExp)
 modulegenes_biclust</code></pre>
 </div>
@@ -420,17 +399,10 @@ modulegenes_biclust</code></pre>
 <div id="identification-of-mirna-sponge-modules" class="section level1">
 <h1><span class="header-section-number">3</span> Identification of miRNA sponge modules</h1>
 <p>The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the cannonical correlation (CC) [30] and sensitivity cannonical correlation (SCC) methods to identify miRNA sponge modules.</p>
-<pre class="r"><code>miRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;miRExp.csv&quot;,package=&quot;miRSM&quot;)
-miRExp &lt;- read.csv(miRExpcsv, header=FALSE, sep=&quot;,&quot;)
-miRExp &lt;- data_tidy(miRExp)
-ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
-miRTargetcsv &lt;- system.file(&quot;extdata&quot;,&quot;miRTarget.csv&quot;,package=&quot;miRSM&quot;)
-miRTarget &lt;- read.csv(miRTargetcsv, header=FALSE, sep=&quot;,&quot;)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
+data(miRExp)
+data(miRTarget)
 modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)</code></pre>
 <pre><code>##    Power SFT.R.sq   slope truncated.R.sq mean.k. median.k. max.k.
 ## 1      1  0.18600  0.4990         0.3700  312.00   371.000  461.0
@@ -449,7 +421,7 @@ modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)</code></pre>
 ## 14    18  0.96700 -1.1200         0.9810    1.88     0.399   16.7
 ## 15    20  0.98600 -1.0900         0.9850    1.36     0.203   13.1
 ## ..connectivity..
-## ..matrix multiplication..
+## ..matrix multiplication (system BLAS)..
 ## ..normalization..
 ## ..done.</code></pre>
 <pre class="r"><code># Identify miRNA sponge modules using cannonical correlation (CC)
@@ -467,9 +439,9 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 <pre><code>## 
 ## 1234567891011
 ## 
-## 12345678
+## 123456789101112131415
 ## 
-## 12
+## 123456789101112131415
 ## 
 ## 12
 ## 
@@ -557,15 +529,15 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 ##                     Sig. p.value of sharing miRNAs 
 ##                                       1.117155e-03 
 ##             Cannonical correlation of ceRNAs:mRNAs 
-##                                       8.800722e-01 
+##                                       8.640456e-01 
 ##             Cannonical correlation of miRNAs:mRNAs 
-##                                       8.951020e-01 
+##                                       8.946752e-01 
 ##            Cannonical correlation of miRNAs:ceRNAs 
 ##                                       8.373160e-01 
 ##     partial cannonical correlation of ceRNAs:mRNAs 
-##                                       5.357253e-01 
+##                                       4.705409e-01 
 ## Sensitivity cannonical correlation of ceRNAs:mRNAs 
-##                                       3.443469e-01 
+##                                       3.935046e-01 
 ## 
 ## [[2]]
 ## [[2]]$`Module 2`
@@ -591,17 +563,10 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 <div id="functional-analysis-of-mirna-sponge-modules" class="section level1">
 <h1><span class="header-section-number">4</span> Functional analysis of miRNA sponge modules</h1>
 <p>We implement ‘module_FA’ function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<a href="http://www.geneontology.org/" class="uri">http://www.geneontology.org/</a>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<a href="http://www.genome.jp/kegg/" class="uri">http://www.genome.jp/kegg/</a>), and Reactome: Reactome Pathway Database (<a href="http://reactome.org/" class="uri">http://reactome.org/</a>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<a href="http://disease-ontology.org/" class="uri">http://disease-ontology.org/</a>), DGN: DisGeNET database (<a href="http://www.disgenet.org/" class="uri">http://www.disgenet.org/</a>) and NCG: Network of Cancer Genes database (<a href="http://ncg.kcl.ac.uk/" class="uri">http://ncg.kcl.ac.uk/</a>).</p>
-<pre class="r"><code>miRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;miRExp.csv&quot;,package=&quot;miRSM&quot;)
-miRExp &lt;- read.csv(miRExpcsv, header=FALSE, sep=&quot;,&quot;)
-miRExp &lt;- data_tidy(miRExp)
-ceRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;ceRExp.csv&quot;,package=&quot;miRSM&quot;)
-ceRExp &lt;- read.csv(ceRExpcsv, header=FALSE, sep=&quot;,&quot;)
-ceRExp &lt;- data_tidy(ceRExp)
-mRExpcsv &lt;- system.file(&quot;extdata&quot;,&quot;mRExp.csv&quot;,package=&quot;miRSM&quot;)
-mRExp &lt;- read.csv(mRExpcsv, header=FALSE, sep=&quot;,&quot;)
-mRExp &lt;- data_tidy(mRExp)
-miRTargetcsv &lt;- system.file(&quot;extdata&quot;,&quot;miRTarget.csv&quot;,package=&quot;miRSM&quot;)
-miRTarget &lt;- read.csv(miRTargetcsv, header=FALSE, sep=&quot;,&quot;)
+<pre class="r"><code>data(ceRExp)
+data(mRExp)
+data(miRExp)
+data(miRTarget)
 modulegenes_WGCNA &lt;- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
@@ -650,7 +615,7 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 <div id="session-information" class="section level1">
 <h1><span class="header-section-number">7</span> Session information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.4.3 (2017-11-30)
+<pre><code>## R version 3.5.0 (2018-04-23)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows &gt;= 8 x64 (build 9200)
 ## 
@@ -668,91 +633,98 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] BiocStyle_2.6.1     miRSM_0.99.0        Biobase_2.38.0     
-## [4] BiocGenerics_0.24.0
+## [1] BiocStyle_2.8.2     miRSM_0.99.1        Biobase_2.40.0     
+## [4] BiocGenerics_0.26.0
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] backports_1.1.1            fastmatch_1.1-0           
-##   [3] Hmisc_4.0-3                NMF_0.20.6                
-##   [5] plyr_1.8.4                 igraph_1.2.1              
-##   [7] lazyeval_0.2.1             splines_3.4.3             
-##   [9] BiocParallel_1.12.0        MCL_1.0                   
-##  [11] GenomeInfoDb_1.14.0        ggplot2_2.2.1             
-##  [13] gridBase_0.4-7             robust_0.4-18             
-##  [15] digest_0.6.12              GOSemSim_2.4.0            
-##  [17] foreach_1.4.3              htmltools_0.3.6           
-##  [19] viridis_0.4.0              GO.db_3.5.0               
-##  [21] magrittr_1.5               checkmate_1.8.5           
-##  [23] memoise_1.1.0              fit.models_0.5-14         
-##  [25] cluster_2.0.6              doParallel_1.0.11         
-##  [27] fastcluster_1.1.24         matrixStats_0.52.2        
-##  [29] colorspace_1.3-2           rappdirs_0.3.1            
-##  [31] blob_1.1.0                 rrcov_1.4-3               
-##  [33] dplyr_0.7.4                crayon_1.3.4              
-##  [35] RCurl_1.95-4.8             jsonlite_1.5              
-##  [37] graph_1.56.0               roxygen2_6.0.1            
-##  [39] bindr_0.1                  impute_1.52.0             
-##  [41] survival_2.41-3            iterators_1.0.8           
-##  [43] glue_1.2.0                 registry_0.5              
-##  [45] gtable_0.2.0               GFA_1.0.3                 
-##  [47] zlibbioc_1.24.0            XVector_0.18.0            
-##  [49] DelayedArray_0.4.1         V8_1.5                    
-##  [51] graphite_1.24.0            kernlab_0.9-25            
-##  [53] prabclus_2.2-6             DEoptimR_1.0-8            
-##  [55] linkcomm_1.0-11            DOSE_3.4.0                
-##  [57] scales_0.5.0               mvtnorm_1.0-6             
-##  [59] DBI_0.7                    rngtools_1.2.4            
-##  [61] randomcoloR_1.0.0          Rcpp_0.12.14              
-##  [63] viridisLite_0.2.0          xtable_1.8-2              
-##  [65] htmlTable_1.11.0           reactome.db_1.62.0        
-##  [67] flashClust_1.01-2          foreign_0.8-69            
-##  [69] bit_1.1-12                 mclust_5.4                
-##  [71] preprocessCore_1.40.0      isa2_0.3.5                
-##  [73] Formula_1.2-2              stats4_3.4.3              
-##  [75] httr_1.3.1                 htmlwidgets_0.9           
-##  [77] fgsea_1.4.0                RColorBrewer_1.1-2        
-##  [79] fpc_2.1-10                 acepack_1.4.1             
-##  [81] modeltools_0.2-21          varhandle_2.0.2           
-##  [83] pkgconfig_2.0.1            flexmix_2.3-14            
-##  [85] nnet_7.3-12                dynamicTreeCut_1.63-1     
-##  [87] rlang_0.1.4                reshape2_1.4.2            
-##  [89] AnnotationDbi_1.40.0       munsell_0.4.3             
-##  [91] tools_3.4.3                RSQLite_2.0               
-##  [93] ade4_1.7-8                 devtools_1.13.5           
-##  [95] evaluate_0.10.1            stringr_1.2.0             
-##  [97] yaml_2.1.15                BicARE_1.36.0             
-##  [99] knitr_1.17                 bit64_0.9-7               
-## [101] biclust_1.2.0              robustbase_0.92-8         
-## [103] purrr_0.2.4                dendextend_1.6.0          
-## [105] bindrcpp_0.2               ReactomePA_1.22.0         
-## [107] whisker_0.3-2              iBBiG_1.22.0              
-## [109] DO.db_2.9                  xml2_1.1.1                
-## [111] rqubic_1.24.0              PMA_1.0.9                 
-## [113] flexclust_1.3-4            compiler_3.4.3            
-## [115] rstudioapi_0.7             curl_3.0                  
-## [117] testthat_1.0.2             tibble_1.3.4              
-## [119] pcaPP_1.9-72               stringi_1.1.6             
-## [121] desc_1.1.1                 runibic_1.0.2             
-## [123] miRsponge_1.7.1            lattice_0.20-35           
-## [125] trimcluster_0.1-2          Matrix_1.2-12             
-## [127] commonmark_1.4             fabia_2.24.0              
-## [129] corpcor_1.6.9              data.table_1.10.4-3       
-## [131] BiBitR_0.3.1               bitops_1.0-6              
-## [133] irlba_2.3.1                qvalue_2.10.0             
-## [135] GenomicRanges_1.30.0       R6_2.2.2                  
-## [137] latticeExtra_0.6-28        bookdown_0.5              
-## [139] gridExtra_2.3              IRanges_2.12.0            
-## [141] s4vd_1.1-1                 codetools_0.2-15          
-## [143] MASS_7.3-47                assertthat_0.2.0          
-## [145] SummarizedExperiment_1.8.0 rprojroot_1.2             
-## [147] pkgmaker_0.22              withr_2.1.2               
-## [149] S4Vectors_0.16.0           GenomeInfoDbData_0.99.1   
-## [151] diptest_0.75-7             expm_0.999-2              
-## [153] clusterProfiler_3.6.0      grid_3.4.3                
-## [155] rpart_4.1-11               tidyr_0.7.2               
-## [157] class_7.3-14               rmarkdown_1.8             
-## [159] rvcheck_0.0.9              WGCNA_1.61                
-## [161] base64enc_0.1-3</code></pre>
+##   [1] tidyselect_0.2.4            robust_0.4-18              
+##   [3] RSQLite_2.1.1               AnnotationDbi_1.42.1       
+##   [5] htmlwidgets_1.2             grid_3.5.0                 
+##   [7] trimcluster_0.1-2.1         BiocParallel_1.14.2        
+##   [9] Rtsne_0.13                  miRsponge_1.7.2            
+##  [11] additivityTests_1.1-4       biclust_2.0.1              
+##  [13] devtools_1.13.6             munsell_0.5.0              
+##  [15] codetools_0.2-15            rqubic_1.26.0              
+##  [17] preprocessCore_1.42.0       units_0.6-0                
+##  [19] withr_2.1.2                 colorspace_1.3-2           
+##  [21] GOSemSim_2.6.0              knitr_1.20                 
+##  [23] rstudioapi_0.7              stats4_3.5.0               
+##  [25] robustbase_0.93-2           DOSE_3.6.1                 
+##  [27] NMF_0.21.0                  GenomeInfoDbData_1.1.0     
+##  [29] bit64_0.9-7                 PMA_1.0.11                 
+##  [31] rprojroot_1.3-2             runibic_1.2.3              
+##  [33] xfun_0.3                    fastcluster_1.1.25         
+##  [35] diptest_0.75-7              R6_2.2.2                   
+##  [37] doParallel_1.0.11           GenomeInfoDb_1.16.0        
+##  [39] flexmix_2.3-14              bitops_1.0-6               
+##  [41] fgsea_1.6.0                 DelayedArray_0.6.3         
+##  [43] assertthat_0.2.0            scales_0.5.0               
+##  [45] ggraph_1.0.2                nnet_7.3-12                
+##  [47] enrichplot_1.0.2            gtable_0.2.0               
+##  [49] WGCNA_1.63                  rlang_0.2.1                
+##  [51] BiBitR_0.3.1                iBBiG_1.24.0               
+##  [53] splines_3.5.0               lazyeval_0.2.1             
+##  [55] acepack_1.4.1               impute_1.54.0              
+##  [57] checkmate_1.8.5             yaml_2.2.0                 
+##  [59] reshape2_1.4.3              fabia_2.26.0               
+##  [61] backports_1.1.2             qvalue_2.12.0              
+##  [63] Hmisc_4.1-1                 clusterProfiler_3.8.1      
+##  [65] tools_3.5.0                 bookdown_0.7               
+##  [67] gridBase_0.4-7              ggplot2_3.0.0              
+##  [69] RColorBrewer_1.1-2          dynamicTreeCut_1.63-1      
+##  [71] ggridges_0.5.0              Rcpp_0.12.18               
+##  [73] plyr_1.8.4                  base64enc_0.1-3            
+##  [75] zlibbioc_1.26.0             purrr_0.2.5                
+##  [77] RCurl_1.95-4.11             rpart_4.1-13               
+##  [79] viridis_0.5.1               cowplot_0.9.3              
+##  [81] S4Vectors_0.18.3            SummarizedExperiment_1.10.1
+##  [83] ggrepel_0.8.0               cluster_2.0.7-1            
+##  [85] magrittr_1.5                data.table_1.11.4          
+##  [87] DO.db_2.9                   reactome.db_1.64.0         
+##  [89] BicARE_1.38.0               mvtnorm_1.0-8              
+##  [91] whisker_0.3-2               matrixStats_0.54.0         
+##  [93] flexclust_1.3-5             randomcoloR_1.1.0          
+##  [95] evaluate_0.11               xtable_1.8-2               
+##  [97] mclust_5.4.1                IRanges_2.14.10            
+##  [99] gridExtra_2.3               testthat_2.0.0             
+## [101] compiler_3.5.0              tibble_1.4.2               
+## [103] V8_1.5                      crayon_1.3.4               
+## [105] GFA_1.0.3                   htmltools_0.3.6            
+## [107] corpcor_1.6.9               pcaPP_1.9-73               
+## [109] Formula_1.2-3               tidyr_0.8.1                
+## [111] rrcov_1.4-4                 expm_0.999-2               
+## [113] MCL_1.0                     ReactomePA_1.24.0          
+## [115] DBI_1.0.0                   tweenr_0.1.5               
+## [117] MASS_7.3-50                 fpc_2.1-11.1               
+## [119] rappdirs_0.3.1              Matrix_1.2-14              
+## [121] ade4_1.7-11                 bindr_0.1.1                
+## [123] igraph_1.2.2                GenomicRanges_1.32.6       
+## [125] pkgconfig_2.0.1             fit.models_0.5-14          
+## [127] flashClust_1.01-2           rvcheck_0.1.0              
+## [129] registry_0.5                s4vd_1.1-1                 
+## [131] foreign_0.8-71              xml2_1.2.0                 
+## [133] roxygen2_6.1.0              foreach_1.4.4              
+## [135] rngtools_1.3.1              pkgmaker_0.27              
+## [137] XVector_0.20.0              bibtex_0.4.2               
+## [139] stringr_1.3.1               digest_0.6.15              
+## [141] varhandle_2.0.3             graph_1.58.0               
+## [143] rmarkdown_1.10              isa2_0.3.5                 
+## [145] fastmatch_1.1-0             htmlTable_1.12             
+## [147] dendextend_1.8.0            linkcomm_1.0-11            
+## [149] curl_3.2                    kernlab_0.9-26             
+## [151] commonmark_1.5              modeltools_0.2-22          
+## [153] graphite_1.26.1             jsonlite_1.5               
+## [155] bindrcpp_0.2.2              desc_1.2.0                 
+## [157] viridisLite_0.3.0           pillar_1.3.0               
+## [159] lattice_0.20-35             httr_1.3.1                 
+## [161] DEoptimR_1.0-8              survival_2.42-6            
+## [163] GO.db_3.6.0                 glue_1.3.0                 
+## [165] UpSetR_1.3.3                prabclus_2.2-6             
+## [167] iterators_1.0.10            bit_1.1-14                 
+## [169] ggforce_0.1.3               class_7.3-14               
+## [171] stringi_1.2.4               blob_1.1.1                 
+## [173] latticeExtra_0.6-28         memoise_1.1.0              
+## [175] dplyr_0.7.6                 irlba_2.3.2</code></pre>
 </div>
 
 
