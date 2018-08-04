@@ -26,17 +26,15 @@ Identification of gene modules from matched ceRNA and mRNA expression data using
 GFA package
 }
 \examples{
-\dontrun{
 data(ceRExp)
 data(mRExp)
 modulegenes_GFA <- module_GFA(ceRExp, mRExp)
-}
 
 }
 \references{
-Bunte K, Lepp\"{a}aho E, Saarinen I, Kaski S. Sparse group factor analysis for biclustering of multiple data sources. Bioinformatics. 2016, 32(16):2457-63.
+Bunte K, Lepp\'{a}aho E, Saarinen I, Kaski S. Sparse group factor analysis for biclustering of multiple data sources. Bioinformatics. 2016, 32(16):2457-63.
 
-Lepp\"{a}aho E, Ammad-ud-din M, Kaski S. GFA: exploratory analysis of multiple data sources with group factor analysis. J Mach Learn Res. 2017, 18(39):1-5.
+Lepp\'{a}aho E, Ammad-ud-din M, Kaski S. GFA: exploratory analysis of multiple data sources with group factor analysis. J Mach Learn Res. 2017, 18(39):1-5.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

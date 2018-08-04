@@ -12,7 +12,7 @@ module_NMF(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10,
 
 \item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
-\item{NMF.algorithm}{Specification of the NMF algorithm, including "brunet" (default), "Frobenius", "KL", "lee", "nsNMF", "offset", "siNMF", "snmf/l", "snmf/r".}
+\item{NMF.algorithm}{Specification of the NMF algorithm, including 'brunet' (default), 'Frobenius', 'KL', 'lee', 'nsNMF', 'offset', 'siNMF', 'snmf/l', 'snmf/r'.}
 
 \item{num.modules}{The number of modules to be identified.}
 
@@ -32,6 +32,7 @@ data(mRExp)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
 modulegenes_NMF <- module_NMF(ceRExp, mRExp)
+
 }
 \references{
 Gaujoux R, Seoighe C. A flexible R package for nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.

@@ -12,21 +12,21 @@ module_FA(Modulelist, GOont = "BP", Diseaseont = "DO",
 \arguments{
 \item{Modulelist}{List object: a list of miRNA sponge modules.}
 
-\item{GOont}{One of "MF", "BP", and "CC" subontologies.}
+\item{GOont}{One of 'MF', 'BP', and 'CC' subontologies.}
 
-\item{Diseaseont}{One of "DO", and "DOLite" subontologies.}
+\item{Diseaseont}{One of 'DO', and 'DOLite' subontologies.}
 
 \item{KEGGorganism}{Organism, supported organism listed in http://www.genome.jp/kegg/catalog/org_list.html.}
 
-\item{Reactomeorganism}{Organism, one of "human", "rat", "mouse", "celegans", "yeast", "zebrafish", "fly".}
+\item{Reactomeorganism}{Organism, one of 'human', 'rat', 'mouse', 'celegans', 'yeast', 'zebrafish', 'fly'.}
 
 \item{OrgDb}{OrgDb}
 
 \item{padjustvaluecutoff}{A cutoff value of adjusted p-values.}
 
-\item{padjustedmethod}{Adjusted method of p-values, can select one of "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none".}
+\item{padjustedmethod}{Adjusted method of p-values, can select one of 'holm', 'hochberg', 'hommel', 'bonferroni', 'BH', 'BY', 'fdr', 'none'.}
 
-\item{Analysis.type}{The type of functional analysis selected, including "FEA" (functional enrichment analysis) and "DEA" (disease enrichment analysis).}
+\item{Analysis.type}{The type of functional analysis selected, including 'FEA' (functional enrichment analysis) and 'DEA' (disease enrichment analysis).}
 }
 \value{
 List object: a list of enrichment analysis results.
@@ -43,10 +43,10 @@ data(miRTarget)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-                        modulegenes_WGCNA, nperms = 10, method = "CC")
+                        modulegenes_WGCNA, nperms = 10, method = 'CC')
 miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = "FEA")
-miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = "DEA")
+miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'FEA')
+miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'DEA')
 }
 
 }

@@ -20,21 +20,21 @@ miRSM(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 
 \item{CandidateModulegenes}{List object: a list of candidate miRNA sponge modules.}
 
-\item{typex}{The columns of x unordered (type="standard") or ordered (type="ordered").}
+\item{typex}{The columns of x unordered (type='standard') or ordered (type='ordered').}
 
-\item{typez}{The columns of z unordered (type="standard") or ordered (type="ordered").}
+\item{typez}{The columns of z unordered (type='standard') or ordered (type='ordered').}
 
 \item{nperms}{The number of permutations.}
 
-\item{method}{The method selected to identify miRNA sponge modules, including "CC" and "SCC".}
+\item{method}{The method selected to identify miRNA sponge modules, including 'CC' and 'SCC'.}
 
 \item{num_shared_miRNAs}{The number of common miRNAs shared by a group of ceRNAs and mRNAs.}
 
 \item{pvalue.cutoff}{The p-value cutoff of significant sharing of common miRNAs by a group of ceRNAs and mRNAs.}
 
-\item{CC.cutoff}{The cutoff of cannonical correlation for "CC" method.}
+\item{CC.cutoff}{The cutoff of cannonical correlation for 'CC' method.}
 
-\item{SCC.cutoff}{The cutoff of sensitivity cannonical correlation for "SCC" method.}
+\item{SCC.cutoff}{The cutoff of sensitivity cannonical correlation for 'SCC' method.}
 }
 \value{
 List object: a list of miRNA sponge modules.
@@ -51,11 +51,11 @@ modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         modulegenes_WGCNA, nperms = 10,
-                        method = "CC")
+                        method = 'CC')
 # Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
 miRSM_WGCNA_SCC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                          modulegenes_WGCNA, nperms = 10,
-                         method = "SCC")
+                         method = 'SCC')
 
 }
 \references{

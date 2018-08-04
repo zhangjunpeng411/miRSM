@@ -12,7 +12,7 @@ module_biclust(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
 
 \item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
-\item{BCmethod}{Specification of the biclustering method, including "BCBimax", "BCCC", "BCPlaid" (default), "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster".}
+\item{BCmethod}{Specification of the biclustering method, including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 'BCSpectral', 'BCXmotifs', 'iBBiG', 'fabia', 'fabiap', 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.}
 
 \item{num.modules}{The number of modules to be identified.}
 
@@ -33,7 +33,7 @@ modulegenes_biclust <- module_biclust(ceRExp, mRExp)
 
 }
 \references{
-Preli\'{c} A, Bleuler S, Zimmermann P, Wille A, B\"{u}hlmann P, Gruissem W, Hennig L, Thiele L, Zitzler E. A systematic comparison and evaluation of biclustering methods for gene expression data. Bioinformatics. 2006, 22(9):1122-9.
+Preli\'{c} A, Bleuler S, Zimmermann P, Wille A, B\'{u}hlmann P, Gruissem W, Hennig L, Thiele L, Zitzler E. A systematic comparison and evaluation of biclustering methods for gene expression data. Bioinformatics. 2006, 22(9):1122-9.
 
 Cheng Y, Church GM. Biclustering of expression data. Proc Int Conf Intell Syst Mol Biol. 2000, 8:93-103.
 
@@ -47,7 +47,7 @@ Wang Z, Li G, Robinson RW, Huang X. UniBic: Sequential row-based biclustering al
 
 Gusenleitner D, Howe EA, Bentink S, Quackenbush J, Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. Bioinformatics. 2012, 28(19):2484-92.
 
-Hochreiter S, Bodenhofer U, Heusel M, Mayr A, Mitterecker A, Kasim A, Khamiakova T, Van Sanden S, Lin D, Talloen W, Bijnens L, G\"{o}hlmann HW, Shkedy Z, Clevert DA. FABIA: factor analysis for bicluster acquisition. Bioinformatics. 2010, 26(12):1520-7.
+Hochreiter S, Bodenhofer U, Heusel M, Mayr A, Mitterecker A, Kasim A, Khamiakova T, Van Sanden S, Lin D, Talloen W, Bijnens L, G\'{o}hlmann HW, Shkedy Z, Clevert DA. FABIA: factor analysis for bicluster acquisition. Bioinformatics. 2010, 26(12):1520-7.
 
 Yang J, Wang H, Wang W, Yu, PS. An improved biclustering method for analyzing gene expression. Int J Artif Intell Tools. 2005, 14(5): 771-789.
 

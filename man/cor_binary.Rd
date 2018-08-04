@@ -12,7 +12,7 @@ cor_binary(ceRExp, mRExp, cor.method = "pearson",
 
 \item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
-\item{cor.method}{The method of calculating correlation selected, including "pearson" (default), "kendall", "spearman".}
+\item{cor.method}{The method of calculating correlation selected, including 'pearson' (default), 'kendall', 'spearman'.}
 
 \item{pos.p.value.cutoff}{The significant p-value cutoff of positive correlation.}
 }

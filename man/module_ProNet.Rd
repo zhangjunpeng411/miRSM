@@ -13,11 +13,11 @@ module_ProNet(ceRExp, mRExp, cor.method = "pearson",
 
 \item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
-\item{cor.method}{The method of calculating correlation selected, including "pearson" (default), "kendall", "spearman".}
+\item{cor.method}{The method of calculating correlation selected, including 'pearson' (default), 'kendall', 'spearman'.}
 
 \item{pos.p.value.cutoff}{The significant p-value cutoff of positive correlation}
 
-\item{cluster.method}{The clustering method selected in \pkg{ProNet} package, including "FN", "MCL" (default), "LINKCOMM", "MCODE".}
+\item{cluster.method}{The clustering method selected in \pkg{ProNet} package, including 'FN', 'MCL' (default), 'LINKCOMM', 'MCODE'.}
 
 \item{num.ModuleceRs}{The minimum number of ceRNAs in each module.}
 
@@ -33,6 +33,7 @@ Identification of gene modules from matched ceRNA and mRNA expression data using
 data(ceRExp)
 data(mRExp)
 modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
+
 }
 \references{
 Clauset A, Newman ME, Moore C. Finding community structure in very large networks. Phys Rev E Stat Nonlin Soft Matter Phys., 2004, 70(6 Pt 2):066111.
