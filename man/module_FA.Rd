@@ -36,17 +36,10 @@ Functional analysis of miRNA sponge modules, including functional enrichment and
 }
 \examples{
 \dontrun{
-miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-miRExp <- data_tidy(miRExp)
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
-miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+data(ceRExp)
+data(mRExp)
+data(miRExp)
+data(miRTarget)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,

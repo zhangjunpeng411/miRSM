@@ -4,12 +4,13 @@
 \alias{cor_binary}
 \title{cor_binary}
 \usage{
-cor_binary(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01)
+cor_binary(ceRExp, mRExp, cor.method = "pearson",
+  pos.p.value.cutoff = 0.01)
 }
 \arguments{
-\item{ceRExp}{ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
 \item{cor.method}{The method of calculating correlation selected, including "pearson" (default), "kendall", "spearman".}
 
@@ -22,12 +23,8 @@ A binary matrix.
 Generation of positively correlated binary matrix between ceRNAs and mRNAs
 }
 \examples{
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 cor_binary_matrix <- cor_binary(ceRExp, mRExp)
 
 }

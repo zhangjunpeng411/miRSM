@@ -5,18 +5,18 @@
 \title{miRSM}
 \usage{
 miRSM(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
-  typex = "standard", typez = "standard", nperms = 100, method = c("CC",
-  "SCC"), num_shared_miRNAs = 3, pvalue.cutoff = 0.05, CC.cutoff = 0.8,
-  SCC.cutoff = 0.3)
+  typex = "standard", typez = "standard", nperms = 100,
+  method = c("CC", "SCC"), num_shared_miRNAs = 3,
+  pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3)
 }
 \arguments{
-\item{miRExp}{miRNA expression data: rows are samples and columns are miRNAs.}
+\item{miRExp}{A SummarizedExperiment object. miRNA expression data: rows are samples and columns are miRNAs.}
 
-\item{ceRExp}{ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
-\item{miRTarget}{Putative miRNA-target binding information.}
+\item{miRTarget}{A SummarizedExperiment object. Putative miRNA-target binding information.}
 
 \item{CandidateModulegenes}{List object: a list of candidate miRNA sponge modules.}
 
@@ -43,17 +43,10 @@ List object: a list of miRNA sponge modules.
 Identify miRNA sponge modules using cannonical correlation (CC) and sensitivity cannonical correlation (SCC) methods
 }
 \examples{
-miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-miRExp <- data_tidy(miRExp)
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
-miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+data(ceRExp)
+data(mRExp)
+data(miRExp)
+data(miRTarget)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,

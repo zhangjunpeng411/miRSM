@@ -8,9 +8,9 @@ module_WGCNA(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
   num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
 \item{RsquaredCut}{Desired minimum scale free topology fitting index R^2 with interval [0 1].}
 
@@ -22,20 +22,18 @@ module_WGCNA(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
 List object: a list of module genes.
 }
 \description{
-Identification of co-expressed gene modules from matched ceRNA and mRNA expression data using WGCNA package
+Identification of co-expressed gene modules from matched ceRNA and mRNA
+expression data using WGCNA package
 }
 \examples{
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 
 }
 \references{
-Langfelder P, Horvath S. WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics. 2008, 9:559.
+Langfelder P, Horvath S. WGCNA: an R package for weighted correlation
+network analysis. BMC Bioinformatics. 2008, 9:559.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

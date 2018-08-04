@@ -8,9 +8,9 @@ module_GFA(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
   num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
 \item{StrengthCut}{Desired minimum strength (absolute value of association with interval [0 1]) for each bicluster.}
 
@@ -22,16 +22,13 @@ module_GFA(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2,
 List object: a list of module genes.
 }
 \description{
-Identification of gene modules from matched ceRNA and mRNA expression data using GFA package
+Identification of gene modules from matched ceRNA and mRNA expression data using
+GFA package
 }
 \examples{
 \dontrun{
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_GFA <- module_GFA(ceRExp, mRExp)
 }
 

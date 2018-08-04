@@ -8,9 +8,9 @@ module_biclust(ceRExp, mRExp, BCmethod = "BCPlaid", num.modules = 10,
   num.ModuleceRs = 2, num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
 \item{BCmethod}{Specification of the biclustering method, including "BCBimax", "BCCC", "BCPlaid" (default), "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster".}
 
@@ -28,12 +28,8 @@ Identification of gene modules from matched ceRNA and mRNA expression data using
 }
 \examples{
 \dontrun{
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_biclust <- module_biclust(ceRExp, mRExp)
 }
 

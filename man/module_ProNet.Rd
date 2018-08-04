@@ -5,13 +5,13 @@
 \title{module_ProNet}
 \usage{
 module_ProNet(ceRExp, mRExp, cor.method = "pearson",
-  pos.p.value.cutoff = 0.01, cluster.method = "MCL", num.ModuleceRs = 2,
-  num.ModulemRs = 2)
+  pos.p.value.cutoff = 0.01, cluster.method = "MCL",
+  num.ModuleceRs = 2, num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
 
 \item{cor.method}{The method of calculating correlation selected, including "pearson" (default), "kendall", "spearman".}
 
@@ -30,15 +30,9 @@ List object: a list of module genes.
 Identification of gene modules from matched ceRNA and mRNA expression data using ProNet package
 }
 \examples{
-\dontrun{
-ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-ceRExp <- data_tidy(ceRExp)
-mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-mRExp <- data_tidy(mRExp)
+data(ceRExp)
+data(mRExp)
 modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
-}
 
 }
 \references{
