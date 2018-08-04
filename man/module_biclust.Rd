@@ -4,7 +4,7 @@
 \alias{module_biclust}
 \title{module_biclust}
 \usage{
-module_biclust(ceRExp, mRExp, BCmethod = "BCPlaid", num.modules = 10,
+module_biclust(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
   num.ModuleceRs = 2, num.ModulemRs = 2)
 }
 \arguments{
@@ -27,11 +27,9 @@ List object: a list of module genes.
 Identification of gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust, runibic, iBBiG, fabia, BicARE, isa2, s4vd, BiBitR and rqubic
 }
 \examples{
-\dontrun{
 data(ceRExp)
 data(mRExp)
 modulegenes_biclust <- module_biclust(ceRExp, mRExp)
-}
 
 }
 \references{
