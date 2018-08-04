@@ -30,12 +30,9 @@ List object: a list of module genes.
 Identification of gene modules from matched ceRNA and mRNA expression data using ProNet package
 }
 \examples{
-\dontrun{
 data(ceRExp)
 data(mRExp)
 modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
-}
-
 }
 \references{
 Clauset A, Newman ME, Moore C. Finding community structure in very large networks. Phys Rev E Stat Nonlin Soft Matter Phys., 2004, 70(6 Pt 2):066111.
