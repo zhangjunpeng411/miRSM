@@ -1,3 +1,7 @@
+CHANGES IN VERSION 0.99.2
+-------------------------
+Update module_biclust function
+
 CHANGES IN VERSION 0.99.1
 -------------------------
 Change the type of input data into a SummarizedExperiment object. Polish the file miRSM.R.
