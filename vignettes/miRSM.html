@@ -389,7 +389,7 @@ modulegenes_NMF &lt;- module_NMF(ceRExp, mRExp)</code></pre>
 </div>
 <div id="module_biclust" class="section level2">
 <h2><span class="header-section-number">2.6</span> module_biclust</h2>
-<p>We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [21], runibic [22], iBBiG [23], fabia [24], BicARE [25], isa2 [26], s4vd [27], BiBitR [28] and rqubic [29]. The biclustering methods include “BCBimax”, “BCCC”, “BCPlaid”, “BCQuest”, “BCSpectral”, “BCXmotifs”, “iBBiG”, “fabia”, “fabiap”, “fabias”, “mfsc”, “nmfdiv”, “nmfeu”, “nmfsc”, “FLOC”, “isa”, “BCs4vd”, “BCssvd”, “bibit” and “quBicluster”. The default method is “BCPlaid”.</p>
+<p>We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [21], runibic [22], iBBiG [23], fabia [24], BicARE [25], isa2 [26], s4vd [27], BiBitR [28] and rqubic [29]. The biclustering methods include “BCBimax”, “BCCC”, “BCPlaid”, “BCQuest”, “BCSpectral”, “BCXmotifs”, “iBBiG”, “fabia”, “fabiap”, “fabias”, “mfsc”, “nmfdiv”, “nmfeu”, “nmfsc”, “FLOC”, “isa”, “BCs4vd”, “BCssvd”, “bibit” and “quBicluster”. The default method is “fabia”.</p>
 <pre class="r"><code>data(ceRExp)
 data(mRExp)
 modulegenes_biclust &lt;- module_biclust(ceRExp, mRExp)
@@ -441,7 +441,7 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 ## 
 ## 123456789101112131415
 ## 
-## 123456789101112131415
+## 12
 ## 
 ## 12
 ## 
@@ -529,15 +529,15 @@ miRSM_WGCNA_SCC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 ##                     Sig. p.value of sharing miRNAs 
 ##                                       1.117155e-03 
 ##             Cannonical correlation of ceRNAs:mRNAs 
-##                                       8.640456e-01 
+##                                       8.800722e-01 
 ##             Cannonical correlation of miRNAs:mRNAs 
-##                                       8.946752e-01 
+##                                       8.951020e-01 
 ##            Cannonical correlation of miRNAs:ceRNAs 
 ##                                       8.373160e-01 
 ##     partial cannonical correlation of ceRNAs:mRNAs 
-##                                       4.705409e-01 
+##                                       5.357253e-01 
 ## Sensitivity cannonical correlation of ceRNAs:mRNAs 
-##                                       3.935046e-01 
+##                                       3.443469e-01 
 ## 
 ## [[2]]
 ## [[2]]$`Module 2`
@@ -633,7 +633,7 @@ miRSM_WGCNA_CC_DEA &lt;- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = &quot;D
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] BiocStyle_2.8.2     miRSM_0.99.1        Biobase_2.40.0     
+## [1] BiocStyle_2.8.2     miRSM_0.99.2        Biobase_2.40.0     
 ## [4] BiocGenerics_0.26.0
 ## 
 ## loaded via a namespace (and not attached):
