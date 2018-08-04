@@ -434,9 +434,11 @@ module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' @return List object: a list of module genes.
 #'
 #' @examples
+#' \dontrun{
 #' data(ceRExp)
 #' data(mRExp)
 #' modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
+#' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Clauset A, Newman ME, Moore C. Finding community structure in very large networks. Phys Rev E Stat Nonlin Soft Matter Phys., 2004, 70(6 Pt 2):066111.
@@ -495,11 +497,13 @@ module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' @return List object: a list of module genes.
 #'
 #' @examples
+#' \dontrun{
 #' data(ceRExp)
 #' data(mRExp)
 #' # Reimport NMF package to avoid conflicts with DelayedArray package
 #' library(NMF)
 #' modulegenes_NMF <- module_NMF(ceRExp, mRExp)
+#' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references  Gaujoux R, Seoighe C. A flexible R package for nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.
