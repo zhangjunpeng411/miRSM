@@ -1,110 +1,115 @@
-## Internal function cluster from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/).
+## Internal function cluster from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
 cluster <- function(graph, method="MCL", expansion = 2, inflation = 2,
-                  hcmethod = "average", directed = FALSE, outfile = NULL, ...)
-{
-  method<-match.arg(method)
-  if(method=="FN"){
-	  graph <- simplify(graph)
-	  fc <- fastgreedy.community(graph, merges = TRUE, modularity = TRUE)
-	  membership <- membership(fc)
+                  hcmethod = "average", directed = FALSE, outfile = NULL, ...){
+
+    method<-match.arg(method)
+    if(method=="FN"){
+	      graph <- simplify(graph)
+	      fc <- fastgreedy.community(graph, merges = TRUE, modularity = TRUE)
+	      membership <- membership(fc)
 	  if(!is.null(V(graph)$name)){
-              names(membership) <- V(graph)$name
+        names(membership) <- V(graph)$name
 	  }
 	  if(!is.null(outfile)){
 	      cluster.save(cbind(names(membership),membership),outfile=outfile)
 	  }else{
 	      return(membership)
 	  }
-  }else if(method=="LINKCOMM"){
-	  edgelist <- get.edgelist(graph)
+    }else if(method=="LINKCOMM"){
+	      edgelist <- get.edgelist(graph)
 	  if(!is.null(E(graph)$weight)){
-              edgelist <- cbind(edgelist,E(graph)$weight)
+        edgelist <- cbind(edgelist,E(graph)$weight)
 	  }
-	  lc <- getLinkCommunities(edgelist,plot=FALSE,directed=directed,hcmethod=hcmethod)
+	      lc <- getLinkCommunities(edgelist,plot=FALSE,directed=directed,hcmethod=hcmethod)
 	  if(!is.null(outfile)){
-		  cluster.save(lc$nodeclusters,outfile=outfile)
+		    cluster.save(lc$nodeclusters,outfile=outfile)
 	  }else{
-		  return(lc$nodeclusters)
+		    return(lc$nodeclusters)
 	  }
-  }else if(method=="MCL"){
+    }else if(method=="MCL"){
         adj <- matrix(rep(0,length(V(graph))^2),nrow=length(V(graph)),ncol=length(V(graph)))
-        for(i in 1:length(V(graph))){
+        for(i in seq_along(V(graph))){
             neighbors <- neighbors(graph,v=V(graph)$name[i],mode="all")
             j <- match(neighbors$name,V(graph)$name,nomatch=0)
             adj[i,j] = 1
         }
-        lc <- mcl(adj,addLoops=TRUE,expansion=expansion,inflation=inflation,allow1=TRUE,max.iter=100,ESM=FALSE)
+        lc <- mcl(adj,addLoops=TRUE,expansion=expansion,inflation=inflation,
+                  allow1=TRUE,max.iter=100,ESM=FALSE)
         lc$name <- V(graph)$name
         lc$Cluster <- lc$Cluster
 
         if(!is.null(outfile)){
             cluster.save(cbind(lc$name,lc$Cluster),outfile=outfile)
         }else{
-        result <- lc$Cluster
-        names(result) <- V(graph)$name
+            result <- lc$Cluster
+            names(result) <- V(graph)$name
         return(result)
         }
-  }else if(method=="MCODE"){
-	  compx <- mcode(graph,vwp=0.9,haircut=T,fluff=T,fdt=0.1)
-	  index <- which(!is.na(compx$score))
-	  membership <- rep(0,vcount(graph))
-	  for(i in 1:length(index)){
+    }else if(method=="MCODE"){
+	      compx <- mcode(graph,vwp=0.9,haircut=TRUE,fluff=TRUE,fdt=0.1)
+	      index <- which(!is.na(compx$score))
+	      membership <- rep(0,vcount(graph))
+	  for(i in seq_along(index)){
 	      membership[compx$COMPLEX[[index[i]]]]<-i
 	  }
-	      if(!is.null(V(graph)$name)) names(membership)<-V(graph)$name
+	  if(!is.null(V(graph)$name)) names(membership)<-V(graph)$name
 	  if(!is.null(outfile)){
-		  cluster.save(cbind(names(membership),membership),outfile=outfile)
-		  invisible(NULL)
+		    cluster.save(cbind(names(membership),membership),outfile=outfile)
+		    invisible(NULL)
 	  }else{
-		  return(membership)
+		    return(membership)
 	  }
   }
 }
 
-## Internal function cluster.save from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/) to save the clustering result .
+## Internal function cluster.save from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
 #' @importFrom utils write.table
 cluster.save <- function(membership, outfile){
-	wd <- dirname(outfile)
-	wd <- ifelse(wd==".",paste(wd,"/",sep=""),wd)
-	filename <- basename(outfile)
-	if((filename=="")||(grepl(":",filename))){
-		filename <- "membership.txt"
-	}else if(grepl("\\.",filename)){
-		filename <- sub("\\.(?:.*)",".txt", filename)
-	}
-	write.table(membership,file=paste(wd,filename,sep="/"),
-              row.names=FALSE,col.names=c("node","cluster"),quote =FALSE)
+    wd <- dirname(outfile)
+	  wd <- ifelse(wd==".",paste(wd,"/",sep=""),wd)
+	  filename <- basename(outfile)
+	  if((filename=="")||(grepl(":",filename))){
+		    filename <- "membership.txt"
+	  }else if(grepl("\\.",filename)){
+		    filename <- sub("\\.(?:.*)",".txt", filename)
+	  }
+	      write.table(membership,file=paste(wd,filename,sep="/"),
+                    row.names=FALSE,col.names=c("node","cluster"),quote =FALSE)
 }
 
-## Internal function mcode.vertex.weighting from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/).
-mcode.vertex.weighting<-function(graph, neighbors){
-	stopifnot(is.igraph(graph))
-	weight <- lapply(1:vcount(graph),
-                 function(i){
-		              subg<-induced.subgraph(graph,neighbors[[i]])
-		              core<-graph.coreness(subg)
-		              k<-max(core)
-				          ### k-coreness
-				          kcore<-induced.subgraph(subg,which(core==k))
-				          if(vcount(kcore)>1){
-					          if(any(is.loop(kcore))){
-						          k*ecount(kcore)/choose(vcount(kcore)+1,2)
-					          }else{
-						          k*ecount(kcore)/choose(vcount(kcore),2)
-					          }
-				          }else{
-                                             0
-				          }
-				         }
-			 )
+## Internal function mcode.vertex.weighting from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
+mcode.vertex.weighting <- function(graph, neighbors){
+    stopifnot(is.igraph(graph))
+    weight <- lapply(seq_len(vcount(graph)),
+                     function(i){
+		                 subg<-induced.subgraph(graph,neighbors[[i]])
+		                 core<-graph.coreness(subg)
+		                 k<-max(core)
+				             ### k-coreness
+				             kcore<-induced.subgraph(subg,which(core==k))
+				             if(vcount(kcore)>1){
+					           if(any(is.loop(kcore))){
+						             k*ecount(kcore)/choose(vcount(kcore)+1,2)
+					           }else{
+						             k*ecount(kcore)/choose(vcount(kcore),2)
+					           }
+				             }else{
+                        0
+				             }
+				             }
+			               )
 
-	return(unlist(weight))
+    return(unlist(weight))
 }
 
-## Internal function mcode.find.complex from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/).
+## Internal function mcode.find.complex from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
 mcode.find.complex <- function(neighbors, neighbors.indx, vertex.weight,
-                             vwp, seed.vertex, seen)
-{
+                             vwp, seed.vertex, seen){
+
 	  res<-.C("complex",as.integer(neighbors),as.integer(neighbors.indx),
           as.single(vertex.weight),as.single(vwp),as.integer(seed.vertex),
           seen=as.integer(seen),COMPLEX=as.integer(rep(0,length(seen))), PACKAGE = "miRSM"
@@ -113,120 +118,126 @@ mcode.find.complex <- function(neighbors, neighbors.indx, vertex.weight,
 	  return(list(seen=res$seen,COMPLEX=which(res$COMPLEX!=0)))
 }
 
-## Internal function mcode.find.complexex from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/).
-mcode.find.complexex <- function(graph, neighbors, vertex.weight, vwp)
-{
-	seen<-rep(0,vcount(graph))
+## Internal function mcode.find.complexex from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
+mcode.find.complexex <- function(graph, neighbors, vertex.weight, vwp){
 
-	neighbors<-lapply(neighbors,function(item){item[-1]})
-	neighbors.indx<-cumsum(unlist(lapply(neighbors,length)))
+    seen<-rep(0,vcount(graph))
 
-	neighbors.indx<-c(0,neighbors.indx)
-	neighbors<-unlist(neighbors)-1
+	  neighbors<-lapply(neighbors,function(item){item[-1]})
+	  neighbors.indx<-cumsum(unlist(lapply(neighbors,length)))
 
-	COMPLEX<-list()
-	n<-1
-        w.order<-order(vertex.weight,decreasing=TRUE)
-	for(i in w.order){
-		if(!(seen[i])){
-			res<-mcode.find.complex(neighbors,neighbors.indx,vertex.weight,vwp,i-1,seen)
-			if(length(res$COMPLEX)>1){
-				COMPLEX[[n]]<-res$COMPLEX
-				seen<-res$seen
-				n<-n+1
-			}
-		}
-	}
-	rm(neighbors)
-	return(list(COMPLEX=COMPLEX,seen=seen))
-}
+	  neighbors.indx<-c(0,neighbors.indx)
+	  neighbors<-unlist(neighbors)-1
 
-## Internal function mcode.fluff.complex from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/).
-mcode.fluff.complex <- function(graph, vertex.weight, fdt=0.8, complex.g, seen)
-{
-	seq_complex.g<-seq_along(complex.g)
-	for(i in seq_complex.g){
-	    node.neighbor<-unlist(neighborhood(graph,1,complex.g[i]))
-	    if(length(node.neighbor)>1){
-                subg<-induced.subgraph(graph,node.neighbor)
-            if(graph.density(subg, loops=FALSE)>fdt){
-                complex.g<-c(complex.g,node.neighbor)
-       }
-		 }
-	}
-
-	return(unique(complex.g))
-}
-
-## Internal function mcode.post.process from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/).
-mcode.post.process<-function(graph, vertex.weight, haircut, fluff, fdt=0.8,
-                             set.complex.g, seen)
-{
-	indx<-unlist(lapply(set.complex.g,
-                      function(complex.g){
-		          if(length(complex.g)<=2)
-			      0
-			  else
-		              1
+	  COMPLEX<-list()
+	  n<-1
+    w.order<-order(vertex.weight,decreasing=TRUE)
+	  for(i in w.order){
+		    if(!(seen[i])){
+			      res<-mcode.find.complex(neighbors,neighbors.indx,vertex.weight,vwp,i-1,seen)
+			  if(length(res$COMPLEX)>1){
+				    COMPLEX[[n]]<-res$COMPLEX
+				    seen<-res$seen
+				    n<-n+1
 			  }
-		    ))
-	set.complex.g<-set.complex.g[indx!=0]
-	set.complex.g<-lapply(set.complex.g,
+		    }
+	  }
+	  rm(neighbors)
+return(list(COMPLEX=COMPLEX,seen=seen))
+}
+
+## Internal function mcode.fluff.complex from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
+mcode.fluff.complex <- function(graph, vertex.weight, fdt=0.8, complex.g, seen){
+
+	  seq_complex.g<-seq_along(complex.g)
+	  for(i in seq_complex.g){
+	      node.neighbor<-unlist(neighborhood(graph,1,complex.g[i]))
+	      if(length(node.neighbor)>1){
+            subg<-induced.subgraph(graph,node.neighbor)
+                if(graph.density(subg, loops=FALSE)>fdt){
+                    complex.g<-c(complex.g,node.neighbor)
+                }
+		    }
+	  }
+
+return(unique(complex.g))
+}
+
+## Internal function mcode.post.process from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
+mcode.post.process<-function(graph, vertex.weight, haircut, fluff, fdt=0.8,
+                             set.complex.g, seen){
+
+    indx<-unlist(lapply(set.complex.g,
+                 function(complex.g){
+		             if(length(complex.g)<=2)
+			           0
+			           else
+		             1
+			           }
+		            ))
+	  set.complex.g<-set.complex.g[indx!=0]
+	  set.complex.g<-lapply(set.complex.g,
                         function(complex.g){
-			    coreness<-graph.coreness(induced.subgraph(graph,complex.g))
-			    if(fluff){
-				complex.g<-mcode.fluff.complex(graph,vertex.weight,fdt,complex.g,seen)
-			    if(haircut){
-				## coreness needs to be recalculated
-				coreness<-graph.coreness(induced.subgraph(graph,complex.g))
-				complex.g<-complex.g[coreness>1]
-				}
-				}else if(haircut){
-				complex.g<-complex.g[coreness>1]
-				}
-				return(complex.g)
-				})
-	set.complex.g<-set.complex.g[lapply(set.complex.g,length)>2]
-	return(set.complex.g)
+			             coreness<-graph.coreness(induced.subgraph(graph,complex.g))
+			             if(fluff){
+				               complex.g<-mcode.fluff.complex(graph,vertex.weight,fdt,complex.g,seen)
+			             if(haircut){
+				          ## coreness needs to be recalculated
+				               coreness<-graph.coreness(induced.subgraph(graph,complex.g))
+				               complex.g<-complex.g[coreness>1]
+				           }
+				           }else if(haircut){
+				               complex.g<-complex.g[coreness>1]
+				           }
+				           return(complex.g)
+				           })
+	  set.complex.g<-set.complex.g[lapply(set.complex.g,length)>2]
+return(set.complex.g)
 }
 
-## Internal function mcode from ProNet package (https://cran.r-project.org/src/contrib/Archive/ProNet/).
-mcode <- function(graph, vwp=0.5, haircut=FALSE, fluff=FALSE, fdt=0.8, loops=TRUE)
-{
-	stopifnot(is.igraph(graph))
-	if(vwp>1 | vwp <0){
-            stop("vwp must be between 0 and 1")
-	}
-	if(!loops){
-            graph<-simplify(graph,remove.multiple=FALSE,remove.loops=TRUE)
-	}
-	neighbors<-neighborhood(graph,1)
-	W<-mcode.vertex.weighting(graph,neighbors)
-	res<-mcode.find.complexex(graph,neighbors=neighbors,vertex.weight=W,vwp=vwp)
-	COMPLEX<-mcode.post.process(graph,vertex.weight=W,haircut=haircut,fluff=fluff,
-                              fdt=fdt,res$COMPLEX,res$seen)
-	score<-unlist(lapply(COMPLEX,
-                       function(complex.g){
-		           complex.g<-induced.subgraph(graph,complex.g)
-			   if(any(is.loop(complex.g)))
-			   score<-ecount(complex.g)/choose(vcount(complex.g)+1,2)*vcount(complex.g)
-			   else
-			   score<-ecount(complex.g)/choose(vcount(complex.g),2)*vcount(complex.g)
-			   return(score)
-			}
-		    ))
-	order_score<-order(score,decreasing=TRUE)
-	return(list(COMPLEX=COMPLEX[order_score],score=score[order_score]))
+## Internal function mcode from ProNet package
+## (https://github.com/cran/ProNet) with GPL-2 license.
+mcode <- function(graph, vwp=0.5, haircut=FALSE, fluff=FALSE, fdt=0.8, loops=TRUE){
+
+	  stopifnot(is.igraph(graph))
+	  if(vwp>1 | vwp <0){
+        stop("vwp must be between 0 and 1")
+	  }
+	  if(!loops){
+        graph<-simplify(graph,remove.multiple=FALSE,remove.loops=TRUE)
+	  }
+	  neighbors<-neighborhood(graph,1)
+	  W<-mcode.vertex.weighting(graph,neighbors)
+	  res<-mcode.find.complexex(graph,neighbors=neighbors,vertex.weight=W,vwp=vwp)
+	  COMPLEX<-mcode.post.process(graph,vertex.weight=W,haircut=haircut,fluff=fluff,
+                                fdt=fdt,res$COMPLEX,res$seen)
+	  score<-unlist(lapply(COMPLEX,
+                  function(complex.g){
+		              complex.g<-induced.subgraph(graph,complex.g)
+			            if(any(is.loop(complex.g)))
+			              score<-ecount(complex.g)/choose(vcount(complex.g)+1,2)*vcount(complex.g)
+			            else
+			            score<-ecount(complex.g)/choose(vcount(complex.g),2)*vcount(complex.g)
+			            return(score)
+			            }
+		              ))
+	  order_score<-order(score,decreasing=TRUE)
+return(list(COMPLEX=COMPLEX[order_score],score=score[order_score]))
 }
 
-#' Identification of co-expressed gene modules from matched ceRNA and mRNA expression data using WGCNA package
+#' Identification of co-expressed gene modules from matched ceRNA and mRNA
+#' expression data using WGCNA package
 #'
 #' @title module_WGCNA
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
 #' @param RsquaredCut Desired minimum scale free topology fitting index R^2 with interval [0 1].
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
+#' @import SummarizedExperiment
 #' @importFrom WGCNA pickSoftThreshold
 #' @importFrom WGCNA adjacency
 #' @importFrom WGCNA TOMdist
@@ -237,19 +248,17 @@ mcode <- function(graph, vwp=0.5, haircut=FALSE, fluff=FALSE, fdt=0.8, loops=TRU
 #' @return List object: a list of module genes.
 #'
 #' @examples
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
+#' data(ceRExp)
+#' data(mRExp)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Langfelder P, Horvath S. WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics. 2008, 9:559.
-module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2, num.ModulemRs = 2){
+#' @references Langfelder P, Horvath S. WGCNA: an R package for weighted correlation
+#' network analysis. BMC Bioinformatics. 2008, 9:559.
+module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
+                         num.ModulemRs = 2){
 
-    ExpData <- cbind(ceRExp, mRExp)
+    ExpData <- cbind(assay(ceRExp), assay(mRExp))
 
     Optimalpower <- pickSoftThreshold(ExpData, RsquaredCut = RsquaredCut)$powerEstimate
     adjacencymatrix <- adjacency(ExpData, power = Optimalpower)
@@ -267,8 +276,10 @@ module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2, n
     Modulegenes <- lapply(seq_len(length(colorlevels)), function(i)
                           colnames(ExpData)[ which(colorh==colorlevels[i]) ])
 
-    ceR_Num <- lapply(seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
-    mR_Num <- lapply(seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
+    ceR_Num <- lapply(seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
+    mR_Num <- lapply(seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
 
     index <- which(ceR_Num >= num.ModuleceRs & mR_Num >= num.ModulemRs)
     CandidateModulegenes <- lapply(index, function(i) Modulegenes[[i]])
@@ -277,14 +288,16 @@ module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2, n
 }
 
 
-#' Identification of gene modules from matched ceRNA and mRNA expression data using GFA package
+#' Identification of gene modules from matched ceRNA and mRNA expression data using
+#' GFA package
 #'
 #' @title module_GFA
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
 #' @param StrengthCut Desired minimum strength (absolute value of association with interval [0 1]) for each bicluster.
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
+#' @import SummarizedExperiment
 #' @importFrom GFA normalizeData
 #' @importFrom GFA getDefaultOpts
 #' @importFrom GFA gfa
@@ -293,12 +306,8 @@ module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2, n
 #'
 #' @examples
 #' \dontrun{
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
+#' data(ceRExp)
+#' data(mRExp)
 #' modulegenes_GFA <- module_GFA(ceRExp, mRExp)
 #' }
 #'
@@ -307,7 +316,7 @@ module_WGCNA <- function(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2, n
 #' @references Lepp\"{a}aho E, Ammad-ud-din M, Kaski S. GFA: exploratory analysis of multiple data sources with group factor analysis. J Mach Learn Res. 2017, 18(39):1-5.
 module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2, num.ModulemRs = 2){
 
-    ExpData <- list(ceRExp, mRExp)
+    ExpData <- list(assay(ceRExp), assay(mRExp))
     names(ExpData)=c("ceRNA expression","mRNA expression")
 
     # Normalize the data - here we assume that every feature is equally important
@@ -323,13 +332,16 @@ module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2, num
     res <- gfa(norm$train, opts=opts)
 
     # Extract gene index of each bicluster, using stength cutoff (absolute value of association)
-    BCresnum <- lapply(1:dim(res$W)[2], function(i) which(abs(res$W[,i])>=StrengthCut))
+    BCresnum <- lapply(seq_len(dim(res$W)[2]), function(i) which(abs(res$W[,i])>=StrengthCut))
 
     # Extract genes of each bicluster
-    Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(cbind(ceRExp, mRExp))[BCresnum[[i]]])
+    Modulegenes <- lapply(seq_along(BCresnum), function(i)
+                         colnames(cbind(assay(ceRExp), assay(mRExp)))[BCresnum[[i]]])
 
-    ceR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
-    mR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
+    ceR_Num <- lapply( seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
+    mR_Num <- lapply( seq_along(Modulegenes), function(i)
+                    length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
 
     index <- which(ceR_Num >= num.ModuleceRs & mR_Num >= num.ModulemRs)
     CandidateModulegenes <- lapply(index, function(i) Modulegenes[[i]])
@@ -341,13 +353,14 @@ module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2, num
 #' Identification of gene modules from matched ceRNA and mRNA expression data using igraph package
 #'
 #' @title module_igraph
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
 #' @param cor.method The method of calculating correlation selected, including "pearson" (default), "kendall", "spearman".
 #' @param pos.p.value.cutoff The significant p-value cutoff of positive correlation.
 #' @param cluster.method The clustering method selected in \pkg{igraph} package, including "betweenness", "greedy" (default), "infomap", "prop", "eigen", "louvain", "walktrap".
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
+#' @import SummarizedExperiment
 #' @importFrom igraph graph_from_incidence_matrix
 #' @importFrom igraph cluster_edge_betweenness
 #' @importFrom igraph cluster_fast_greedy
@@ -360,22 +373,18 @@ module_GFA <- function(ceRExp, mRExp, StrengthCut = 0.9, num.ModuleceRs = 2, num
 #' @return List object: a list of module genes.
 #'
 #' @examples
-#' \dontrun{
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
+#' data(ceRExp)
+#' data(mRExp)
 #' modulegenes_igraph <- module_igraph(ceRExp, mRExp)
-#' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Csardi G, Nepusz T. The igraph software package for complex network research, InterJournal, Complex Systems. 2006:1695.
-module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01, cluster.method = "greedy",
+module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01,
+                          cluster.method = "greedy",
                           num.ModuleceRs = 2, num.ModulemRs = 2){
 
-    cor.binary <- cor_binary(ceRExp, mRExp, cor.method = cor.method, pos.p.value.cutoff = pos.p.value.cutoff)
+    cor.binary <- cor_binary(ceRExp, mRExp, cor.method = cor.method,
+                             pos.p.value.cutoff = pos.p.value.cutoff)
     cor.binary.graph <- graph_from_incidence_matrix(cor.binary)
 
     if (cluster.method == "betweenness") {
@@ -394,8 +403,10 @@ module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
         Modulegenes <- cluster_walktrap(cor.binary.graph)
     }
 
-    ceR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
-    mR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
+    ceR_Num <- lapply( seq_along(Modulegenes), function(i)
+                       length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
+    mR_Num <- lapply( seq_along(Modulegenes), function(i)
+                      length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
 
     index <- which(ceR_Num >= num.ModuleceRs & mR_Num >= num.ModulemRs)
     CandidateModulegenes <- lapply(index, function(i) Modulegenes[[i]])
@@ -407,13 +418,14 @@ module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' Identification of gene modules from matched ceRNA and mRNA expression data using ProNet package
 #'
 #' @title module_ProNet
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
 #' @param cor.method The method of calculating correlation selected, including "pearson" (default), "kendall", "spearman".
 #' @param pos.p.value.cutoff The significant p-value cutoff of positive correlation
 #' @param cluster.method The clustering method selected in \pkg{ProNet} package, including "FN", "MCL" (default), "LINKCOMM", "MCODE".
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
+#' @import SummarizedExperiment
 #' @import igraph
 #' @importFrom Rcpp evalCpp
 #' @importFrom MCL mcl
@@ -422,41 +434,43 @@ module_igraph <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' @return List object: a list of module genes.
 #'
 #' @examples
-#' \dontrun{
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
+#' data(ceRExp)
+#' data(mRExp)
 #' modulegenes_ProNet <- module_ProNet(ceRExp, mRExp)
-#' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Clauset A, Newman ME, Moore C. Finding community structure in very large networks. Phys Rev E Stat Nonlin Soft Matter Phys., 2004, 70(6 Pt 2):066111.
 #' @references Enright AJ, Van Dongen S, Ouzounis CA. An efficient algorithm for large-scale detection of protein families. Nucleic Acids Res., 2002, 30(7):1575-84.
 #' @references Kalinka AT, Tomancak P. linkcomm: an R package for the generation, visualization, and analysis of link communities in networks of arbitrary size and type. Bioinformatics, 2011, 27(14):2011-2.
 #' @references Bader GD, Hogue CW. An automated method for finding molecular complexes in large protein interaction networks. BMC Bioinformatics, 2003, 4:2.
-module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01, cluster.method = "MCL",
+module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01,
+                          cluster.method = "MCL",
                           num.ModuleceRs = 2, num.ModulemRs = 2){
 
-    cor.binary <- cor_binary(ceRExp, mRExp, cor.method = cor.method, pos.p.value.cutoff = pos.p.value.cutoff)
+    cor.binary <- cor_binary(ceRExp, mRExp, cor.method = cor.method,
+                             pos.p.value.cutoff = pos.p.value.cutoff)
     cor.binary.graph <- graph_from_incidence_matrix(cor.binary)
 
     if (cluster.method == "FN" | cluster.method == "MCL") {
-        network_Cluster <- cluster(cor.binary.graph, method = cluster.method, layout = "fruchterman.reingold")
-        Modulegenes <- lapply(seq_len(max(network_Cluster)), function(i) rownames(as.matrix(network_Cluster))[which(network_Cluster == i)])
+        network_Cluster <- cluster(cor.binary.graph, method = cluster.method)
+
+        Modulegenes <- lapply(seq_len(max(network_Cluster)),function(i)
+                              rownames(as.matrix(network_Cluster))[which(network_Cluster == i)])
     } else if (cluster.method == "LINKCOMM") {
         edgelist <- get.edgelist(cor.binary.graph)
         network_Cluster <- getLinkCommunities(edgelist)$nodeclusters
-        Modulegenes <- lapply(seq_len(max(c(network_Cluster$cluster))), function(i) as.character(network_Cluster$node[which(c(network_Cluster$cluster) == i)]))
+        Modulegenes <- lapply(seq_len(max(c(network_Cluster$cluster))), function(i)
+                              as.character(network_Cluster$node[which(c(network_Cluster$cluster) == i)]))
     } else if (cluster.method == "MCODE") {
-        network_Cluster <- cluster(cor.binary.graph, method = cluster.method, layout = "fruchterman.reingold") + 1
-        Modulegenes <- lapply(seq_len(max(network_Cluster)), function(i) rownames(as.matrix(network_Cluster))[which(network_Cluster == i)])
+        network_Cluster <- cluster(cor.binary.graph, method = cluster.method) + 1
+        Modulegenes <- lapply(seq_len(max(network_Cluster)), function(i)
+                              rownames(as.matrix(network_Cluster))[which(network_Cluster == i)])
     }
 
-    ceR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
-    mR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
+    ceR_Num <- lapply( seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
+    mR_Num <- lapply( seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
 
     index <- which(ceR_Num >= num.ModuleceRs & mR_Num >= num.ModulemRs)
     CandidateModulegenes <- lapply(index, function(i) Modulegenes[[i]])
@@ -468,35 +482,31 @@ module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' Identification of gene modules from matched ceRNA and mRNA expression data using NMF package
 #'
 #' @title module_NMF
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
 #' @param NMF.algorithm Specification of the NMF algorithm, including "brunet" (default), "Frobenius", "KL", "lee", "nsNMF", "offset", "siNMF", "snmf/l", "snmf/r".
 #' @param num.modules The number of modules to be identified.
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
+#' @import SummarizedExperiment
 #' @importFrom NMF nmf
 #' @importFrom NMF predict
 #' @export
 #' @return List object: a list of module genes.
 #'
 #' @examples
-#' \dontrun{
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
+#' data(ceRExp)
+#' data(mRExp)
 #' # Reimport NMF package to avoid conflicts with DelayedArray package
 #' library(NMF)
 #' modulegenes_NMF <- module_NMF(ceRExp, mRExp)
-#' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references  Gaujoux R, Seoighe C. A flexible R package for nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.
-module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10, num.ModuleceRs = 2, num.ModulemRs = 2){
+module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10,
+                       num.ModuleceRs = 2, num.ModulemRs = 2){
 
-    ExpData <- cbind(ceRExp, mRExp)
+    ExpData <- cbind(assay(ceRExp), assay(mRExp))
 
     # Run NMF algorithm with rank num.modules
     res <- nmf(ExpData, rank = num.modules, method = NMF.algorithm)
@@ -505,10 +515,13 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
     Cluster.membership <- predict(res)
 
     # Extract genes of each cluster
-    Modulegenes <- lapply(seq_len(num.modules), function(i) colnames(ExpData)[which(Cluster.membership == i)])
+    Modulegenes <- lapply(seq_len(num.modules), function(i)
+                          colnames(ExpData)[which(Cluster.membership == i)])
 
-    ceR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
-    mR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
+    ceR_Num <- lapply( seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
+    mR_Num <- lapply( seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
 
     index <- which(ceR_Num >= num.ModuleceRs & mR_Num >= num.ModulemRs)
     CandidateModulegenes <- lapply(index, function(i) Modulegenes[[i]])
@@ -520,12 +533,13 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' Identification of gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust, runibic, iBBiG, fabia, BicARE, isa2, s4vd, BiBitR and rqubic
 #'
 #' @title module_biclust
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
 #' @param BCmethod Specification of the biclustering method, including "BCBimax", "BCCC", "BCPlaid" (default), "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster".
 #' @param num.modules The number of modules to be identified.
 #' @param num.ModuleceRs The minimum number of ceRNAs in each module.
 #' @param num.ModulemRs The minimum number of mRNAs in each module.
+#' @import SummarizedExperiment
 #' @importFrom biclust biclust
 #' @importFrom biclust binarize
 #' @importFrom biclust discretize
@@ -562,12 +576,8 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #'
 #' @examples
 #' \dontrun{
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
+#' data(ceRExp)
+#' data(mRExp)
 #' modulegenes_biclust <- module_biclust(ceRExp, mRExp)
 #' }
 #'
@@ -586,9 +596,10 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' @references Lee M, Shen H, Huang JZ, Marron JS. Biclustering via sparse singular value decomposition. Biometrics. 2010, 66(4):1087-95.
 #' @references Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics. 2011, 27(19):2738-45.
 #' @references Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res. 2009, 37(15):e101.
-module_biclust <- function(ceRExp, mRExp, BCmethod = "BCPlaid", num.modules = 10, num.ModuleceRs = 2, num.ModulemRs = 2){
+module_biclust <- function(ceRExp, mRExp, BCmethod = "BCPlaid", num.modules = 10,
+                           num.ModuleceRs = 2, num.ModulemRs = 2){
 
-    ExpData <- cbind(ceRExp, mRExp)
+    ExpData <- cbind(assay(ceRExp), assay(mRExp))
 
     if (BCmethod == "BCBimax"){
         ExpData <- binarize(ExpData)
@@ -644,22 +655,32 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "BCPlaid", num.modules = 10
     }
 
     # Extract genes of each bicluster
-    if (BCmethod == "BCBimax" | BCmethod == "BCCC" | BCmethod == "BCPlaid" | BCmethod == "BCQuest" | BCmethod == "BCSpectral" | BCmethod == "BCXmotifs" |
-        BCmethod == "BCUnibic" | BCmethod == "iBBiG" | BCmethod == "isa" | BCmethod == "BCs4vd" | BCmethod == "BCssvd" | BCmethod == "bibit" | BCmethod == "quBicluster") {
+    if (BCmethod == "BCBimax" | BCmethod == "BCCC" | BCmethod == "BCPlaid" |
+        BCmethod == "BCQuest" | BCmethod == "BCSpectral" | BCmethod == "BCXmotifs" |
+        BCmethod == "BCUnibic" | BCmethod == "iBBiG" | BCmethod == "isa" |
+        BCmethod == "BCs4vd" | BCmethod == "BCssvd" | BCmethod == "bibit" |
+        BCmethod == "quBicluster") {
         BCresnum <- biclusternumber(BCres)
-        Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(cbind(ceRExp, mRExp))[BCresnum[[i]]$Cols])
+        Modulegenes <- lapply(seq_along(BCresnum), function(i)
+                              colnames(cbind(ceRExp, mRExp))[BCresnum[[i]]$Cols])
     }
 
-    if (BCmethod == "fabia" | BCmethod == "fabiap" | BCmethod == "fabias" | BCmethod == "mfsc" | BCmethod == "nmfdiv" | BCmethod == "nmfeu" | BCmethod == "nmfsc") {
-        Modulegenes <- lapply(seq_len(num.modules), function(i) extractBic(BCres)$bic[i,]$bixn)
+    if (BCmethod == "fabia" | BCmethod == "fabiap" | BCmethod == "fabias" |
+        BCmethod == "mfsc" | BCmethod == "nmfdiv" | BCmethod == "nmfeu" |
+        BCmethod == "nmfsc") {
+        Modulegenes <- lapply(seq_len(num.modules), function(i)
+                              extractBic(BCres)$bic[i,]$bixn)
     }
 
     if (BCmethod == "FLOC"){
-        Modulegenes <- lapply(seq_len(num.modules), function(i) rownames(bicluster(BCres, i, graph = FALSE)))
+        Modulegenes <- lapply(seq_len(num.modules), function(i)
+                              rownames(bicluster(BCres, i, graph = FALSE)))
     }
 
-    ceR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
-    mR_Num <- lapply( seq_along(Modulegenes), function(i) length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
+    ceR_Num <- lapply( seq_along(Modulegenes), function(i)
+                     length(which(Modulegenes[[i]] %in% colnames(ceRExp))) )
+    mR_Num <- lapply( seq_along(Modulegenes), function(i)
+                    length(which(Modulegenes[[i]] %in% colnames(mRExp))) )
 
     index <- which(ceR_Num >= num.ModuleceRs & mR_Num >= num.ModulemRs)
     CandidateModulegenes <- lapply(index, function(i) Modulegenes[[i]])
@@ -671,29 +692,26 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "BCPlaid", num.modules = 10
 #' Generation of positively correlated binary matrix between ceRNAs and mRNAs
 #'
 #' @title cor_binary
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
 #' @param cor.method The method of calculating correlation selected, including "pearson" (default), "kendall", "spearman".
 #' @param pos.p.value.cutoff The significant p-value cutoff of positive correlation.
+#' @import SummarizedExperiment
 #' @importFrom WGCNA cor
 #' @importFrom WGCNA corPvalueFisher
 #' @export
 #' @return A binary matrix.
 #'
 #' @examples
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
+#' data(ceRExp)
+#' data(mRExp)
 #' cor_binary_matrix <- cor_binary(ceRExp, mRExp)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Langfelder P, Horvath S. WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics. 2008, 9:559.
 cor_binary <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01){
 
-    cor.r <- cor(ceRExp, mRExp, method = cor.method)
+    cor.r <- cor(assay(ceRExp), assay(mRExp), method = cor.method)
     cor.pvalue <- corPvalueFisher(cor.r, nSamples = dim(ceRExp)[1])
 
     index1 <- which(cor.r > 0)
@@ -711,46 +729,27 @@ cor_binary <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff
     return(cor.binary)
 }
 
-
-#' Tidy the input expression data matrix to reserve "-" symbols of gene names
-#'
-#' @title data_tidy
-#' @param Exp Input expression data: rows are sample names and columns are gene names.
-#' @importFrom varhandle unfactor
-#' @export
-#' @return Output expression data matrix.
-#'
-#' @examples
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#'
-#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-data_tidy <- function(Exp){
-
-    Names <- c(as.matrix(Exp[1, ]))
-    Exp <- data.matrix(unfactor(Exp[-1, ]))
-    colnames(Exp) <- Names
-    return(Exp)
-}
-
-
 ## Identify miRNA sponge modules using cannonical correlation (CC) method
-miRSM_CC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3, pvalue.cutoff = 0.05, CC.cutoff = 0.8){
+miRSM_CC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
+                     typex = "standard", typez = "standard", nperms = 100,
+                     num_shared_miRNAs = 3, pvalue.cutoff = 0.05, CC.cutoff = 0.8){
 
     miRNames <- colnames(miRExp)
     ceRNames <- colnames(ceRExp)
     mRNames <- colnames(mRExp)
 
-    miRTarget <- as.matrix(miRTarget)
-    miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames),which(miRTarget[, 2] %in% c(ceRNames, mRNames))),]
+    miRTarget <- assay(miRTarget)
+    miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames),
+                                              which(miRTarget[, 2] %in% c(ceRNames, mRNames))),]
     Res <- c()
 
     for (i in seq_along(CandidateModulegenes)){
         # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
-        tmp1 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in% intersect(CandidateModulegenes[[i]], ceRNames) ), 1])
+        tmp1 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], ceRNames) ), 1])
         M1 <- length(tmp1)
-        tmp2 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in% intersect(CandidateModulegenes[[i]], mRNames) ), 1])
+        tmp2 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], mRNames) ), 1])
         M2 <- length(tmp2)
         tmp3 <- intersect(tmp1, tmp2)
         M3 <- length(tmp3)
@@ -760,10 +759,15 @@ miRSM_CC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, typ
         if(M3 >= num_shared_miRNAs){
 
             # Cannonical correlation between a group of ceRNAs and a group of mRNAs
-            perm.out_ceR_mR <- CCA.permute(ceRExp[, which(ceRNames %in% CandidateModulegenes[[i]])], mRExp[, which(mRNames %in% CandidateModulegenes[[i]])],
-	                                   typex = typex, typez = typez, nperms = nperms)
-            out_ceR_mR <- CCA(ceRExp[, which(ceRNames %in% CandidateModulegenes[[i]])], mRExp[, which(mRNames %in% CandidateModulegenes[[i]])],
-	                      typex = typex, typez = typez, penaltyx = perm.out_ceR_mR$bestpenaltyx, penaltyz = perm.out_ceR_mR$bestpenaltyz, v = perm.out_ceR_mR$v.init)
+            perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                                           assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+	                                         typex = typex, typez = typez, nperms = nperms)
+            out_ceR_mR <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                              assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+	                            typex = typex, typez = typez,
+                              penaltyx = perm.out_ceR_mR$bestpenaltyx,
+                              penaltyz = perm.out_ceR_mR$bestpenaltyz,
+                              v = perm.out_ceR_mR$v.init)
 	          M6 <- out_ceR_mR$cor
         } else {
             M6 <- NA
@@ -773,33 +777,47 @@ miRSM_CC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, typ
         Res <- rbind(Res, tmp)
 
         }
-    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs", "#Shared miRNAs",
-                       "#Background miRNAs", "Sig. p.value of sharing miRNAs", "Cannonical correlation of ceRNAs:mRNAs")
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs",
+                       "#Background miRNAs",
+                       "Sig. p.value of sharing miRNAs",
+                       "Cannonical correlation of ceRNAs:mRNAs")
 
     rownames(Res) <- paste("Module", seq_along(CandidateModulegenes), sep=" ")
-	  miRSM_genes <- lapply(which(Res[, "#Shared miRNAs"] > num_shared_miRNAs & Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[, "Cannonical correlation of ceRNAs:mRNAs"] > CC.cutoff), function(i) CandidateModulegenes[[i]])
-	  Res <- Res[which(Res[, "#Shared miRNAs"] > num_shared_miRNAs & Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[, "Cannonical correlation of ceRNAs:mRNAs"] > CC.cutoff), ]
+	  miRSM_genes <- lapply(which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+	                       Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff &
+	                       Res[, "Cannonical correlation of ceRNAs:mRNAs"] > CC.cutoff),
+	                       function(i) CandidateModulegenes[[i]])
+	  Res <- Res[which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+	             Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff &
+	             Res[, "Cannonical correlation of ceRNAs:mRNAs"] > CC.cutoff), ]
 
 return(list(Res, miRSM_genes))
 }
 
 
 ## Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
-miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3, pvalue.cutoff = 0.05, SCC.cutoff = 0.3){
+miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
+                      typex = "standard", typez = "standard",
+                      nperms = 100, num_shared_miRNAs = 3,
+                      pvalue.cutoff = 0.05, SCC.cutoff = 0.3){
 
     miRNames <- colnames(miRExp)
     ceRNames <- colnames(ceRExp)
     mRNames <- colnames(mRExp)
 
-    miRTarget <- as.matrix(miRTarget)
-    miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames),which(miRTarget[, 2] %in% c(ceRNames, mRNames))),]
+    miRTarget <- assay(miRTarget)
+    miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames),
+                                    which(miRTarget[, 2] %in% c(ceRNames, mRNames))),]
     Res <- c()
 
     for (i in seq_along(CandidateModulegenes)){
         # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
-        tmp1 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in% intersect(CandidateModulegenes[[i]], ceRNames) ), 1])
+        tmp1 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in%
+                                         intersect(CandidateModulegenes[[i]], ceRNames) ), 1])
         M1 <- length(tmp1)
-        tmp2 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in% intersect(CandidateModulegenes[[i]], mRNames) ), 1])
+        tmp2 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in%
+                                         intersect(CandidateModulegenes[[i]], mRNames) ), 1])
         M2 <- length(tmp2)
         tmp3 <- intersect(tmp1, tmp2)
         M3 <- length(tmp3)
@@ -809,30 +827,48 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, ty
         if(M3 >= 3){
 
             # Cannonical correlation between a group of ceRNAs and a group of mRNAs
-            perm.out_ceR_mR <- CCA.permute(ceRExp[, which(ceRNames %in% CandidateModulegenes[[i]])], mRExp[, which(mRNames %in% CandidateModulegenes[[i]])],
-	                                   typex = typex, typez = typez, nperms = nperms)
-            out_ceR_mR <- CCA(ceRExp[, which(ceRNames %in% CandidateModulegenes[[i]])], mRExp[, which(mRNames %in% CandidateModulegenes[[i]])],
-	                            typex = typex, typez = typez, penaltyx = perm.out_ceR_mR$bestpenaltyx, penaltyz = perm.out_ceR_mR$bestpenaltyz, v = perm.out_ceR_mR$v.init)
+            perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
+                                          CandidateModulegenes[[i]])],
+                                          assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+	                                        typex = typex, typez = typez, nperms = nperms)
+            out_ceR_mR <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                              assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+	                            typex = typex, typez = typez,
+                              penaltyx = perm.out_ceR_mR$bestpenaltyx,
+                              penaltyz = perm.out_ceR_mR$bestpenaltyz,
+                              v = perm.out_ceR_mR$v.init)
 	          M6 <- out_ceR_mR$cor
 
             # Cannonical correlation between a group of miRNAs and a group of mRNAs
-            perm.out_miR_mR <- CCA.permute(miRExp[, which(miRNames %in% tmp3)], mRExp[, which(mRNames %in% CandidateModulegenes[[i]])],
-	                                   typex = typex, typez = typez, nperms = nperms)
-            out_miR_mR <- CCA(miRExp[, which(miRNames %in% tmp3)], mRExp[, which(mRNames %in% CandidateModulegenes[[i]])],
-	                            typex = typex, typez = typez, penaltyx = perm.out_miR_mR$bestpenaltyx, penaltyz = perm.out_miR_mR$bestpenaltyz, v = perm.out_miR_mR$v.init)
+            perm.out_miR_mR <- CCA.permute(assay(miRExp)[, which(miRNames %in% tmp3)],
+                                           assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+	                                         typex = typex, typez = typez, nperms = nperms)
+            out_miR_mR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
+                              assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+	                            typex = typex, typez = typez,
+                              penaltyx = perm.out_miR_mR$bestpenaltyx,
+                              penaltyz = perm.out_miR_mR$bestpenaltyz,
+                              v = perm.out_miR_mR$v.init)
             M7 <- out_miR_mR$cor
 
             # Cannonical correlation between a group of miRNAs and a group of ceRNAs
-            perm.out_miR_ceR <- CCA.permute(miRExp[, which(miRNames %in% tmp3)], ceRExp[, which(ceRNames %in% CandidateModulegenes[[i]])],
-	                                    typex = typex, typez = typez, nperms = nperms)
-            out_miR_ceR <- CCA(miRExp[, which(miRNames %in% tmp3)], ceRExp[, which(ceRNames %in% CandidateModulegenes[[i]])],
-	                       typex = typex, typez = typez, penaltyx = perm.out_miR_ceR$bestpenaltyx, penaltyz = perm.out_miR_ceR$bestpenaltyz, v = perm.out_miR_ceR$v.init)
+            perm.out_miR_ceR <- CCA.permute(assay(miRExp)[, which(miRNames %in% tmp3)],
+                                            assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+	                                          typex = typex, typez = typez, nperms = nperms)
+            out_miR_ceR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
+                               assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+	                             typex = typex, typez = typez,
+                               penaltyx = perm.out_miR_ceR$bestpenaltyx,
+                               penaltyz = perm.out_miR_ceR$bestpenaltyz,
+                               v = perm.out_miR_ceR$v.init)
 	          M8 <- out_miR_ceR$cor
 
-            # Calculate partial cannonical correlation between a group of ceRNAs and a group of mRNAs on condition a group of miRNAs
+            # Calculate partial cannonical correlation between a group of ceRNAs
+	          # and a group of mRNAs on condition a group of miRNAs
             M9 <- (M6 - M7*M8)/(sqrt(1 - M7^2)*sqrt(1 - M8^2))
 
-            # Calculate sensitivity cannonical correlation between a group of ceRNAs and a group of mRNAs on condition a group of miRNAs
+            # Calculate sensitivity cannonical correlation between a group of ceRNAs
+            # and a group of mRNAs on condition a group of miRNAs
             M10 <- M6 - M9
         } else {
             M6 <- NA; M7 <- NA; M8 <- NA; M9 <- NA; M10 <- NA
@@ -842,13 +878,22 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, ty
         Res <- rbind(Res, tmp)
 
         }
-    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs", "#Shared miRNAs",
-                       "#Background miRNAs", "Sig. p.value of sharing miRNAs", "Cannonical correlation of ceRNAs:mRNAs",
-                       "Cannonical correlation of miRNAs:mRNAs", "Cannonical correlation of miRNAs:ceRNAs",
-                       "partial cannonical correlation of ceRNAs:mRNAs", "Sensitivity cannonical correlation of ceRNAs:mRNAs")
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs",
+                       "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Cannonical correlation of ceRNAs:mRNAs",
+                       "Cannonical correlation of miRNAs:mRNAs",
+                       "Cannonical correlation of miRNAs:ceRNAs",
+                       "partial cannonical correlation of ceRNAs:mRNAs",
+                       "Sensitivity cannonical correlation of ceRNAs:mRNAs")
     rownames(Res) <- paste("Module", seq_along(CandidateModulegenes), sep=" ")
-    miRSM_genes <- lapply(which(Res[, "#Shared miRNAs"] > num_shared_miRNAs & Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[, "Sensitivity cannonical correlation of ceRNAs:mRNAs"] > SCC.cutoff), function(i) CandidateModulegenes[[i]])
-	  Res <- Res[which(Res[, "#Shared miRNAs"] > num_shared_miRNAs & Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[, "Sensitivity cannonical correlation of ceRNAs:mRNAs"] > SCC.cutoff), ]
+    miRSM_genes <- lapply(which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+                          Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff &
+                          Res[, "Sensitivity cannonical correlation of ceRNAs:mRNAs"] > SCC.cutoff),
+                          function(i) CandidateModulegenes[[i]])
+	  Res <- Res[which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+	             Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff &
+	             Res[, "Sensitivity cannonical correlation of ceRNAs:mRNAs"] > SCC.cutoff), ]
 
 return(list(Res, miRSM_genes))
 }
@@ -857,10 +902,10 @@ return(list(Res, miRSM_genes))
 #' Identify miRNA sponge modules using cannonical correlation (CC) and sensitivity cannonical correlation (SCC) methods
 #'
 #' @title miRSM
-#' @param miRExp miRNA expression data: rows are samples and columns are miRNAs.
-#' @param ceRExp ceRNA expression data: rows are samples and columns are ceRNAs.
-#' @param mRExp mRNA expression data: rows are samples and columns are mRNAs.
-#' @param miRTarget Putative miRNA-target binding information.
+#' @param miRExp A SummarizedExperiment object. miRNA expression data: rows are samples and columns are miRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.
+#' @param miRTarget A SummarizedExperiment object. Putative miRNA-target binding information.
 #' @param CandidateModulegenes List object: a list of candidate miRNA sponge modules.
 #' @param typex The columns of x unordered (type="standard") or ordered (type="ordered").
 #' @param typez The columns of z unordered (type="standard") or ordered (type="ordered").
@@ -870,6 +915,7 @@ return(list(Res, miRSM_genes))
 #' @param pvalue.cutoff The p-value cutoff of significant sharing of common miRNAs by a group of ceRNAs and mRNAs.
 #' @param CC.cutoff The cutoff of cannonical correlation for "CC" method.
 #' @param SCC.cutoff The cutoff of sensitivity cannonical correlation for "SCC" method.
+#' @import SummarizedExperiment
 #' @importFrom PMA CCA.permute
 #' @importFrom PMA CCA
 #' @importFrom stats phyper
@@ -877,17 +923,10 @@ return(list(Res, miRSM_genes))
 #' @return List object: a list of miRNA sponge modules.
 #'
 #' @examples
-#' miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-#' miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-#' miRExp <- data_tidy(miRExp)
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
-#' miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-#' miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+#' data(ceRExp)
+#' data(mRExp)
+#' data(miRExp)
+#' data(miRTarget)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 #' # Identify miRNA sponge modules using cannonical correlation (CC)
 #' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
@@ -903,9 +942,19 @@ return(list(Res, miRSM_genes))
 miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, typex = "standard", typez = "standard", nperms = 100, method = c("CC", "SCC"), num_shared_miRNAs = 3, pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3){
 
     if (method == "CC"){
-        Res <- miRSM_CC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, typex = "standard", typez = "standard", nperms = nperms, num_shared_miRNAs = num_shared_miRNAs, pvalue.cutoff = pvalue.cutoff, CC.cutoff = CC.cutoff)
+        Res <- miRSM_CC(miRExp, ceRExp, mRExp, miRTarget,
+                        CandidateModulegenes, typex = "standard",
+                        typez = "standard", nperms = nperms,
+                        num_shared_miRNAs = num_shared_miRNAs,
+                        pvalue.cutoff = pvalue.cutoff,
+                        CC.cutoff = CC.cutoff)
     } else if (method == "SCC") {
-        Res <- miRSM_SCC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes, typex = "standard", typez = "standard", nperms = nperms, num_shared_miRNAs = num_shared_miRNAs, pvalue.cutoff = pvalue.cutoff, SCC.cutoff = SCC.cutoff)
+        Res <- miRSM_SCC(miRExp, ceRExp, mRExp, miRTarget,
+                         CandidateModulegenes, typex = "standard",
+                         typez = "standard", nperms = nperms,
+                         num_shared_miRNAs = num_shared_miRNAs,
+                         pvalue.cutoff = pvalue.cutoff,
+                         SCC.cutoff = SCC.cutoff)
     }
 
 return(Res)
@@ -931,17 +980,10 @@ return(Res)
 #'
 #' @examples
 #' \dontrun{
-#' miRExpcsv <- system.file("extdata","miRExp.csv",package="miRSM")
-#' miRExp <- read.csv(miRExpcsv, header=FALSE, sep=",")
-#' miRExp <- data_tidy(miRExp)
-#' ceRExpcsv <- system.file("extdata","ceRExp.csv",package="miRSM")
-#' ceRExp <- read.csv(ceRExpcsv, header=FALSE, sep=",")
-#' ceRExp <- data_tidy(ceRExp)
-#' mRExpcsv <- system.file("extdata","mRExp.csv",package="miRSM")
-#' mRExp <- read.csv(mRExpcsv, header=FALSE, sep=",")
-#' mRExp <- data_tidy(mRExp)
-#' miRTargetcsv <- system.file("extdata","miRTarget.csv",package="miRSM")
-#' miRTarget <- read.csv(miRTargetcsv, header=FALSE, sep=",")
+#' data(ceRExp)
+#' data(mRExp)
+#' data(miRExp)
+#' data(miRTarget)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 #' # Identify miRNA sponge modules using cannonical correlation (CC)
 #' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
@@ -953,11 +995,19 @@ return(Res)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Zhang J (2017). miRsponge: Identification and analysis of miRNA sponge interaction networks and modules. R package version 1.2.0, (\url{https://github.com/zhangjunpeng411/miRsponge}).
-module_FA <- function(Modulelist, GOont = "BP", Diseaseont = "DO", KEGGorganism = "hsa", Reactomeorganism = "human", OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05, padjustedmethod = "BH", Analysis.type = c("FEA", "DEA")){
+module_FA <- function(Modulelist, GOont = "BP", Diseaseont = "DO",
+                      KEGGorganism = "hsa", Reactomeorganism = "human",
+                      OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05,
+                      padjustedmethod = "BH", Analysis.type = c("FEA", "DEA")){
     if (Analysis.type == "FEA"){
-        Res <- moduleFEA(Modulelist, ont = GOont, KEGGorganism = KEGGorganism, Reactomeorganism = Reactomeorganism,  OrgDb =  OrgDb, padjustvaluecutoff = padjustvaluecutoff, padjustedmethod = padjustedmethod)
+        Res <- moduleFEA(Modulelist, ont = GOont, KEGGorganism = KEGGorganism,
+                         Reactomeorganism = Reactomeorganism,  OrgDb =  OrgDb,
+                         padjustvaluecutoff = padjustvaluecutoff,
+                         padjustedmethod = padjustedmethod)
     } else if (Analysis.type == "DEA"){
-        Res <- moduleDEA(Modulelist,  OrgDb =  OrgDb, ont = Diseaseont, padjustvaluecutoff = padjustvaluecutoff,  padjustedmethod =  padjustedmethod)
+        Res <- moduleDEA(Modulelist,  OrgDb =  OrgDb, ont = Diseaseont,
+                         padjustvaluecutoff = padjustvaluecutoff,
+                         padjustedmethod =  padjustedmethod)
     }
 
 return(Res)
