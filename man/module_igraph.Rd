@@ -9,35 +9,42 @@ module_igraph(ceRExp, mRExp, cor.method = "pearson",
   num.ModuleceRs = 2, num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
+rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+rows are samples and columns are mRNAs.}
 
-\item{cor.method}{The method of calculating correlation selected, including 'pearson' (default), 'kendall', 'spearman'.}
+\item{cor.method}{The method of calculating correlation selected, 
+including 'pearson' (default), 'kendall', 'spearman'.}
 
-\item{pos.p.value.cutoff}{The significant p-value cutoff of positive correlation.}
+\item{pos.p.value.cutoff}{The significant p-value cutoff of 
+positive correlation.}
 
-\item{cluster.method}{The clustering method selected in \pkg{igraph} package, including 'betweenness', 'greedy' (default), 'infomap', 'prop', 'eigen', 'louvain', 'walktrap'.}
+\item{cluster.method}{The clustering method selected in 
+\pkg{igraph} package, including 'betweenness', 'greedy' (default), 
+'infomap', 'prop', 'eigen', 'louvain', 'walktrap'.}
 
 \item{num.ModuleceRs}{The minimum number of ceRNAs in each module.}
 
 \item{num.ModulemRs}{The minimum number of mRNAs in each module.}
 }
 \value{
-List object: a list of module genes.
+GeneSetCollection object: a list of module genes.
 }
 \description{
-Identification of gene modules from matched ceRNA and mRNA expression data using igraph package
+Identification of gene modules from matched ceRNA and mRNA 
+expression data using igraph package
 }
 \examples{
-data(ceRExp)
-data(mRExp)
-modulegenes_igraph <- module_igraph(ceRExp[, seq_len(100)],
-    mRExp[, seq_len(100)])
+data(BRCASampleData)
+modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)],
+    mRExp[, seq_len(10)])
 
 }
 \references{
-Csardi G, Nepusz T. The igraph software package for complex network research, InterJournal, Complex Systems. 2006:1695.
+Csardi G, Nepusz T. The igraph software package for 
+complex network research, InterJournal, Complex Systems. 2006:1695.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

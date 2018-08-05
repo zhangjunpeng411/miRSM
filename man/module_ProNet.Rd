@@ -9,41 +9,56 @@ module_ProNet(ceRExp, mRExp, cor.method = "pearson",
   num.ModuleceRs = 2, num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
+rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+rows are samples and columns are mRNAs.}
 
-\item{cor.method}{The method of calculating correlation selected, including 'pearson' (default), 'kendall', 'spearman'.}
+\item{cor.method}{The method of calculating correlation selected, 
+including 'pearson' (default), 'kendall', 'spearman'.}
 
-\item{pos.p.value.cutoff}{The significant p-value cutoff of positive correlation}
+\item{pos.p.value.cutoff}{The significant p-value cutoff of 
+positive correlation}
 
-\item{cluster.method}{The clustering method selected in \pkg{ProNet} package, including 'FN', 'MCL' (default), 'LINKCOMM', 'MCODE'.}
+\item{cluster.method}{The clustering method selected in 
+\pkg{ProNet} package, including 'FN', 'MCL' (default), 
+'LINKCOMM', 'MCODE'.}
 
 \item{num.ModuleceRs}{The minimum number of ceRNAs in each module.}
 
 \item{num.ModulemRs}{The minimum number of mRNAs in each module.}
 }
 \value{
-List object: a list of module genes.
+GeneSetCollection object: a list of module genes.
 }
 \description{
-Identification of gene modules from matched ceRNA and mRNA expression data using ProNet package
+Identification of gene modules from matched ceRNA and mRNA 
+expression data using ProNet package
 }
 \examples{
-data(ceRExp)
-data(mRExp)
-modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(100)],
-    mRExp[, seq_len(100)])
+data(BRCASampleData)
+modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(10)],
+    mRExp[, seq_len(10)])
 
 }
 \references{
-Clauset A, Newman ME, Moore C. Finding community structure in very large networks. Phys Rev E Stat Nonlin Soft Matter Phys., 2004, 70(6 Pt 2):066111.
+Clauset A, Newman ME, Moore C. Finding community 
+structure in very large networks. Phys Rev E Stat Nonlin Soft 
+Matter Phys., 2004, 70(6 Pt 2):066111.
 
-Enright AJ, Van Dongen S, Ouzounis CA. An efficient algorithm for large-scale detection of protein families. Nucleic Acids Res., 2002, 30(7):1575-84.
+Enright AJ, Van Dongen S, Ouzounis CA. An efficient 
+algorithm for large-scale detection of protein families. 
+Nucleic Acids Res., 2002, 30(7):1575-84.
 
-Kalinka AT, Tomancak P. linkcomm: an R package for the generation, visualization, and analysis of link communities in networks of arbitrary size and type. Bioinformatics, 2011, 27(14):2011-2.
+Kalinka AT, Tomancak P. linkcomm: an R package 
+for the generation, visualization, and analysis of link 
+communities in networks of arbitrary size and type. 
+Bioinformatics, 2011, 27(14):2011-2.
 
-Bader GD, Hogue CW. An automated method for finding molecular complexes in large protein interaction networks. BMC Bioinformatics, 2003, 4:2.
+Bader GD, Hogue CW. An automated method for 
+finding molecular complexes in large protein interaction 
+networks. BMC Bioinformatics, 2003, 4:2.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

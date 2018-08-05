@@ -8,11 +8,15 @@ module_NMF(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10,
   num.ModuleceRs = 2, num.ModulemRs = 2)
 }
 \arguments{
-\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
+rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+rows are samples and columns are mRNAs.}
 
-\item{NMF.algorithm}{Specification of the NMF algorithm, including 'brunet' (default), 'Frobenius', 'KL', 'lee', 'nsNMF', 'offset', 'siNMF', 'snmf/l', 'snmf/r'.}
+\item{NMF.algorithm}{Specification of the NMF algorithm, 
+including 'brunet' (default), 'Frobenius', 'KL', 'lee', 'nsNMF', 
+'offset', 'siNMF', 'snmf/l', 'snmf/r'.}
 
 \item{num.modules}{The number of modules to be identified.}
 
@@ -21,22 +25,23 @@ module_NMF(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10,
 \item{num.ModulemRs}{The minimum number of mRNAs in each module.}
 }
 \value{
-List object: a list of module genes.
+GeneSetCollection object: a list of module genes.
 }
 \description{
-Identification of gene modules from matched ceRNA and mRNA expression data using NMF package
+Identification of gene modules from matched ceRNA and mRNA 
+expression data using NMF package
 }
 \examples{
-data(ceRExp)
-data(mRExp)
+data(BRCASampleData)
 # Reimport NMF package to avoid conflicts with DelayedArray package
 library(NMF)
-modulegenes_NMF <- module_NMF(ceRExp[, seq_len(100)],
-    mRExp[, seq_len(100)])
+modulegenes_NMF <- module_NMF(ceRExp[, seq_len(10)],
+    mRExp[, seq_len(10)])
 
 }
 \references{
-Gaujoux R, Seoighe C. A flexible R package for nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.
+Gaujoux R, Seoighe C. A flexible R package for 
+nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

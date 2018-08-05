@@ -1,16 +1,16 @@
 library(testthat)
+library(GSEABase)
 library(miRSM)
 
 # Load datasets
-data(ceRExp)
-data(mRExp)
-data(miRExp)
-data(miRTarget)
+data(BRCASampleData)
 
-# Identify gene co-expression modules using WGCNA method
-modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+# Identify gene co-expression modules using igraph method
+modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
+    mRExp[, seq_len(10)])
 
 
 test_that("Test miRSM", {
-    expect_equal(module_WGCNA(ceRExp, mRExp), modulegenes_WGCNA)
+    expect_equal(geneIds(module_igraph(ceRExp[, seq_len(10)], 
+        mRExp[, seq_len(10)])), geneIds(modulegenes_igraph))
 })
