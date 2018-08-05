@@ -3,15 +3,27 @@
 \docType{data}
 \name{ceRExp}
 \alias{ceRExp}
-\title{ceRNA expression data.}
-\format{A SummarizedExperiment object with 144 samples
-(rows) and 305 lncRNAs (columns).}
-\usage{
-ceRExp
-}
+\title{ceRNA expression data}
+\format{ceRExp: A SummarizedExperiment object with 72 BRCA 
+and 72 normal samples (rows) and 305 lncRNAs (columns).}
 \description{
-A dataset containing the lncRNA expressopn levels for 144
-TCGA samples (72 cancer samples vs 72 normal samples,
-https://cancergenome.nih.gov/)
+ceRNA expression data
 }
-\keyword{datasets}
+\details{
+The matched breast invasive carcinoma (BRCA) miRNA, lncRNA 
+and mRNA expression data is obtained from TCGA 
+(http://cancergenome.nih.gov/). lncRNA expression data 
+is regarded as ceRNA expression data. The data focuses on 
+72 individuals for which the complete sets of 
+tumor and matched normal (i.e., normal tissue taken from the 
+same patient) profiles are available. 
+A lncRNA which has missing values in more than 
+10% of the samples is removed. The remaining missing values
+are imputed using the k-nearest neighbours (KNN) algorithm
+from the impute R package. We use the limma R package
+to infer differentially expressed lncRNAs
+between tumour and normal samples. After the analysis, 
+we select top 305 lncRNAs which are differentially expressed
+at a significant level (adjusted p-value < 1E-02,  
+adjusted by Benjamini & Hochberg method).
+}

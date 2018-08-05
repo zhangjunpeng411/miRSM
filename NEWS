@@ -1,23 +1,31 @@
-CHANGES IN VERSION 0.99.8-0.99.10
+CHANGES IN VERSION 0.99.23
 -------------------------
-Update miRSM.Rmd
+o Update Vignettes <2018-08-31, Fri>
+
+CHANGES IN VERSION 0.99.15-0.99.22
+-------------------------
+o Update R codes, DESCRIPTION, NEWS, README <2018-08-27, Mon>
+
+CHANGES IN VERSION 0.99.8-0.99.14
+-------------------------
+o Update miRSM.Rmd <2018-08-07, Thue>
 
 CHANGES IN VERSION 0.99.4-0.99.7
 -------------------------
-Update runnable examples
+o Update runnable examples <2018-08-06, Mon>
 
-CHANGES IN VERSION 0.99.3
+CHANGES IN VERSION 0.99.3 
 -------------------------
-Update src
+o Update src <2018-08-03, Fri>
 
 CHANGES IN VERSION 0.99.2
 -------------------------
-Update module_biclust function
+o Update module_biclust function <2018-08-03, Fri>
 
-CHANGES IN VERSION 0.99.1
+CHANGES IN VERSION 0.99.1 
 -------------------------
-Change the type of input data into a SummarizedExperiment object. Polish the file miRSM.R.
+o Change the type of input data into a SummarizedExperiment object. Polish the file miRSM.R. <2018-08-03, Fri>
 
 CHANGES IN VERSION 0.99.0
 -------------------------
-This is the first version of miRSM package. If any bugs, please let me know. Contact Email: zhangjunpeng_411@yahoo.com
+o This is the first version of miRSM package. If any bugs, please let me know. Contact Email: zhangjunpeng_411@yahoo.com <2018-08-03, Fri>

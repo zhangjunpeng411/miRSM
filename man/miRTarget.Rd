@@ -3,17 +3,28 @@
 \docType{data}
 \name{miRTarget}
 \alias{miRTarget}
-\title{miRNA-target (including miRNA-mRNA and miRNA-lncRNA)
-binding information.}
-\format{A SummarizedExperiment object with 29901 miRNA-target
-interactions.}
-\usage{
-miRTarget
-}
+\title{miRNA-target ineractions}
+\format{miRTarget: A SummarizedExperiment object with
+29901 miRNA-target interactions.}
 \description{
-A dataset containing the miRNA-target binding information
-from miRTarBase (http://mirtarbase.mbc.nctu.edu.tw/php/index.php),
-and LncBase
-(http://carolina.imis.athena-innovation.gr/diana_tools/web/index.php?r=lncbasev2/index)
+miRNA-target ineractions
 }
-\keyword{datasets}
+\details{
+The miRNA-target binding information is
+from miRTarBase v7.0 (http://mirtarbase.mbc.nctu.edu.tw/php/index.php),
+and LncBase v2.0
+(http://carolina.imis.athena-innovation.gr/diana_tools/web/index.php?r=lncbasev2/index).
+Among 226 miRNAs, 305 lncRNAs and 500 mRNAs 
+which are differentially expressed, we obtain 29901 miRNA-target
+interactions (including miRNA-lncRNA and miRNA-mRNA interactions).
+}
+\references{
+Hastie T, Tibshirani R, Narasimhan B, Chu G. 
+impute: Imputation for microarray data. 
+R package version 1.54.0. doi:  10.18129/B9.bioc.impute.
+
+Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, 
+Shi W, et al. limma powers differential expression 
+analyses for RNA-sequencing and microarray studies. 
+Nucleic Acids Res. 2015; 43(7):e47.
+}

@@ -16,30 +16,34 @@ module_FA(Modulelist, GOont = "BP", Diseaseont = "DO",
 
 \item{Diseaseont}{One of 'DO', and 'DOLite' subontologies.}
 
-\item{KEGGorganism}{Organism, supported organism listed in http://www.genome.jp/kegg/catalog/org_list.html.}
+\item{KEGGorganism}{Organism, supported organism listed 
+in http://www.genome.jp/kegg/catalog/org_list.html.}
 
-\item{Reactomeorganism}{Organism, one of 'human', 'rat', 'mouse', 'celegans', 'yeast', 'zebrafish', 'fly'.}
+\item{Reactomeorganism}{Organism, one of 'human', 'rat', '
+mouse', 'celegans', 'yeast', 'zebrafish', 'fly'.}
 
 \item{OrgDb}{OrgDb}
 
 \item{padjustvaluecutoff}{A cutoff value of adjusted p-values.}
 
-\item{padjustedmethod}{Adjusted method of p-values, can select one of 'holm', 'hochberg', 'hommel', 'bonferroni', 'BH', 'BY', 'fdr', 'none'.}
+\item{padjustedmethod}{Adjusted method of p-values, can select 
+one of 'holm', 'hochberg', 'hommel', 'bonferroni', 'BH', 'BY', 
+'fdr', 'none'.}
 
-\item{Analysis.type}{The type of functional analysis selected, including 'FEA' (functional enrichment analysis) and 'DEA' (disease enrichment analysis).}
+\item{Analysis.type}{The type of functional analysis selected, 
+including 'FEA' (functional enrichment analysis) and 'DEA' 
+(disease enrichment analysis).}
 }
 \value{
 List object: a list of enrichment analysis results.
 }
 \description{
-Functional analysis of miRNA sponge modules, including functional enrichment and disease enrichment analysis
+Functional analysis of miRNA sponge modules, including functional 
+enrichment and disease enrichment analysis
 }
 \examples{
 \dontrun{
-data(ceRExp)
-data(mRExp)
-data(miRExp)
-data(miRTarget)
+data(BRCASampleData)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 # Identify miRNA sponge modules using cannonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
@@ -51,7 +55,10 @@ miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'DEA')
 
 }
 \references{
-Zhang J (2017). miRsponge: Identification and analysis of miRNA sponge interaction networks and modules. R package version 1.2.0, (\url{https://github.com/zhangjunpeng411/miRsponge}).
+Zhang J (2017). miRsponge: Identification and analysis 
+of miRNA sponge interaction networks and modules. 
+R package version 1.2.0, 
+(\url{https://github.com/zhangjunpeng411/miRsponge}).
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

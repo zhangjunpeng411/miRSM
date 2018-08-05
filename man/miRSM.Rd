@@ -10,56 +10,65 @@ miRSM(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
   pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3)
 }
 \arguments{
-\item{miRExp}{A SummarizedExperiment object. miRNA expression data: rows are samples and columns are miRNAs.}
+\item{miRExp}{A SummarizedExperiment object. miRNA expression data: 
+rows are samples and columns are miRNAs.}
 
-\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: rows are samples and columns are ceRNAs.}
+\item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
+rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: rows are samples and columns are mRNAs.}
+\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+rows are samples and columns are mRNAs.}
 
-\item{miRTarget}{A SummarizedExperiment object. Putative miRNA-target binding information.}
+\item{miRTarget}{A SummarizedExperiment object. Putative 
+miRNA-target binding information.}
 
-\item{CandidateModulegenes}{List object: a list of candidate miRNA sponge modules.}
+\item{CandidateModulegenes}{List object: a list of candidate 
+miRNA sponge modules.}
 
-\item{typex}{The columns of x unordered (type='standard') or ordered (type='ordered').}
+\item{typex}{The columns of x unordered (type='standard') or 
+ordered (type='ordered').}
 
-\item{typez}{The columns of z unordered (type='standard') or ordered (type='ordered').}
+\item{typez}{The columns of z unordered (type='standard') or 
+ordered (type='ordered').}
 
 \item{nperms}{The number of permutations.}
 
-\item{method}{The method selected to identify miRNA sponge modules, including 'CC' and 'SCC'.}
+\item{method}{The method selected to identify miRNA sponge 
+modules, including 'CC' and 'SCC'.}
 
-\item{num_shared_miRNAs}{The number of common miRNAs shared by a group of ceRNAs and mRNAs.}
+\item{num_shared_miRNAs}{The number of common miRNAs shared 
+by a group of ceRNAs and mRNAs.}
 
-\item{pvalue.cutoff}{The p-value cutoff of significant sharing of common miRNAs by a group of ceRNAs and mRNAs.}
+\item{pvalue.cutoff}{The p-value cutoff of significant sharing 
+of common miRNAs by a group of ceRNAs and mRNAs.}
 
 \item{CC.cutoff}{The cutoff of cannonical correlation for 'CC' method.}
 
-\item{SCC.cutoff}{The cutoff of sensitivity cannonical correlation for 'SCC' method.}
+\item{SCC.cutoff}{The cutoff of sensitivity cannonical correlation 
+for 'SCC' method.}
 }
 \value{
-List object: a list of miRNA sponge modules.
+List object: Cannonical correlation or sensitivity cannonical correlation,
+and genes of miRNA sponge modules.
 }
 \description{
 Identify miRNA sponge modules using cannonical correlation (CC) and sensitivity cannonical correlation (SCC) methods
 }
 \examples{
-data(ceRExp)
-data(mRExp)
-data(miRExp)
-data(miRTarget)
-modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+data(BRCASampleData)
+modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
+    mRExp[, seq_len(10)])
 # Identify miRNA sponge modules using cannonical correlation (CC)
-miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-                        modulegenes_WGCNA, nperms = 10,
+miRSM_igraph_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+                        modulegenes_igraph, nperms = 5,
                         method = 'CC')
-# Identify miRNA sponge modules using sensitivity cannonical correlation (SCC) method
-miRSM_WGCNA_SCC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-                         modulegenes_WGCNA, nperms = 10,
-                         method = 'SCC')
 
 }
 \references{
-Witten DM, Tibshirani R, Hastie T. A penalized matrix decomposition, with applications to sparse principal components and canonical correlation analysis. Biostatistics. 2009, 10(3):515-34.
+Witten DM, Tibshirani R, Hastie T. A penalized matrix 
+decomposition, with applications to sparse principal components 
+and canonical correlation analysis. Biostatistics. 
+2009, 10(3):515-34.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
