@@ -566,7 +566,7 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
     ExpData <- cbind(assay(ceRExp), assay(mRExp))
 
     # Run NMF algorithm with rank num.modules
-    res <- nmf(ExpData, rank = num.modules, method = NMF.algorithm)
+    res <- nmf(abs(ExpData), rank = num.modules, method = NMF.algorithm)
 
     # Predict column clusters
     Cluster.membership <- predict(res)
@@ -594,7 +594,7 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' rows are samples and columns are mRNAs.
 #' @param BCmethod Specification of the biclustering method, 
 #' including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
-#' 'BCSpectral', 'BCXmotifs', 'iBBiG', 'fabia', 'fabiap', 
+#' 'BCSpectral', 'BCXmotifs', 'BCUnibic', iBBiG', 'fabia', 'fabiap', 
 #' 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 
 #' 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.
 #' @param num.modules The number of modules to be identified.

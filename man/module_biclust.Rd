@@ -16,7 +16,7 @@ rows are samples and columns are mRNAs.}
 
 \item{BCmethod}{Specification of the biclustering method, 
 including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
-'BCSpectral', 'BCXmotifs', 'iBBiG', 'fabia', 'fabiap', 
+'BCSpectral', 'BCXmotifs', 'BCUnibic', iBBiG', 'fabia', 'fabiap', 
 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 
 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.}
 
