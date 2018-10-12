@@ -628,6 +628,7 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' @importFrom s4vd BCs4vd
 #' @importFrom s4vd BCssvd
 #' @importFrom BiBitR bibit
+#' @importFrom BiBitR MaxBC
 #' @importFrom rqubic quBicluster
 #' @importFrom rqubic quantileDiscretize
 #' @importFrom rqubic generateSeeds
@@ -751,8 +752,8 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
     if (BCmethod == "BCBimax" | BCmethod == "BCCC" | BCmethod == "BCPlaid" |
         BCmethod == "BCQuest" | BCmethod == "BCSpectral" | BCmethod ==
         "BCXmotifs" | BCmethod == "iBBiG" | BCmethod ==
-        "isa" | BCmethod == "BCs4vd" | BCmethod == "BCssvd" | BCmethod ==
-        "bibit" | BCmethod == "quBicluster") {
+        "isa" | BCmethod == "BCs4vd" | BCmethod == "BCssvd" | 
+        BCmethod == "quBicluster") {
         BCresnum <- biclusternumber(BCres)
         Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(ExpData)
             [BCresnum[[i]]$Cols])
@@ -762,6 +763,14 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
       BCresnum <- biclusternumber(BCres)
       Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(ExpData)
                             [BCresnum[[i]]$Rows])
+    }
+    
+    if (BCmethod == "bibit") {
+      BCresnum <- biclusternumber(BCres)
+      BCresnum <- lapply( which( names(BCresnum) %in% 
+          gsub("BC", "Bicluster", colnames(MaxBC(BCres, num.modules)$size)) ), 
+          function(i) BCresnum[[i]])
+      Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(ExpData)[BCresnum[[i]]$Rows])
     }
 
     if (BCmethod == "fabia" | BCmethod == "fabiap" | BCmethod == "fabias" |
