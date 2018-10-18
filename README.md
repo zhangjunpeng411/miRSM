@@ -12,7 +12,7 @@ BiocManager::install("miRSM")
 
 # Usage
 ```{r echo=FALSE, results='hide', message=FALSE}
-library(miRSM)
+suppressMessages(library(miRSM))
 ```
 
 # License

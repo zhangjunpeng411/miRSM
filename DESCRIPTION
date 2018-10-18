@@ -1,7 +1,7 @@
 Package: miRSM
 Type: Package
 Title: Inferring miRNA sponge modules by integrating expression data and miRNA-target binding information
-Version: 0.99.26
+Version: 0.99.27
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 

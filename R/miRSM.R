@@ -545,6 +545,7 @@ module_ProNet <- function(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cut
 #' @import SummarizedExperiment
 #' @importFrom NMF nmf
 #' @importFrom NMF predict
+#' @importFrom NMF nneg
 #' @importFrom GSEABase GeneSet
 #' @importFrom GSEABase GeneSetCollection
 #' @export
@@ -565,8 +566,9 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 
     ExpData <- cbind(assay(ceRExp), assay(mRExp))
 
-    # Run NMF algorithm with rank num.modules
-    res <- nmf(abs(ExpData), rank = num.modules, method = NMF.algorithm)
+    # Run NMF algorithm with rank num.modules, negative values are transformed
+    # into 0 if exist in expression data
+    res <- nmf(nneg(ExpData), rank = num.modules, method = NMF.algorithm)
 
     # Predict column clusters
     Cluster.membership <- predict(res)
