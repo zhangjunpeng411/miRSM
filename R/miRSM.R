@@ -770,9 +770,9 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
     if (BCmethod == "bibit") {
       BCresnum <- biclusternumber(BCres)
       BCresnum <- lapply( which( names(BCresnum) %in% 
-          gsub("BC", "Bicluster", colnames(MaxBC(BCres, num.modules)$size)) ), 
+          gsub("BC", "Bicluster", colnames(MaxBC(BCres, top = num.modules)$column)) ), 
           function(i) BCresnum[[i]])
-      Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(ExpData)[BCresnum[[i]]$Rows])
+      Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(ExpData)[BCresnum[[i]]$Cols])
     }
 
     if (BCmethod == "fabia" | BCmethod == "fabiap" | BCmethod == "fabias" |
