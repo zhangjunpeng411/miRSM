@@ -20,7 +20,10 @@ including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest',
 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 
 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.}
 
-\item{num.modules}{The number of modules to be identified.}
+\item{num.modules}{The number of modules to be identified. For the 'BCPlaid',
+'BCSpectral', 'isa' and 'bibit' methods, no need to set the parameter. For the 
+'quBicluster' method, the parameter is used to set the number of biclusters 
+that should be reported.}
 
 \item{num.ModuleceRs}{The minimum number of ceRNAs in each module.}
 

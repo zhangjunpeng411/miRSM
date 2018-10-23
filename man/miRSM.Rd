@@ -6,7 +6,7 @@
 \usage{
 miRSM(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
   typex = "standard", typez = "standard", nperms = 100,
-  method = c("CC", "SCC"), num_shared_miRNAs = 3,
+  method = c("CC", "SCC", "CCplusSCC"), num_shared_miRNAs = 3,
   pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3)
 }
 \arguments{
@@ -34,7 +34,7 @@ ordered (type='ordered').}
 \item{nperms}{The number of permutations.}
 
 \item{method}{The method selected to identify miRNA sponge 
-modules, including 'CC' and 'SCC'.}
+modules, including 'CC', 'SCC' and 'CCplusSCC'.}
 
 \item{num_shared_miRNAs}{The number of common miRNAs shared 
 by a group of ceRNAs and mRNAs.}
@@ -42,23 +42,24 @@ by a group of ceRNAs and mRNAs.}
 \item{pvalue.cutoff}{The p-value cutoff of significant sharing 
 of common miRNAs by a group of ceRNAs and mRNAs.}
 
-\item{CC.cutoff}{The cutoff of cannonical correlation for 'CC' method.}
+\item{CC.cutoff}{The cutoff of canonical correlation for 'CC' method.}
 
-\item{SCC.cutoff}{The cutoff of sensitivity cannonical correlation 
+\item{SCC.cutoff}{The cutoff of sensitivity canonical correlation 
 for 'SCC' method.}
 }
 \value{
-List object: Cannonical correlation or sensitivity cannonical correlation,
+List object: Canonical correlation or sensitivity canonical correlation,
 and genes of miRNA sponge modules.
 }
 \description{
-Identify miRNA sponge modules using cannonical correlation (CC) and sensitivity cannonical correlation (SCC) methods
+Identify miRNA sponge modules using canonical correlation (CC), sensitivity canonical correlation (SCC),
+and integrate canonical correlation and sensitivity canonical correlation (CCplusSCC) methods.
 }
 \examples{
 data(BRCASampleData)
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
     mRExp[, seq_len(10)])
-# Identify miRNA sponge modules using cannonical correlation (CC)
+# Identify miRNA sponge modules using canonical correlation (CC)
 miRSM_igraph_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         modulegenes_igraph, nperms = 5,
                         method = 'CC')

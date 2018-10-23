@@ -45,7 +45,7 @@ enrichment and disease enrichment analysis
 \dontrun{
 data(BRCASampleData)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-# Identify miRNA sponge modules using cannonical correlation (CC)
+# Identify miRNA sponge modules using canonical correlation (CC)
 miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         modulegenes_WGCNA, nperms = 10, method = 'CC')
 miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
