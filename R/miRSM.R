@@ -587,7 +587,7 @@ module_NMF <- function(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10
 #' expression data using a series of clustering packages, 
 #' including stats, flashClust, dbscan, subspace, mclust, SOMbrero and ppclust packages.
 #' 
-#' @title module_clust
+#' @title module_clust 
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
 #' rows are samples and columns are ceRNAs.
 #' @param mRExp A SummarizedExperiment object. mRNA expression data: 
