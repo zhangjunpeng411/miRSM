@@ -55,10 +55,10 @@ miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'DEA')
 
 }
 \references{
-Zhang J (2017). miRsponge: Identification and analysis 
+Zhang J (2019). miRspongeR: Identification and analysis 
 of miRNA sponge interaction networks and modules. 
-R package version 1.2.0, 
-(\url{https://github.com/zhangjunpeng411/miRsponge}).
+R package version 1.9.3, 
+(\url{https://github.com/zhangjunpeng411/miRspongeR}).
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

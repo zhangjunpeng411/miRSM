@@ -37,7 +37,7 @@ MicroRNAs (miRNAs) play key roles in many biological processes including cancers
 Previous studies [6-9] have shown that a pool of coding and non-coding RNAs that shares common miRNA biding sites competes with each other, thus alter miRNA activity. The corresponding regulatory mechanism is 
 named competing endogenous RNA (ceRNA) hypothesis [10]. These RNAs are called ceRNAs or miRNA sponges or miRNA decoys, and include long non-coding RNAs (lncRNAs), pseudogenes, circular RNAs (circRNAs) and messenger RNAs (mRNAs), etc. To study the module-level properties of miRNA sponges, it is necessary to identify miRNA sponge modules. The miRNA sponge modules will help to reveal the biological mechanism in cancer. 
 
-To speed up the research of miRNA sponge modules, we develop an R/Bioconductor package 'miRSM' to infer miRNA sponge modules. Unlike the existing R/Bioconductor packages ('miRsponge' and 'SPONGE'), 'miRSM' focuses on identifying miRNA sponge modules by integrating expression data and miRNA-target binding information instead of miRNA sponge interaction networks.
+To speed up the research of miRNA sponge modules, we develop an R/Bioconductor package 'miRSM' to infer miRNA sponge modules. Unlike the existing R/Bioconductor packages ('miRspongeR' and 'SPONGE'), 'miRSM' focuses on identifying miRNA sponge modules by integrating expression data and miRNA-target binding information instead of miRNA sponge interaction networks.
     
 # Identification of gene modules
 Given matched ceRNA and mRNA expression data, we infer gene modules by using several methods 

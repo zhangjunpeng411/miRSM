@@ -1362,8 +1362,8 @@ miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' @param Analysis.type The type of functional analysis selected, 
 #' including 'FEA' (functional enrichment analysis) and 'DEA' 
 #' (disease enrichment analysis).
-#' @importFrom miRsponge moduleFEA
-#' @importFrom miRsponge moduleDEA
+#' @importFrom miRspongeR moduleFEA
+#' @importFrom miRspongeR moduleDEA
 #' @export
 #' @return List object: a list of enrichment analysis results.
 #'
@@ -1380,10 +1380,10 @@ miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Zhang J (2017). miRsponge: Identification and analysis 
+#' @references Zhang J (2019). miRspongeR: Identification and analysis 
 #' of miRNA sponge interaction networks and modules. 
-#' R package version 1.2.0, 
-#' (\url{https://github.com/zhangjunpeng411/miRsponge}).
+#' R package version 1.9.3, 
+#' (\url{https://github.com/zhangjunpeng411/miRspongeR}).
 module_FA <- function(Modulelist, GOont = "BP", Diseaseont = "DO", KEGGorganism = "hsa",
     Reactomeorganism = "human", OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05,
     padjustedmethod = "BH", Analysis.type = c("FEA", "DEA")) {
