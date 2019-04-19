@@ -1175,7 +1175,7 @@ miRSM_CCplusSCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegen
     
     miRTarget <- assay(miRTarget)
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in%
-                                                      miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
+                          miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
     Res <- c()
   
   
@@ -1380,10 +1380,12 @@ miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-#' @references Zhang J (2019). miRspongeR: Identification and analysis 
-#' of miRNA sponge interaction networks and modules. 
-#' R package version 1.9.3, 
-#' (\url{https://github.com/zhangjunpeng411/miRspongeR}).
+#' @references Zhang J, Liu L, Xu T, Xie Y, Zhao C, Li J, Le TD (2019). 
+#' “miRspongeR: an R/Bioconductor package for the identification and analysis of 
+#' miRNA sponge interaction networks and modules.” BMC Bioinformatics, 20, 235.
+#' @references Yu G, Wang L, Han Y, He Q (2012). 
+#' “clusterProfiler: an R package for comparing biological themes among gene clusters.” 
+#' OMICS: A Journal of Integrative Biology, 16(5), 284-287.
 module_FA <- function(Modulelist, GOont = "BP", Diseaseont = "DO", KEGGorganism = "hsa",
     Reactomeorganism = "human", OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05,
     padjustedmethod = "BH", Analysis.type = c("FEA", "DEA")) {
@@ -1397,4 +1399,320 @@ module_FA <- function(Modulelist, GOont = "BP", Diseaseont = "DO", KEGGorganism 
     }
 
     return(Res)
+}
+
+#' Cancer enrichment analysis of miRNA sponge modules using hypergeometric distribution test
+#'
+#' @title module_CEA
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs.
+#' @param Cancergenes A SummarizedExperiment object: a list of cancer genes given.
+#' @param Modulelist List object: a list of the identified miRNA sponge modules. 
+#' @import SummarizedExperiment
+#' @importFrom stats phyper
+#' @export
+#' @return Cancer enrichment significance p-values of the identified miRNA sponge modules
+#'
+#' @examples
+#' data(BRCASampleData)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' # Identify miRNA sponge modules using canonical correlation (CC)
+#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
+#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_CC_genes)
+#'
+#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+#' @references Johnson NL, Kotz S, Kemp AW (1992) 
+#' "Univariate Discrete Distributions", Second Edition. New York: Wiley.
+module_CEA <- function(ceRExp, mRExp, Cancergenes, Modulelist) {
+  
+  ExpData <- cbind(assay(ceRExp), assay(mRExp))      
+  
+  B <- ncol(ExpData)
+  N <- length(intersect(colnames(ExpData), as.matrix(assay(Cancergenes))))
+  M <- unlist(lapply(seq_along(Modulelist), function(i) length(Modulelist[[i]])))
+  x <- unlist(lapply(seq_along(Modulelist), function(i) 
+      length(intersect(Modulelist[[i]], as.matrix(assay(Cancergenes))))))    
+  p.value <- 1 - phyper(x - 1, N, B - N, M)
+  
+  names(p.value) <- names(Modulelist)
+  return(p.value)
+}
+
+#' Validation of miRNA sponge interactions in each miRNA sponge module
+#'
+#' @title module_Validate
+#' @param Modulelist List object: a list of the identified miRNA sponge modules. 
+#' @param Groundtruth Matrix object: a list of experimentally validated miRNA sponge interactions.
+#' @export
+#' @return List object: a list of validated miRNA sponge interactions in each miRNA sponge module
+#'
+#' @examples
+#' data(BRCASampleData)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' # Identify miRNA sponge modules using canonical correlation (CC)
+#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
+#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' library(miRspongeR)
+#' Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
+#' Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",") 
+#' miRSM.Validate <- module_Validate(miRSM_WGCNA_CC_genes, Groundtruth)
+#'
+#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+module_Validate <- function(Modulelist, Groundtruth) {
+  
+  validate_res <- lapply(seq(Modulelist), function(i) 
+      Groundtruth[intersect(which(as.matrix(Groundtruth[, 1]) %in% 
+      Modulelist[[i]]), which(as.matrix(Groundtruth[, 2]) %in% Modulelist[[i]])), ])
+  names(validate_res) <- names(Modulelist)
+  
+  return(validate_res)
+}
+
+
+#' Co-expression analysis of each miRNA sponge module and its corresponding random miRNA sponge module
+#' 
+#' @title module_Coexpress
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs. 
+#' @param Modulelist List object: a list of the identified miRNA sponge modules. 
+#' @param resample The number of random miRNA sponge modules generated, and 1000 times in default.
+#' @param method The method used to evaluate the co-expression level of each miRNA sponge module.
+#' Users can select "mean" or "median" to calculate co-expression value of each miRNA sponge module
+#' and its corresponding random miRNA sponge module. 
+#' @import SummarizedExperiment
+#' @importFrom WGCNA cor
+#' @importFrom stats median
+#' @importFrom stats na.omit
+#' @export
+#' @return List object: co-expression values of miRNA sponge modules and their corresponding random miRNA sponge modules.
+#'
+#' @examples 
+#' data(BRCASampleData)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' # Identify miRNA sponge modules using canonical correlation (CC)
+#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
+#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_CC_genes, 
+#' resample = 10, method = "mean")
+#' 
+#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+module_Coexpress <- function(ceRExp, mRExp, Modulelist, resample = 1000, method = c("mean", "median")) {
+  
+  ceRExp <- assay(ceRExp)
+  mRExp <- assay(mRExp)
+  module_ceRExp <- lapply(seq_along(Modulelist), function(i) 
+    ceRExp[, which(colnames(ceRExp) %in% Modulelist[[i]])])
+  module_mRExp <- lapply(seq_along(Modulelist), function(i) 
+    mRExp[, which(colnames(mRExp) %in% Modulelist[[i]])])
+  
+  if (method == "mean"){
+    module_avg_cor <- unlist(lapply(seq_along(Modulelist), function(i) 
+      mean(abs(cor(module_ceRExp[[i]], module_mRExp[[i]])))))
+  } else if (method == "median"){
+    module_avg_cor <- unlist(lapply(seq_along(Modulelist), function(i) 
+      median(abs(cor(module_ceRExp[[i]], module_mRExp[[i]])))))
+  }
+  
+  module_avg_cor_resample <- c()
+  for (i in seq_along(Modulelist)){
+    temp1 <- replicate(resample, sample(seq_len(ncol(ceRExp)), size = ncol(module_ceRExp[[i]])))
+    temp2 <- replicate(resample, sample(seq_len(ncol(mRExp)), size = ncol(module_mRExp[[i]])))
+    module_ceRExp_resample <- lapply(seq_len(resample), function(i) ceRExp[, temp1[, i]])
+    module_mRExp_resample <- lapply(seq_len(resample), function(i) mRExp[, temp2[, i]])
+    
+      if (method == "mean"){
+          module_avg_cor_resample[i] <- mean(unlist(lapply(seq_len(resample), function(i) 
+            mean(na.omit(abs(cor(module_ceRExp_resample[[i]], module_mRExp_resample[[i]])))))))
+      } else if (method == "median"){
+          module_avg_cor_resample[i] <- median(unlist(lapply(seq_len(resample), function(i) 
+            median(na.omit(abs(cor(module_ceRExp_resample[[i]], module_mRExp_resample[[i]])))))))
+      }
+  }
+  module_coexpress <- list(module_avg_cor, module_avg_cor_resample)
+  names(module_coexpress) <- c("Real miRNA sponge modules", "Random miRNA sponge modules")
+  return(module_coexpress)
+}
+
+#' Extract common miRNAs of each miRNA sponge module
+#' 
+#' @title share_miRs
+#' @param miRExp A SummarizedExperiment object. miRNA expression data: 
+#' rows are samples and columns are miRNAs.
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs. 
+#' @param miRTarget A SummarizedExperiment object. Putative 
+#' miRNA-target binding information.
+#' @param Modulelist List object: a list of the identified miRNA sponge modules.
+#' @import SummarizedExperiment 
+#' @export
+#' @return List object: a list of common miRNAs of each miRNA sponge module.
+#'
+#' @examples 
+#' data(BRCASampleData)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' # Identify miRNA sponge modules using canonical correlation (CC)
+#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
+#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+#' 
+#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+share_miRs <- function(miRExp, ceRExp, mRExp, miRTarget, Modulelist){
+  
+  miRExp <- assay(miRExp)
+  ceRExp <- assay(ceRExp)
+  mRExp <- assay(mRExp)
+  miRTarget <- assay(miRTarget)
+  miRTarget <- as.matrix(miRTarget)            
+  miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% colnames(miRExp)),
+                        which(miRTarget[, 2] %in% c(colnames(ceRExp),colnames(mRExp)))),]
+  
+  Res <- list()
+  for (i in seq_along(Modulelist)){
+    tmp1 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in% 
+                  intersect(Modulelist[[i]], colnames(ceRExp)) ), 1])
+    tmp2 <- unique(miRTargetCandidate[which( miRTargetCandidate[, 2] %in% 
+                  intersect(Modulelist[[i]], colnames(mRExp)) ), 1])
+    tmp3 <- intersect( tmp1, tmp2 )
+    Res[[i]] <- tmp3
+  }
+  
+  names(Res) <- names(Modulelist)
+  return(Res)
+}
+
+#' miRNA distribution analysis of sharing miRNAs by the identified miRNA sponge modules
+#' 
+#' @title module_miRdistribute
+#' @param share_miRs List object: a list of common miRNAs of each miRNA sponge module 
+#' generated by share_miRs function. 
+#' @export
+#' @return Matrix object: miRNA distribution in each miRNA sponge module.
+#'
+#' @examples 
+#' data(BRCASampleData)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' # Identify miRNA sponge modules using canonical correlation (CC)
+#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
+#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+#' miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
+#' 
+#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+module_miRdistribute <- function(share_miRs) {
+  
+  miRs <- unique(unlist(share_miRs))
+  res <- NULL
+  interin <- NULL
+  for (i in seq_along(miRs)) {
+    for (j in seq_along(share_miRs)) {
+      if (length(which(miRs[i] %in% share_miRs[[j]]) == 1)) {
+        interin <- c(interin, names(share_miRs)[j])
+      }
+    }
+    res1 <- paste(interin, collapse = ", ")        
+    res2 <- length(interin)
+    res <- rbind(res, c(miRs[i], res1, res2))
+    interin <- NULL
+  }
+  colnames(res) <- c("miRNA", "Module ID", "Number of modules")
+    
+  return(res)
+}
+
+#' Extract miRNA-target interactions of each miRNA sponge module
+#' 
+#' @title module_miRtarget
+#' @param share_miRs List object: a list of common miRNAs of each miRNA sponge module 
+#' generated by share_miRs function. 
+#' @param Modulelist List object: a list of the identified miRNA sponge modules.
+#' @export
+#' @return List object: miRNA-target interactions of each miRNA sponge module.
+#'
+#' @examples 
+#' data(BRCASampleData)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' # Identify miRNA sponge modules using canonical correlation (CC)
+#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
+#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+#' miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_CC_genes)
+#' 
+#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+module_miRtarget <- function(share_miRs, Modulelist){
+  
+  res_int <- list()
+  for (k in seq(share_miRs)){
+      CommonmiRs <- share_miRs[[k]]
+      targets <- Modulelist[[k]]
+      len_CommonmiRs <- length(CommonmiRs)
+      len_targets <- length(targets)
+      res_interin <- matrix(NA, len_CommonmiRs*len_targets, 2)
+      for (i in seq_len(len_CommonmiRs)){
+          for (j in seq_len(len_targets)){
+              res_interin[(i-1)*len_targets+j, 1] <- CommonmiRs[i]
+              res_interin[(i-1)*len_targets+j, 2] <- targets[j]
+          }
+      }
+  res_int[[k]] <- res_interin
+  }
+  names(res_int) <- names(Modulelist)
+  return(res_int)
+}
+
+#' Extract miRNA sponge interactions of each miRNA sponge module
+#'
+#' @title module_miRsponge
+#' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
+#' rows are samples and columns are ceRNAs.
+#' @param mRExp A SummarizedExperiment object. mRNA expression data: 
+#' rows are samples and columns are mRNAs. 
+#' @param Modulelist List object: a list of the identified miRNA sponge modules.
+#' @import SummarizedExperiment
+#' @export
+#' @return List object: miRNA sponge interactions of each miRNA sponge module.
+#'
+#' @examples 
+#' data(BRCASampleData)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
+#' # Identify miRNA sponge modules using canonical correlation (CC)
+#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
+#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+#' miRSM_WGCNA_miRtarget <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
+#' 
+#' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+module_miRsponge<- function(ceRExp, mRExp,  Modulelist){
+  
+    res_int <- list()
+    for (k in seq(Modulelist)){
+        Modulegenes <- Modulelist[[k]]
+        ceRNAs <- Modulegenes[which(Modulegenes %in% colnames(ceRExp))]
+        mRNAs <- Modulegenes[which(Modulegenes %in% colnames(mRExp))]
+        len_ceRNAs <- length(ceRNAs)
+        len_mRNAs <- length(mRNAs)
+        res_interin <- matrix(NA, len_ceRNAs*len_mRNAs, 2)
+        for (i in seq_len(len_ceRNAs)){
+            for (j in seq_len(len_mRNAs)){
+                res_interin[(i-1)*len_mRNAs+j, 1] <- ceRNAs[i]
+                res_interin[(i-1)*len_mRNAs+j, 2] <- mRNAs[j]
+            }
+        }
+    res_int[[k]] <- res_interin     
+    } 
+    names(res_int) <- names(Modulelist)
+  return(res_int)
 }

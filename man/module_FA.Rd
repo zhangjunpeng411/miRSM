@@ -55,10 +55,13 @@ miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'DEA')
 
 }
 \references{
-Zhang J (2019). miRspongeR: Identification and analysis 
-of miRNA sponge interaction networks and modules. 
-R package version 1.9.3, 
-(\url{https://github.com/zhangjunpeng411/miRspongeR}).
+Zhang J, Liu L, Xu T, Xie Y, Zhao C, Li J, Le TD (2019). 
+“miRspongeR: an R/Bioconductor package for the identification and analysis of 
+miRNA sponge interaction networks and modules.” BMC Bioinformatics, 20, 235.
+
+Yu G, Wang L, Han Y, He Q (2012). 
+“clusterProfiler: an R package for comparing biological themes among gene clusters.” 
+OMICS: A Journal of Integrative Biology, 16(5), 284-287.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

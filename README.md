@@ -33,6 +33,29 @@ miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes,
                                 Analysis.type ="FEA")
 miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, 
                                 Analysis.type = "DEA")
+                                
+# Cancer enrichment analysis of miRNA sponge modules
+miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_CC_genes)
+
+# Validation of miRNA sponge interactions in miRNA sponge modules
+library(miRspongeR)
+Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
+Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
+miRSM.Validate <- module_Validate(miRSM_WGCNA_CC_genes, Groundtruth)
+
+# Co-expression analysis of miRNA sponge modules
+miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_CC_genes, resample = 10, method = "mean")
+
+# miRNA distribution analysis of sharing miRNAs
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
+
+# Predict miRNA-target interactions
+miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_CC_genes)
+
+# Identify miRNA sponge interactions
+miRSM_WGCNA_miRtarget <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
+
 ```
 
 # License
