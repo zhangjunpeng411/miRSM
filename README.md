@@ -54,7 +54,7 @@ miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_CC_genes)
 
 # Identify miRNA sponge interactions
-miRSM_WGCNA_miRtarget <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
+miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
 
 ```
 

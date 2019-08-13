@@ -1692,7 +1692,7 @@ module_miRtarget <- function(share_miRs, Modulelist){
 #'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
 #' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
 #' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
-#' miRSM_WGCNA_miRtarget <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
+#' miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 module_miRsponge<- function(ceRExp, mRExp,  Modulelist){

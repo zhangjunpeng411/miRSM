@@ -206,7 +206,7 @@ To extract miRNA sponge interactions of each miRNA sponge module, we implement '
 
 ```{r, eval=FALSE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and cannonical correlation (CC) method
-miRSM_WGCNA_miRtarget <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
+miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
 ```
 
 # Conclusions
