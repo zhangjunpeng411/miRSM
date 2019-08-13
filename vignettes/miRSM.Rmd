@@ -106,7 +106,7 @@ modulegenes_clust
 ```
 
 ## module_biclust
-We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [28], runibic [29], iBBiG [30], fabia [31], BicARE [32], isa2 [33], s4vd [34], BiBitR [35] and rqubic [36]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "BCUnibic", iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "fabia".
+We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [28], runibic [29], iBBiG [30], fabia [31], BicARE [32], isa2 [33], s4vd [34], BiBitR [35] and rqubic [36]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "BCUnibic", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "fabia".
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_biclust <- module_biclust(ceRExp[, seq_len(30)],
