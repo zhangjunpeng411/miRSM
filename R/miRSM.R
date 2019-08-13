@@ -1046,15 +1046,18 @@ miRSM_CC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
         Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[,
         "Canonical correlation of ceRNAs:mRNAs"] > CC.cutoff)
-    miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
-    names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
-    Res <- Res[index, ]
-    if (length(index) > 1) {
-    rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+    if (length(index) == 0) {
+        Result <- "No miRNA sponge modules identified"
+    } else {
+        miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
+        names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
+        Res <- Res[index, ]
+        if (length(index) > 1) {
+            rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+        }
+        Result <- list(Res, miRSM_genes)
+        names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
     }
-    Result <- list(Res, miRSM_genes)
-    names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
-
     return(Result)
 }
 
@@ -1149,15 +1152,18 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
         Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[,
         "Sensitivity canonical correlation of ceRNAs:mRNAs"] > SCC.cutoff)
-    miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
-    names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
-    Res <- Res[index, ]
-    if (length(index) > 1) {
-      rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+    if (length(index) == 0) {
+      Result <- "No miRNA sponge modules identified"
+    } else {
+      miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
+      names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
+      Res <- Res[index, ]
+      if (length(index) > 1) {
+        rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+      }
+      Result <- list(Res, miRSM_genes)
+      names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
     }
-    Result <- list(Res, miRSM_genes)
-    names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
-    
     return(Result)
 }
 
@@ -1255,15 +1261,18 @@ miRSM_CCplusSCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegen
                    Res[, "Canonical correlation of ceRNAs:mRNAs"] > CC.cutoff &
                    Res[, "Sensitivity canonical correlation of ceRNAs:mRNAs"] > SCC.cutoff)
                                                                                    
-    miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
-    names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
-    Res <- Res[index, ]
-    if (length(index) > 1) {
-      rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+    if (length(index) == 0) {
+      Result <- "No miRNA sponge modules identified"
+    } else {
+      miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
+      names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
+      Res <- Res[index, ]
+      if (length(index) > 1) {
+        rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+      }
+      Result <- list(Res, miRSM_genes)
+      names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
     }
-    Result <- list(Res, miRSM_genes)
-    names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
-    
     return(Result)
 }
 
