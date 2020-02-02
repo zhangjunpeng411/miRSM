@@ -4,8 +4,14 @@
 \alias{module_biclust}
 \title{module_biclust}
 \usage{
-module_biclust(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
-  num.ModuleceRs = 2, num.ModulemRs = 2)
+module_biclust(
+  ceRExp,
+  mRExp,
+  BCmethod = "fabia",
+  num.modules = 10,
+  num.ModuleceRs = 2,
+  num.ModulemRs = 2
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 

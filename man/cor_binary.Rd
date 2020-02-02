@@ -4,8 +4,7 @@
 \alias{cor_binary}
 \title{cor_binary}
 \usage{
-cor_binary(ceRExp, mRExp, cor.method = "pearson",
-  pos.p.value.cutoff = 0.01)
+cor_binary(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 

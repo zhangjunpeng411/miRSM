@@ -991,294 +991,350 @@ cor_binary <- function(ceRExp, mRExp, cor.method = "pearson",
     return(cor.binary)
 }
 
-## Identify miRNA sponge modules using canonical correlation (CC)
-## method
-miRSM_CC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
-    typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3,
-    pvalue.cutoff = 0.05, CC.cutoff = 0.8) {
-
-    miRNames <- colnames(miRExp)
-    ceRNames <- colnames(ceRExp)
-    mRNames <- colnames(mRExp)
-    CandidateModulegenes <- geneIds(CandidateModulegenes)
-
-    miRTarget <- assay(miRTarget)
-    miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in%
-        miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
-    Res <- c()
-
-    for (i in seq_along(CandidateModulegenes)) {
-        # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
-        tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
-            intersect(CandidateModulegenes[[i]], ceRNames)), 1])
-        M1 <- length(tmp1)
-        tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
-            intersect(CandidateModulegenes[[i]], mRNames)), 1])
-        M2 <- length(tmp2)
-        tmp3 <- intersect(tmp1, tmp2)
-        M3 <- length(tmp3)
-        M4 <- length(miRNames)
-        M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
-
-        if (M3 >= num_shared_miRNAs) {
-
-            # Canonical correlation between a group of ceRNAs and a group of mRNAs
-            perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
-                CandidateModulegenes[[i]])], assay(mRExp)[, which(mRNames %in%
-                CandidateModulegenes[[i]])], typex = typex, typez = typez,
-                nperms = nperms)
-            out_ceR_mR <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
-                assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
-                typex = typex, typez = typez, penaltyx = perm.out_ceR_mR$bestpenaltyx,
-                penaltyz = perm.out_ceR_mR$bestpenaltyz, v = perm.out_ceR_mR$v.init)
-            M6 <- out_ceR_mR$cor
-        } else {
-            M6 <- NA
-        }
-
-        tmp <- c(M1, M2, M3, M4, M5, M6)
-        Res <- rbind(Res, tmp)
-
-    }
-    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
-        "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
-        "Canonical correlation of ceRNAs:mRNAs")
-    index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
-        Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[,
-        "Canonical correlation of ceRNAs:mRNAs"] > CC.cutoff)
-    if (length(index) == 0) {
-        Result <- "No miRNA sponge modules identified"
-    } else {
-        miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
-        names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
-        Res <- Res[index, ]
-        if (length(index) > 1) {
-            rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
-        }
-        Result <- list(Res, miRSM_genes)
-        names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
-    }
-    return(Result)
-}
-
-
-## Identify miRNA sponge modules using sensitivity canonical
-## correlation (SCC) method
-miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
-    typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3,
-    pvalue.cutoff = 0.05, SCC.cutoff = 0.3) {
-
-    miRNames <- colnames(miRExp)
-    ceRNames <- colnames(ceRExp)
-    mRNames <- colnames(mRExp)
-    CandidateModulegenes <- geneIds(CandidateModulegenes)
-
-    miRTarget <- assay(miRTarget)
-    miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in%
-        miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
-    Res <- c()
-
-    for (i in seq_along(CandidateModulegenes)) {
-        # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
-        tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
-            intersect(CandidateModulegenes[[i]], ceRNames)), 1])
-        M1 <- length(tmp1)
-        tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
-            intersect(CandidateModulegenes[[i]], mRNames)), 1])
-        M2 <- length(tmp2)
-        tmp3 <- intersect(tmp1, tmp2)
-        M3 <- length(tmp3)
-        M4 <- length(miRNames)
-        M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
-
-        if (M3 >= 3) {
-
-            # Canonical correlation between a group of ceRNAs and a group of mRNAs
-            perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
-                CandidateModulegenes[[i]])], assay(mRExp)[, which(mRNames %in%
-                CandidateModulegenes[[i]])], typex = typex, typez = typez,
-                nperms = nperms)
-            out_ceR_mR <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
-                assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
-                typex = typex, typez = typez, penaltyx = perm.out_ceR_mR$bestpenaltyx,
-                penaltyz = perm.out_ceR_mR$bestpenaltyz, v = perm.out_ceR_mR$v.init)
-            M6 <- out_ceR_mR$cor
-
-            # Canonical correlation between a group of miRNAs and a group of mRNAs
-            perm.out_miR_mR <- CCA.permute(assay(miRExp)[, which(miRNames %in%
-                tmp3)], assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
-                typex = typex, typez = typez, nperms = nperms)
-            out_miR_mR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
-                assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
-                typex = typex, typez = typez, penaltyx = perm.out_miR_mR$bestpenaltyx,
-                penaltyz = perm.out_miR_mR$bestpenaltyz, v = perm.out_miR_mR$v.init)
-            M7 <- out_miR_mR$cor
-
-            # Canonical correlation between a group of miRNAs and a group of
-            # ceRNAs
-            perm.out_miR_ceR <- CCA.permute(assay(miRExp)[, which(miRNames %in%
-                tmp3)], assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
-                typex = typex, typez = typez, nperms = nperms)
-            out_miR_ceR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
-                assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
-                typex = typex, typez = typez, penaltyx = perm.out_miR_ceR$bestpenaltyx,
-                penaltyz = perm.out_miR_ceR$bestpenaltyz, v = perm.out_miR_ceR$v.init)
-            M8 <- out_miR_ceR$cor
-
-            # Calculate partial canonical correlation between a group of ceRNAs
-            # and a group of mRNAs on condition a group of miRNAs
-            M9 <- (M6 - M7 * M8)/(sqrt(1 - M7^2) * sqrt(1 - M8^2))
-
-            # Calculate sensitivity canonical correlation between a group of
-            # ceRNAs and a group of mRNAs on condition a group of miRNAs
-            M10 <- M6 - M9
-        } else {
-            M6 <- NA
-            M7 <- NA
-            M8 <- NA
-            M9 <- NA
-            M10 <- NA
-        }
-
-        tmp <- c(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10)
-        Res <- rbind(Res, tmp)
-
-    }
-    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
-        "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
-        "Canonical correlation of ceRNAs:mRNAs", "Canonical correlation of miRNAs:mRNAs",
-        "Canonical correlation of miRNAs:ceRNAs", "partial canonical correlation of ceRNAs:mRNAs",
-        "Sensitivity canonical correlation of ceRNAs:mRNAs")
-    index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
-        Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & Res[,
-        "Sensitivity canonical correlation of ceRNAs:mRNAs"] > SCC.cutoff)
-    if (length(index) == 0) {
-      Result <- "No miRNA sponge modules identified"
-    } else {
-      miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
-      names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
-      Res <- Res[index, ]
-      if (length(index) > 1) {
-        rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
-      }
-      Result <- list(Res, miRSM_genes)
-      names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
-    }
-    return(Result)
-}
-
-
-## Identify miRNA sponge modules by integrating canonical correlation (CC) 
-## and sensitivity canonical correlation (SCC) method
-miRSM_CCplusSCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
-    typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3,
-    pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3) {
-    
-    miRNames <- colnames(miRExp)
-    ceRNames <- colnames(ceRExp)
-    mRNames <- colnames(mRExp)
-    CandidateModulegenes <- geneIds(CandidateModulegenes)
-    
-    miRTarget <- assay(miRTarget)
-    miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in%
-                          miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
-    Res <- c()
+## Identify miRNA sponge modules using sensitivity canonical correlation (SCC) method
+miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
+                      typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3,
+                      pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3) {
+  
+  miRNames <- colnames(miRExp)
+  ceRNames <- colnames(ceRExp)
+  mRNames <- colnames(mRExp)
+  CandidateModulegenes <- geneIds(CandidateModulegenes)
+  
+  miRTarget <- assay(miRTarget)
+  miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in%
+                                                    miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
+  Res <- c()
   
   
-    for (i in seq_along(CandidateModulegenes)) {
-      # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
-      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
-                                                intersect(CandidateModulegenes[[i]], ceRNames)), 1])
-      M1 <- length(tmp1)
-      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
-                                                intersect(CandidateModulegenes[[i]], mRNames)), 1])
-      M2 <- length(tmp2)
-      tmp3 <- intersect(tmp1, tmp2)
-      M3 <- length(tmp3)
-      M4 <- length(miRNames)
-      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+  for (i in seq_along(CandidateModulegenes)) {
+    # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+    tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                              intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+    M1 <- length(tmp1)
+    tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                              intersect(CandidateModulegenes[[i]], mRNames)), 1])
+    M2 <- length(tmp2)
+    tmp3 <- intersect(tmp1, tmp2)
+    M3 <- length(tmp3)
+    M4 <- length(miRNames)
+    M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+    
+    if (M3 >= 3) {
       
-      if (M3 >= 3) {
-        
-        # Canonical correlation between a group of ceRNAs and a group of mRNAs
-        perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
-                                                               CandidateModulegenes[[i]])], assay(mRExp)[, which(mRNames %in%
-                                                                                                                   CandidateModulegenes[[i]])], typex = typex, typez = typez,
-                                       nperms = nperms)
-        out_ceR_mR <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
-                          assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
-                          typex = typex, typez = typez, penaltyx = perm.out_ceR_mR$bestpenaltyx,
-                          penaltyz = perm.out_ceR_mR$bestpenaltyz, v = perm.out_ceR_mR$v.init)
-        M6 <- out_ceR_mR$cor
-        
-        # Canonical correlation between a group of miRNAs and a group of mRNAs
-        perm.out_miR_mR <- CCA.permute(assay(miRExp)[, which(miRNames %in%
-                                                               tmp3)], assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
-                                       typex = typex, typez = typez, nperms = nperms)
-        out_miR_mR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
-                          assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
-                          typex = typex, typez = typez, penaltyx = perm.out_miR_mR$bestpenaltyx,
-                          penaltyz = perm.out_miR_mR$bestpenaltyz, v = perm.out_miR_mR$v.init)
-        M7 <- out_miR_mR$cor
-        
-        # Canonical correlation between a group of miRNAs and a group of
-        # ceRNAs
-        perm.out_miR_ceR <- CCA.permute(assay(miRExp)[, which(miRNames %in%
-                                                                tmp3)], assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
-                                        typex = typex, typez = typez, nperms = nperms)
-        out_miR_ceR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
-                           assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
-                           typex = typex, typez = typez, penaltyx = perm.out_miR_ceR$bestpenaltyx,
-                           penaltyz = perm.out_miR_ceR$bestpenaltyz, v = perm.out_miR_ceR$v.init)
-        M8 <- out_miR_ceR$cor
-        
-        # Calculate partial canonical correlation between a group of ceRNAs
-        # and a group of mRNAs on condition a group of miRNAs
-        M9 <- (M6 - M7 * M8)/(sqrt(1 - M7^2) * sqrt(1 - M8^2))
-        
-        # Calculate sensitivity canonical correlation between a group of
-        # ceRNAs and a group of mRNAs on condition a group of miRNAs
-        M10 <- M6 - M9
-      } else {
-        M6 <- NA
-        M7 <- NA
-        M8 <- NA
-        M9 <- NA
-        M10 <- NA
-      }
+      # Canonical correlation between a group of ceRNAs and a group of mRNAs
+      perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
+                                                             CandidateModulegenes[[i]])], assay(mRExp)[, which(mRNames %in%
+                                                                                                                 CandidateModulegenes[[i]])], typex = typex, typez = typez,
+                                     nperms = nperms)
+      out_ceR_mR <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                        assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+                        typex = typex, typez = typez, penaltyx = perm.out_ceR_mR$bestpenaltyx,
+                        penaltyz = perm.out_ceR_mR$bestpenaltyz, v = perm.out_ceR_mR$v.init)
+      M6 <- out_ceR_mR$cor
       
-      tmp <- c(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10)
-      Res <- rbind(Res, tmp)
+      # Canonical correlation between a group of miRNAs and a group of mRNAs
+      perm.out_miR_mR <- CCA.permute(assay(miRExp)[, which(miRNames %in%
+                                                             tmp3)], assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+                                     typex = typex, typez = typez, nperms = nperms)
+      out_miR_mR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
+                        assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+                        typex = typex, typez = typez, penaltyx = perm.out_miR_mR$bestpenaltyx,
+                        penaltyz = perm.out_miR_mR$bestpenaltyz, v = perm.out_miR_mR$v.init)
+      M7 <- out_miR_mR$cor
       
+      # Canonical correlation between a group of miRNAs and a group of
+      # ceRNAs
+      perm.out_miR_ceR <- CCA.permute(assay(miRExp)[, which(miRNames %in%
+                                                              tmp3)], assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                                      typex = typex, typez = typez, nperms = nperms)
+      out_miR_ceR <- CCA(assay(miRExp)[, which(miRNames %in% tmp3)],
+                         assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                         typex = typex, typez = typez, penaltyx = perm.out_miR_ceR$bestpenaltyx,
+                         penaltyz = perm.out_miR_ceR$bestpenaltyz, v = perm.out_miR_ceR$v.init)
+      M8 <- out_miR_ceR$cor
+      
+      # Calculate partial canonical correlation between a group of ceRNAs
+      # and a group of mRNAs on condition a group of miRNAs
+      M9 <- (M6 - M7 * M8)/(sqrt(1 - M7^2) * sqrt(1 - M8^2))
+      
+      # Calculate sensitivity canonical correlation between a group of
+      # ceRNAs and a group of mRNAs on condition a group of miRNAs
+      M10 <- M6 - M9
+    } else {
+      M6 <- NA
+      M7 <- NA
+      M8 <- NA
+      M9 <- NA
+      M10 <- NA
     }
-    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
-                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
-                       "Canonical correlation of ceRNAs:mRNAs", "Canonical correlation of miRNAs:mRNAs",
-                       "Canonical correlation of miRNAs:ceRNAs", "partial canonical correlation of ceRNAs:mRNAs",
-                       "Sensitivity canonical correlation of ceRNAs:mRNAs")
-    index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+    
+    tmp <- c(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10)
+    Res <- rbind(Res, tmp)
+    
+  }
+  colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                     "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                     "Canonical correlation of ceRNAs:mRNAs", "Canonical correlation of miRNAs:mRNAs",
+                     "Canonical correlation of miRNAs:ceRNAs", "Partial canonical correlation of ceRNAs:mRNAs",
+                     "Sensitivity canonical correlation of ceRNAs:mRNAs")
+  index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
                    Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                    Res[, "Canonical correlation of ceRNAs:mRNAs"] > CC.cutoff &
                    Res[, "Sensitivity canonical correlation of ceRNAs:mRNAs"] > SCC.cutoff)
-                                                                                   
-    if (length(index) == 0) {
-      Result <- "No miRNA sponge modules identified"
-    } else {
-      miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
-      names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
-      Res <- Res[index, ]
-      if (length(index) > 1) {
-        rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
-      }
-      Result <- list(Res, miRSM_genes)
-      names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
+  
+  if (length(index) == 0) {
+    Result <- "No miRNA sponge modules identified"
+  } else {
+    miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
+    names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
+    Res <- Res[index, ]
+    if (length(index) > 1) {
+      rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
     }
-    return(Result)
+    Result <- list(Res, miRSM_genes)
+    names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
+  }
+  return(Result)
+}
+
+## Identify miRNA sponge modules using sensitivity distance correlation (SDC) method 
+miRSM_SDC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
+                      num_shared_miRNAs = 3, pvalue.cutoff = 0.05, 
+                      DC.cutoff = 0.8, SDC.cutoff = 0.3) {    
+  
+  miRNames <- colnames(miRExp)
+  ceRNames <- colnames(ceRExp)
+  mRNames <- colnames(mRExp)
+  CandidateModulegenes <- geneIds(CandidateModulegenes)
+  
+  miRTarget <- assay(miRTarget)
+  miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in%
+                                                    miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
+  Res <- c()
+  
+  
+  for (i in seq_along(CandidateModulegenes)) {
+    # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+    tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                              intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+    M1 <- length(tmp1)
+    tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                              intersect(CandidateModulegenes[[i]], mRNames)), 1])
+    M2 <- length(tmp2)
+    tmp3 <- intersect(tmp1, tmp2)
+    M3 <- length(tmp3)
+    M4 <- length(miRNames)
+    M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+    
+    if (M3 >= 3) {        
+      
+      # Calculate distance correlation between a group of ceRNAs
+      # and a group of mRNAs
+      M6 <- dcor(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                 assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # Calculate partial distance correlation between a group of ceRNAs
+      # and a group of mRNAs on condition a group of miRNAs
+      M7 <- abs(pdcor(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                      assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+                      assay(miRExp)[, which(miRNames %in% tmp3)]))
+      
+      # Calculate sensitivity distance correlation between a group of
+      # ceRNAs and a group of mRNAs on condition a group of miRNAs
+      M8 <- M6 - M7
+      
+    } else {
+      M6 <- NA
+      M7 <- NA
+      M8 <- NA
+    }
+    
+    tmp <- c(M1, M2, M3, M4, M5, M6, M7, M8)
+    Res <- rbind(Res, tmp)
+    
+  }
+  colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                     "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                     "Distance correlation of ceRNAs:mRNAs", "Partial distance correlation of ceRNAs:mRNAs",
+                     "Sensitivity distance correlation of ceRNAs:mRNAs")
+  index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+                   Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                   Res[, "Distance correlation of ceRNAs:mRNAs"] > DC.cutoff &
+                   Res[, "Sensitivity distance correlation of ceRNAs:mRNAs"] > SDC.cutoff)
+  
+  if (length(index) == 0) {
+    Result <- "No miRNA sponge modules identified"
+  } else {
+    miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
+    names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
+    Res <- Res[index, ]
+    if (length(index) > 1) {
+      rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+    }
+    Result <- list(Res, miRSM_genes)
+    names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
+  }
+  return(Result)
+}
+
+## Identify miRNA sponge modules using sensitivity RV coefficient (SRVC) method
+miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
+                       num_shared_miRNAs = 3, pvalue.cutoff = 0.05, RVC.cutoff = 0.8, 
+                       SRVC.cutoff = 0.3, RV_method = "RV") {    
+  
+  miRNames <- colnames(miRExp)
+  ceRNames <- colnames(ceRExp)
+  mRNames <- colnames(mRExp)
+  CandidateModulegenes <- geneIds(CandidateModulegenes)
+  
+  miRTarget <- assay(miRTarget)
+  miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in%
+                                                    miRNames), which(miRTarget[, 2] %in% c(ceRNames, mRNames))), ]
+  Res <- c()
+  
+  
+  for (i in seq_along(CandidateModulegenes)) {
+    # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+    tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                              intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+    M1 <- length(tmp1)
+    tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                              intersect(CandidateModulegenes[[i]], mRNames)), 1])
+    M2 <- length(tmp2)
+    tmp3 <- intersect(tmp1, tmp2)
+    M3 <- length(tmp3)
+    M4 <- length(miRNames)
+    M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+    
+    if (M3 >= 3 & RV_method == "RV") {
+      
+      # RV coefficient between a group of ceRNAs and a group of mRNAs       
+      M6 <- RV(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+               assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of mRNAs        
+      M7 <- RV(assay(miRExp)[, which(miRNames %in% tmp3)],
+               assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of ceRNAs         
+      M8 <- RV(assay(miRExp)[, which(miRNames %in% tmp3)],
+               assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])])
+      
+      # Calculate partial RV coefficient between a group of ceRNAs
+      # and a group of mRNAs on condition a group of miRNAs
+      M9 <- (M6 - M7 * M8)/(sqrt(1 - M7^2) * sqrt(1 - M8^2))
+      
+      # Calculate sensitivity RV coefficient between a group of
+      # ceRNAs and a group of mRNAs on condition a group of miRNAs
+      M10 <- M6 - M9
+      
+    } else if (M3 >= 3 & RV_method == "RV2") {
+      
+      # RV coefficient between a group of ceRNAs and a group of mRNAs       
+      M6 <- RV2(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of mRNAs        
+      M7 <- RV2(assay(miRExp)[, which(miRNames %in% tmp3)],
+                assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of ceRNAs         
+      M8 <- RV2(assay(miRExp)[, which(miRNames %in% tmp3)],
+                assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])])
+      
+      # Calculate partial RV coefficient between a group of ceRNAs
+      # and a group of mRNAs on condition a group of miRNAs
+      M9 <- (M6 - M7 * M8)/(sqrt(1 - M7^2) * sqrt(1 - M8^2))
+      
+      # Calculate sensitivity RV coefficient between a group of
+      # ceRNAs and a group of mRNAs on condition a group of miRNAs
+      M10 <- M6 - M9
+      
+    } else if (M3 >= 3 & RV_method == "RVadjMaye") {
+      
+      # RV coefficient between a group of ceRNAs and a group of mRNAs       
+      M6 <- RVadjMaye(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                      assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of mRNAs        
+      M7 <- RVadjMaye(assay(miRExp)[, which(miRNames %in% tmp3)],
+                      assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of ceRNAs         
+      M8 <- RVadjMaye(assay(miRExp)[, which(miRNames %in% tmp3)],
+                      assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])])
+      
+      # Calculate partial RV coefficient between a group of ceRNAs
+      # and a group of mRNAs on condition a group of miRNAs
+      M9 <- (M6 - M7 * M8)/(sqrt(1 - M7^2) * sqrt(1 - M8^2))
+      
+      # Calculate sensitivity RV coefficient between a group of
+      # ceRNAs and a group of mRNAs on condition a group of miRNAs
+      M10 <- M6 - M9
+      
+    } else if (M3 >= 3 & RV_method == "RVadjGhaziri") {
+      
+      # RV coefficient between a group of ceRNAs and a group of mRNAs       
+      M6 <- RVadjGhaziri(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                         assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of mRNAs        
+      M7 <- RVadjGhaziri(assay(miRExp)[, which(miRNames %in% tmp3)],
+                         assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+      
+      # RV coefficient between a group of miRNAs and a group of ceRNAs         
+      M8 <- RVadjGhaziri(assay(miRExp)[, which(miRNames %in% tmp3)],
+                         assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])])
+      
+      # Calculate partial RV coefficient between a group of ceRNAs
+      # and a group of mRNAs on condition a group of miRNAs
+      M9 <- (M6 - M7 * M8)/(sqrt(1 - M7^2) * sqrt(1 - M8^2))
+      
+      # Calculate sensitivity RV coefficient between a group of
+      # ceRNAs and a group of mRNAs on condition a group of miRNAs
+      M10 <- M6 - M9
+      
+    } else {
+      M6 <- NA
+      M7 <- NA
+      M8 <- NA
+      M9 <- NA
+      M10 <- NA
+    }
+    
+    tmp <- c(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10)
+    Res <- rbind(Res, tmp)
+    
+  }
+  colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                     "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                     "RV coefficient of ceRNAs:mRNAs", "RV coefficient of miRNAs:mRNAs",
+                     "RV coefficient of miRNAs:ceRNAs", "Partial RV coefficient of ceRNAs:mRNAs",
+                     "Sensitivity RV coefficient of ceRNAs:mRNAs")
+  index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+                   Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                   Res[, "RV coefficient of ceRNAs:mRNAs"] > RVC.cutoff &
+                   Res[, "Sensitivity RV coefficient of ceRNAs:mRNAs"] > SRVC.cutoff)
+  
+  if (length(index) == 0) {
+    Result <- "No miRNA sponge modules identified"
+  } else {
+    miRSM_genes <- lapply(index, function(i) CandidateModulegenes[[i]])
+    names(miRSM_genes) <- paste("miRSM", seq_along(index), sep=" ")
+    Res <- Res[index, ]
+    if (length(index) > 1) {
+      rownames(Res) <- paste("miRSM", seq_along(index), sep = " ")
+    }
+    Result <- list(Res, miRSM_genes)
+    names(Result) <- c("Group competition of miRNA sponge modules", "miRNA sponge modules")
+  }
+  return(Result)
 }
 
 
-#' Identify miRNA sponge modules using canonical correlation (CC), sensitivity canonical correlation (SCC),
-#' and integrate canonical correlation and sensitivity canonical correlation (CCplusSCC) methods.
+#' Identify miRNA sponge modules using sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC),
+#' and sensitivity RV coefficient (SRVC) methods.
 #'
 #' @title miRSM
 #' @param miRExp A SummarizedExperiment object. miRNA expression data: 
@@ -1292,60 +1348,93 @@ miRSM_CCplusSCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegen
 #' @param CandidateModulegenes List object: a list of candidate 
 #' miRNA sponge modules.
 #' @param typex The columns of x unordered (type='standard') or 
-#' ordered (type='ordered').
+#' ordered (type='ordered'). Only for the SCC method.
 #' @param typez The columns of z unordered (type='standard') or 
-#' ordered (type='ordered').
-#' @param nperms The number of permutations.
+#' ordered (type='ordered'). Only for the SCC method.
+#' @param nperms The number of permutations. Only for the SCC method.
 #' @param method The method selected to identify miRNA sponge 
-#' modules, including 'CC', 'SCC' and 'CCplusSCC'.
+#' modules, including 'SCC', 'SDC' and 'SRVC'.
 #' @param num_shared_miRNAs The number of common miRNAs shared 
 #' by a group of ceRNAs and mRNAs.
 #' @param pvalue.cutoff The p-value cutoff of significant sharing 
 #' of common miRNAs by a group of ceRNAs and mRNAs.
-#' @param CC.cutoff The cutoff of canonical correlation for 'CC' method.
-#' @param SCC.cutoff The cutoff of sensitivity canonical correlation 
-#' for 'SCC' method.
+#' @param MC.cutoff The cutoff of matrix correlation (canonical correlation, 
+#' distance correlation and RV coefficient).
+#' @param SMC.cutoff The cutoff of sensitivity matrix correlation
+#' (sensitivity canonical correlation, sensitivity distance correlation 
+#' and sensitivity RV coefficient).
+#' @param RV_method the method of calculating RV coefficients. Select
+#' one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
+#' Only for the SRVC method.
 #' @import SummarizedExperiment
 #' @importFrom PMA CCA.permute
 #' @importFrom PMA CCA
+#' @importFrom energy dcor
+#' @importFrom energy pdcor
+#' @importFrom MatrixCorrelation RV
+#' @importFrom MatrixCorrelation RV2
+#' @importFrom MatrixCorrelation RVadjMaye
+#' @importFrom MatrixCorrelation RVadjGhaziri
 #' @importFrom stats phyper
 #' @importFrom GSEABase geneIds
 #' @export
-#' @return List object: Canonical correlation or sensitivity canonical correlation,
+#' @return List object: Sensitivity correlation,
 #' and genes of miRNA sponge modules.
 #'
 #' @examples
 #' data(BRCASampleData)
 #' modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
 #'     mRExp[, seq_len(10)])
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_igraph_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_igraph, nperms = 5,
-#'                         method = 'CC')
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_igraph_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_igraph, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Witten DM, Tibshirani R, Hastie T. A penalized matrix 
 #' decomposition, with applications to sparse principal components 
 #' and canonical correlation analysis. Biostatistics. 
 #' 2009, 10(3):515-34.
+#' @references Szekely GJ, Rizzo ML. Partial distance 
+#' correlation with methods for dissimilarities. Annals of Statistics. 
+#' 2014, 42(6):2382-2412.
+#' @references Szekely GJ, Rizzo ML, Bakirov NK. 
+#' Measuring and Testing Dependence by Correlation of Distances, 
+#' Annals of Statistics, 2007, 35(6):2769-2794.
+#' @references Robert P, Escoufier Y. A unifying tool for 
+#' linear multivariate statistical methods: the RV-Coefficient. 
+#' Applied Statistics, 1976, 25(3):257-265.
+#' @references Smilde AK, Kiers HA, Bijlsma S, Rubingh CM, 
+#' van Erk MJ. Matrix correlations for high-dimensional 
+#' data: the modified RV-coefficient. Bioinformatics, 
+#' 2009, 25(3):401-405.
+#' @references Maye CD, Lorent J, Horgan GW. 
+#' Exploratory analysis of multiple omics datasets using 
+#' the adjusted RV coefficient". Stat Appl Genet Mol Biol., 
+#' 2011, 10, 14.
+#' @references EIGhaziri A, Qannari EM. Measures 
+#' of association between two datasets; Application to sensory data, 
+#' Food Quality and Preference, 2015, 40(A):116-124.
 miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
-    typex = "standard", typez = "standard", nperms = 100, method = c("CC",
-    "SCC", "CCplusSCC"), num_shared_miRNAs = 3, pvalue.cutoff = 0.05, CC.cutoff = 0.8,
-    SCC.cutoff = 0.3) {
+    typex = "standard", typez = "standard", nperms = 100, method = c("SCC",
+    "SDC", "SRVC"), num_shared_miRNAs = 3, pvalue.cutoff = 0.05, MC.cutoff = 0.8,
+    SMC.cutoff = 0.3, RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri")) {
 
-    if (method == "CC") {
-        Res <- miRSM_CC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
-            typex = "standard", typez = "standard", nperms = nperms, num_shared_miRNAs = num_shared_miRNAs,
-            pvalue.cutoff = pvalue.cutoff, CC.cutoff = CC.cutoff)
-    } else if (method == "SCC") {
+    if (method == "SCC") {
         Res <- miRSM_SCC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
             typex = "standard", typez = "standard", nperms = nperms, num_shared_miRNAs = num_shared_miRNAs,
-            pvalue.cutoff = pvalue.cutoff, SCC.cutoff = SCC.cutoff)
-    } else if (method == "CCplusSCC") {
-        Res <- miRSM_CCplusSCC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
-            typex = "standard", typez = "standard", nperms = nperms, num_shared_miRNAs = num_shared_miRNAs,
-            pvalue.cutoff = pvalue.cutoff, CC.cutoff = CC.cutoff, 
-            SCC.cutoff = SCC.cutoff)
+            pvalue.cutoff = pvalue.cutoff, CC.cutoff = MC.cutoff, 
+            SCC.cutoff = SMC.cutoff)
+    } else if (method == "SDC") {
+        Res <- miRSM_SDC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
+            num_shared_miRNAs = num_shared_miRNAs,
+            pvalue.cutoff = pvalue.cutoff, DC.cutoff = MC.cutoff, 
+            SDC.cutoff = SMC.cutoff)
+    } else if (method == "SRVC") {
+        Res <- miRSM_SRVC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
+            num_shared_miRNAs = num_shared_miRNAs,
+            pvalue.cutoff = pvalue.cutoff, RVC.cutoff = MC.cutoff, 
+            SRVC.cutoff = SMC.cutoff, RV_method = RV_method)
     }
 
     return(Res)
@@ -1380,12 +1469,13 @@ miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' \dontrun{
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#' miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'FEA')
-#' miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'DEA')
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+#' miRSM_WGCNA_SRVC_FEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'FEA')
+#' miRSM_WGCNA_SRVC_DEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'DEA')
 #' }
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
@@ -1427,11 +1517,13 @@ module_FA <- function(Modulelist, GOont = "BP", Diseaseont = "DO", KEGGorganism 
 #' @examples
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#' miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_CC_genes)
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+#' miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, 
+#'                               miRSM_WGCNA_SRVC_genes)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 #' @references Johnson NL, Kotz S, Kemp AW (1992) 
@@ -1462,14 +1554,15 @@ module_CEA <- function(ceRExp, mRExp, Cancergenes, Modulelist) {
 #' @examples
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
 #' library(miRspongeR)
 #' Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
 #' Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",") 
-#' miRSM.Validate <- module_Validate(miRSM_WGCNA_CC_genes, Groundtruth)
+#' miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 module_Validate <- function(Modulelist, Groundtruth) {
@@ -1505,12 +1598,14 @@ module_Validate <- function(Modulelist, Groundtruth) {
 #' @examples 
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#' miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_CC_genes, 
-#' resample = 10, method = "mean")
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+#' miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, 
+#'                                            miRSM_WGCNA_SRVC_genes, 
+#'                                            resample = 10, method = "mean")
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 module_Coexpress <- function(ceRExp, mRExp, Modulelist, resample = 1000, method = c("mean", "median")) {
@@ -1569,11 +1664,13 @@ module_Coexpress <- function(ceRExp, mRExp, Modulelist, resample = 1000, method 
 #' @examples 
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, 
+#'                                       miRTarget, miRSM_WGCNA_SRVC_genes)
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 share_miRs <- function(miRExp, ceRExp, mRExp, miRTarget, Modulelist){
@@ -1611,11 +1708,13 @@ share_miRs <- function(miRExp, ceRExp, mRExp, miRTarget, Modulelist){
 #' @examples 
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, 
+#'                                       miRTarget, miRSM_WGCNA_SRVC_genes)
 #' miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
@@ -1652,12 +1751,15 @@ module_miRdistribute <- function(share_miRs) {
 #' @examples 
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
-#' miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_CC_genes)
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, 
+#'                                       miRTarget, miRSM_WGCNA_SRVC_genes)
+#' miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, 
+#'                                           miRSM_WGCNA_SRVC_genes)
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 module_miRtarget <- function(share_miRs, Modulelist){
@@ -1696,12 +1798,15 @@ module_miRtarget <- function(share_miRs, Modulelist){
 #' @examples 
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' # Identify miRNA sponge modules using canonical correlation (CC)
-#' miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-#'                         modulegenes_WGCNA, nperms = 10, method = 'CC')
-#' miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
-#' miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
+#' # Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+#' miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+#'                         modulegenes_WGCNA, method = "SRVC",
+#'                         SMC.cutoff = 0.01, RV_method = "RV")
+#' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, 
+#'                                       miRTarget, miRSM_WGCNA_SRVC_genes)
+#' miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, 
+#'                                          miRSM_WGCNA_SRVC_genes)
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
 module_miRsponge<- function(ceRExp, mRExp,  Modulelist){

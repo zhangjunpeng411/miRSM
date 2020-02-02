@@ -4,8 +4,13 @@
 \alias{module_WGCNA}
 \title{module_WGCNA}
 \usage{
-module_WGCNA(ceRExp, mRExp, RsquaredCut = 0.9, num.ModuleceRs = 2,
-  num.ModulemRs = 2)
+module_WGCNA(
+  ceRExp,
+  mRExp,
+  RsquaredCut = 0.9,
+  num.ModuleceRs = 2,
+  num.ModulemRs = 2
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 

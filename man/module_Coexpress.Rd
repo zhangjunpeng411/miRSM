@@ -4,8 +4,13 @@
 \alias{module_Coexpress}
 \title{module_Coexpress}
 \usage{
-module_Coexpress(ceRExp, mRExp, Modulelist, resample = 1000,
-  method = c("mean", "median"))
+module_Coexpress(
+  ceRExp,
+  mRExp,
+  Modulelist,
+  resample = 1000,
+  method = c("mean", "median")
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
@@ -31,12 +36,14 @@ Co-expression analysis of each miRNA sponge module and its corresponding random 
 \examples{
 data(BRCASampleData)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-# Identify miRNA sponge modules using canonical correlation (CC)
-miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-                        modulegenes_WGCNA, nperms = 10, method = 'CC')
-miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_CC_genes, 
-resample = 10, method = "mean")
+# Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+                        modulegenes_WGCNA, method = "SRVC",
+                        SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, 
+                                           miRSM_WGCNA_SRVC_genes, 
+                                           resample = 10, method = "mean")
 
 }
 \author{

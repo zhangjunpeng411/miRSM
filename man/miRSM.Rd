@@ -4,10 +4,22 @@
 \alias{miRSM}
 \title{miRSM}
 \usage{
-miRSM(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
-  typex = "standard", typez = "standard", nperms = 100,
-  method = c("CC", "SCC", "CCplusSCC"), num_shared_miRNAs = 3,
-  pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3)
+miRSM(
+  miRExp,
+  ceRExp,
+  mRExp,
+  miRTarget,
+  CandidateModulegenes,
+  typex = "standard",
+  typez = "standard",
+  nperms = 100,
+  method = c("SCC", "SDC", "SRVC"),
+  num_shared_miRNAs = 3,
+  pvalue.cutoff = 0.05,
+  MC.cutoff = 0.8,
+  SMC.cutoff = 0.3,
+  RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri")
+)
 }
 \arguments{
 \item{miRExp}{A SummarizedExperiment object. miRNA expression data: 
@@ -26,15 +38,15 @@ miRNA-target binding information.}
 miRNA sponge modules.}
 
 \item{typex}{The columns of x unordered (type='standard') or 
-ordered (type='ordered').}
+ordered (type='ordered'). Only for the SCC method.}
 
 \item{typez}{The columns of z unordered (type='standard') or 
-ordered (type='ordered').}
+ordered (type='ordered'). Only for the SCC method.}
 
-\item{nperms}{The number of permutations.}
+\item{nperms}{The number of permutations. Only for the SCC method.}
 
 \item{method}{The method selected to identify miRNA sponge 
-modules, including 'CC', 'SCC' and 'CCplusSCC'.}
+modules, including 'SCC', 'SDC' and 'SRVC'.}
 
 \item{num_shared_miRNAs}{The number of common miRNAs shared 
 by a group of ceRNAs and mRNAs.}
@@ -42,27 +54,33 @@ by a group of ceRNAs and mRNAs.}
 \item{pvalue.cutoff}{The p-value cutoff of significant sharing 
 of common miRNAs by a group of ceRNAs and mRNAs.}
 
-\item{CC.cutoff}{The cutoff of canonical correlation for 'CC' method.}
+\item{MC.cutoff}{The cutoff of matrix correlation (canonical correlation, 
+distance correlation and RV coefficient).}
 
-\item{SCC.cutoff}{The cutoff of sensitivity canonical correlation 
-for 'SCC' method.}
+\item{SMC.cutoff}{The cutoff of sensitivity matrix correlation
+(sensitivity canonical correlation, sensitivity distance correlation 
+and sensitivity RV coefficient).}
+
+\item{RV_method}{the method of calculating RV coefficients. Select
+one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
+Only for the SRVC method.}
 }
 \value{
-List object: Canonical correlation or sensitivity canonical correlation,
+List object: Sensitivity correlation,
 and genes of miRNA sponge modules.
 }
 \description{
-Identify miRNA sponge modules using canonical correlation (CC), sensitivity canonical correlation (SCC),
-and integrate canonical correlation and sensitivity canonical correlation (CCplusSCC) methods.
+Identify miRNA sponge modules using sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC),
+and sensitivity RV coefficient (SRVC) methods.
 }
 \examples{
 data(BRCASampleData)
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
     mRExp[, seq_len(10)])
-# Identify miRNA sponge modules using canonical correlation (CC)
-miRSM_igraph_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-                        modulegenes_igraph, nperms = 5,
-                        method = 'CC')
+# Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+miRSM_igraph_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+                        modulegenes_igraph, method = "SRVC",
+                        SMC.cutoff = 0.01, RV_method = "RV")
 
 }
 \references{
@@ -70,6 +88,32 @@ Witten DM, Tibshirani R, Hastie T. A penalized matrix
 decomposition, with applications to sparse principal components 
 and canonical correlation analysis. Biostatistics. 
 2009, 10(3):515-34.
+
+Szekely GJ, Rizzo ML. Partial distance 
+correlation with methods for dissimilarities. Annals of Statistics. 
+2014, 42(6):2382-2412.
+
+Szekely GJ, Rizzo ML, Bakirov NK. 
+Measuring and Testing Dependence by Correlation of Distances, 
+Annals of Statistics, 2007, 35(6):2769-2794.
+
+Robert P, Escoufier Y. A unifying tool for 
+linear multivariate statistical methods: the RV-Coefficient. 
+Applied Statistics, 1976, 25(3):257-265.
+
+Smilde AK, Kiers HA, Bijlsma S, Rubingh CM, 
+van Erk MJ. Matrix correlations for high-dimensional 
+data: the modified RV-coefficient. Bioinformatics, 
+2009, 25(3):401-405.
+
+Maye CD, Lorent J, Horgan GW. 
+Exploratory analysis of multiple omics datasets using 
+the adjusted RV coefficient". Stat Appl Genet Mol Biol., 
+2011, 10, 14.
+
+EIGhaziri A, Qannari EM. Measures 
+of association between two datasets; Application to sensory data, 
+Food Quality and Preference, 2015, 40(A):116-124.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})

@@ -21,12 +21,15 @@ Extract miRNA-target interactions of each miRNA sponge module
 \examples{
 data(BRCASampleData)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-# Identify miRNA sponge modules using canonical correlation (CC)
-miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-                        modulegenes_WGCNA, nperms = 10, method = 'CC')
-miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
-miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_CC_genes)
+# Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+                        modulegenes_WGCNA, method = "SRVC",
+                        SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, 
+                                      miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, 
+                                          miRSM_WGCNA_SRVC_genes)
 
 }
 \author{

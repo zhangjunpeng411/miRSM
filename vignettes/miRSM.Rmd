@@ -115,17 +115,18 @@ modulegenes_biclust
 ```
 
 # Identification of miRNA sponge modules
-The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the cannonical correlation (CC) [37], sensitivity cannonical correlation (SCC) and integrating cannonical correlation and sensitivity cannonical correlation (CCplusSCC) methods to identify miRNA sponge modules.
+The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the sensitivity cannonical correlation (SCC), sensitivity distance correlation (SDC) and sensitivity RV coefficient (SRVC) methods to identify miRNA sponge modules.
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
                                   mRExp[, seq_len(10)])
-# Identify miRNA sponge modules using cannonical correlation (CC)
-miRSM_igraph_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_igraph, nperms = 5, 
+# Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+miRSM_igraph_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
+                        modulegenes_igraph,
                         num_shared_miRNAs = 3, pvalue.cutoff = 0.05, 
-                        method = "CC", CC.cutoff = 0.8)
-miRSM_igraph_CC
+                        method = "SRVC", MC.cutoff = 0.8,
+                        SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_igraph_SRVC
 ```
 
 # Modular analysis of the identified miRNA sponge modules
@@ -136,15 +137,13 @@ We implement 'module_FA' function to conduct functional analysis of miRNA sponge
 ```{r, eval=FALSE, include=TRUE}
 modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(150)], 
                                   mRExp[, seq_len(150)])
-# Identify miRNA sponge modules using cannonical correlation (CC)
-miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_WGCNA, nperms = 5, 
-                        method = "CC")
-miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes,
-                                Analysis.type ="FEA")
-miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, 
-                                Analysis.type = "DEA")
+# Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+                         modulegenes_WGCNA, method = "SRVC",
+                         SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+miRSM_WGCNA_SRVC_FEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'FEA')
+miRSM_WGCNA_SRVC_DEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'DEA')
 ```
 
 ## Cancer enrichment analysis of miRNA sponge modules
@@ -153,12 +152,12 @@ To investigate whether the identified miRNA sponge modules are functionally asso
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(150)], 
                                   mRExp[, seq_len(150)])
-# Identify miRNA sponge modules using cannonical correlation (CC)
-miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget, 
-                        modulegenes_WGCNA, nperms = 5, 
-                        method = "CC")
-miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_CC_genes)
+# Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+                         modulegenes_WGCNA, method = "SRVC",
+                         SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_SRVC_genes)
 miRSM.CEA.pvalue
 ```
 
@@ -170,16 +169,16 @@ The function 'module_Validate' is implemented validate the miRNA sponge interact
 library(miRspongeR)
 Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
 Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
-# Using the identified miRNA sponge modules based on WGCNA and cannonical correlation (CC) method
-miRSM.Validate <- module_Validate(miRSM_WGCNA_CC_genes, Groundtruth)
+# Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
+miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 ```
 
 ## Co-expression analysis of miRNA sponge modules
 To evaluate whether the ceRNAs and mRNAs iin the miRNA sponge modules are highly correlated with each other, we implement 'module_Coexpress' function calculate average (mean and median) absolute Pearson correlation of all the ceRNA-mRNA pairs in each miRNA sponge module to see the overall co-expression level between the ceRNAs and mRNAs in the miRNA sponge module. For each miRNA sponge module, we perform a permutation test by generating random modules (the number is 'resample' in the 'module_Coexpress' function) with the same number of ceRNAs and mRNAs for it to compute the statistical significance of the co-expression level.
 
 ```{r, eval=TRUE, include=TRUE}
-# Using the identified miRNA sponge modules based on WGCNA and cannonical correlation (CC) method
-miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_CC_genes, resample = 10, method = "mean")
+# Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes, resample = 10, method = "mean")
 miRSM_WGCNA_Coexpress
 ```
 
@@ -187,8 +186,8 @@ miRSM_WGCNA_Coexpress
 To investigate the distribution of sharing miRNAs in the identified miRNA sponge modules, we implement 'module_miRdistribute' function. The miRNA distribution analysis can understand whether the sharing miRNAs act as crosslinks across different miRNA sponge modules.
 
 ```{r, eval=TRUE, include=TRUE}
-# Using the identified miRNA sponge modules based on WGCNA and cannonical correlation (CC) method
-miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_CC_genes)
+# Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 head(miRSM_WGCNA_miRdistribute)
 ```
@@ -197,16 +196,16 @@ head(miRSM_WGCNA_miRdistribute)
 Since the identified miRNA sponge modules and their sharing miRNAs can also be used to predict miRNA-target interactions (including miRNA-ceRNA and miRNA-mRNA interactions), we implement 'module_miRtarget' function to extract miRNA-target interactions of each miRNA sponge module. 
 
 ```{r, eval=FALSE, include=TRUE}
-# Using the identified miRNA sponge modules based on WGCNA and cannonical correlation (CC) method
-miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_CC_genes)
+# Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_SRVC_genes)
 ```
 
 ## Identify miRNA sponge interactions
 To extract miRNA sponge interactions of each miRNA sponge module, we implement 'module_miRsponge' function to identify ceRNA related miRNA sponge interactions.
 
 ```{r, eval=FALSE, include=TRUE}
-# Using the identified miRNA sponge modules based on WGCNA and cannonical correlation (CC) method
-miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_CC_genes)
+# Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes)
 ```
 
 # Conclusions
@@ -297,8 +296,6 @@ Journal of Statistical Software. 2012, 46(11):1-17.
 [35] Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics, 2011, 27(19):2738-45.
 
 [36] Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res., 2009, 37(15):e101.
-
-[37] Witten DM, Tibshirani R, Hastie T. A penalized matrix decomposition, with applications to sparse principal components and canonical correlation analysis. Biostatistics, 2009, 10(3):515-34.
 
 # Session information
 ```{r}

@@ -4,9 +4,15 @@
 \alias{module_igraph}
 \title{module_igraph}
 \usage{
-module_igraph(ceRExp, mRExp, cor.method = "pearson",
-  pos.p.value.cutoff = 0.01, cluster.method = "greedy",
-  num.ModuleceRs = 2, num.ModulemRs = 2)
+module_igraph(
+  ceRExp,
+  mRExp,
+  cor.method = "pearson",
+  pos.p.value.cutoff = 0.01,
+  cluster.method = "greedy",
+  num.ModuleceRs = 2,
+  num.ModulemRs = 2
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 

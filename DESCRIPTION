@@ -1,7 +1,7 @@
 Package: miRSM
 Type: Package
 Title: Inferring miRNA sponge modules by integrating expression data and miRNA-target binding information
-Version: 1.3.2
+Version: 1.5.1
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 
@@ -18,7 +18,7 @@ Encoding: UTF-8
 biocViews: GeneExpression, BiomedicalInformatics, 
            Clustering, GeneSetEnrichment, Microarray, 
 	         Software, GeneRegulation, GeneTarget
-RoxygenNote: 6.1.0
+RoxygenNote: 7.0.2
 Imports: WGCNA,
     flashClust,
     dynamicTreeCut,
@@ -49,7 +49,9 @@ Imports: WGCNA,
     utils,
     SummarizedExperiment,
     GSEABase,
-    org.Hs.eg.db
+    org.Hs.eg.db,
+    MatrixCorrelation,
+    energy
 Suggests: BiocStyle, 
     knitr,
     rmarkdown,

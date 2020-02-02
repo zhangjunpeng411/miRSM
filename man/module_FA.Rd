@@ -4,10 +4,17 @@
 \alias{module_FA}
 \title{module_FA}
 \usage{
-module_FA(Modulelist, GOont = "BP", Diseaseont = "DO",
-  KEGGorganism = "hsa", Reactomeorganism = "human",
-  OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05,
-  padjustedmethod = "BH", Analysis.type = c("FEA", "DEA"))
+module_FA(
+  Modulelist,
+  GOont = "BP",
+  Diseaseont = "DO",
+  KEGGorganism = "hsa",
+  Reactomeorganism = "human",
+  OrgDb = "org.Hs.eg.db",
+  padjustvaluecutoff = 0.05,
+  padjustedmethod = "BH",
+  Analysis.type = c("FEA", "DEA")
+)
 }
 \arguments{
 \item{Modulelist}{List object: a list of miRNA sponge modules.}
@@ -45,12 +52,13 @@ enrichment and disease enrichment analysis
 \dontrun{
 data(BRCASampleData)
 modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-# Identify miRNA sponge modules using canonical correlation (CC)
-miRSM_WGCNA_CC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
-                        modulegenes_WGCNA, nperms = 10, method = 'CC')
-miRSM_WGCNA_CC_genes <- miRSM_WGCNA_CC[[2]]
-miRSM_WGCNA_CC_FEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'FEA')
-miRSM_WGCNA_CC_DEA <- module_FA(miRSM_WGCNA_CC_genes, Analysis.type = 'DEA')
+# Identify miRNA sponge modules using sensitivity RV coefficient (SRVC)
+miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
+                        modulegenes_WGCNA, method = "SRVC",
+                        SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
+miRSM_WGCNA_SRVC_FEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'FEA')
+miRSM_WGCNA_SRVC_DEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'DEA')
 }
 
 }

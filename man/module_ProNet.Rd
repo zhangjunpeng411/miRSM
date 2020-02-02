@@ -4,9 +4,15 @@
 \alias{module_ProNet}
 \title{module_ProNet}
 \usage{
-module_ProNet(ceRExp, mRExp, cor.method = "pearson",
-  pos.p.value.cutoff = 0.01, cluster.method = "MCL",
-  num.ModuleceRs = 2, num.ModulemRs = 2)
+module_ProNet(
+  ceRExp,
+  mRExp,
+  cor.method = "pearson",
+  pos.p.value.cutoff = 0.01,
+  cluster.method = "MCL",
+  num.ModuleceRs = 2,
+  num.ModulemRs = 2
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 

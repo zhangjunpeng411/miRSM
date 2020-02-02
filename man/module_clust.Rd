@@ -4,8 +4,14 @@
 \alias{module_clust}
 \title{module_clust}
 \usage{
-module_clust(ceRExp, mRExp, cluster.method = "kmeans",
-  num.modules = 10, num.ModuleceRs = 2, num.ModulemRs = 2)
+module_clust(
+  ceRExp,
+  mRExp,
+  cluster.method = "kmeans",
+  num.modules = 10,
+  num.ModuleceRs = 2,
+  num.ModulemRs = 2
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 

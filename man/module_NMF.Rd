@@ -4,8 +4,14 @@
 \alias{module_NMF}
 \title{module_NMF}
 \usage{
-module_NMF(ceRExp, mRExp, NMF.algorithm = "brunet", num.modules = 10,
-  num.ModuleceRs = 2, num.ModulemRs = 2)
+module_NMF(
+  ceRExp,
+  mRExp,
+  NMF.algorithm = "brunet",
+  num.modules = 10,
+  num.ModuleceRs = 2,
+  num.ModulemRs = 2
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
