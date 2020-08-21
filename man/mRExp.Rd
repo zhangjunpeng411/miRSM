@@ -4,9 +4,11 @@
 \name{mRExp}
 \alias{mRExp}
 \title{mRNA expression data}
-\format{mRExp: A SummarizedExperiment 
+\format{
+mRExp: A SummarizedExperiment 
 object with 72 BRCA and 72 normal samples (rows) and 226 miRNAs 
-(columns).}
+(columns).
+}
 \description{
 mRNA expression data
 }

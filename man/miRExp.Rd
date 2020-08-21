@@ -4,8 +4,10 @@
 \name{miRExp}
 \alias{miRExp}
 \title{miRNA expression data}
-\format{miRExp: A SummarizedExperiment object with 72 BRCA and 72 normal
-samples (rows) and 226 miRNAs (columns).}
+\format{
+miRExp: A SummarizedExperiment object with 72 BRCA and 72 normal
+samples (rows) and 226 miRNAs (columns).
+}
 \description{
 miRNA expression data
 }

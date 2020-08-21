@@ -9,7 +9,8 @@ module_Coexpress(
   mRExp,
   Modulelist,
   resample = 1000,
-  method = c("mean", "median")
+  method = c("mean", "median"),
+  test.method = c("t.test", "wilcox.test")
 )
 }
 \arguments{
@@ -26,9 +27,15 @@ rows are samples and columns are mRNAs.}
 \item{method}{The method used to evaluate the co-expression level of each miRNA sponge module.
 Users can select "mean" or "median" to calculate co-expression value of each miRNA sponge module
 and its corresponding random miRNA sponge module.}
+
+\item{test.method}{The method used to evaluate statistical significance p-value of 
+co-expression level higher than random miRNA sponge modules.
+Users can select "t.test" or "wilcox.test" to calculate statistical significance p-value of 
+co-expression level higher than random miRNA sponge modules.}
 }
 \value{
-List object: co-expression values of miRNA sponge modules and their corresponding random miRNA sponge modules.
+List object: co-expression values of miRNA sponge modules and their corresponding random miRNA sponge modules, 
+and statistical significance p-value of co-expression level higher than random miRNA sponge modules.
 }
 \description{
 Co-expression analysis of each miRNA sponge module and its corresponding random miRNA sponge module
@@ -43,7 +50,8 @@ miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
 miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, 
                                            miRSM_WGCNA_SRVC_genes, 
-                                           resample = 10, method = "mean")
+                                           resample = 10, method = "mean",
+                                           test.method = "t.test")
 
 }
 \author{

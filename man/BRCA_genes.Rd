@@ -4,8 +4,10 @@
 \name{BRCA_genes}
 \alias{BRCA_genes}
 \title{BRCA genes}
-\format{BRCA_genes: A SummarizedExperiment object with
-4819 BRCA related genes (including lncRNAs and mRNAs).}
+\format{
+BRCA_genes: A SummarizedExperiment object with
+4819 BRCA related genes (including lncRNAs and mRNAs).
+}
 \description{
 BRCA genes
 }

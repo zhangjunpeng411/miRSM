@@ -1587,13 +1587,20 @@ module_Validate <- function(Modulelist, Groundtruth) {
 #' @param resample The number of random miRNA sponge modules generated, and 1000 times in default.
 #' @param method The method used to evaluate the co-expression level of each miRNA sponge module.
 #' Users can select "mean" or "median" to calculate co-expression value of each miRNA sponge module
-#' and its corresponding random miRNA sponge module. 
+#' and its corresponding random miRNA sponge module.
+#' @param test.method The method used to evaluate statistical significance p-value of 
+#' co-expression level higher than random miRNA sponge modules.
+#' Users can select "t.test" or "wilcox.test" to calculate statistical significance p-value of 
+#' co-expression level higher than random miRNA sponge modules.
 #' @import SummarizedExperiment
 #' @importFrom WGCNA cor
 #' @importFrom stats median
 #' @importFrom stats na.omit
+#' @importFrom stats t.test
+#' @importFrom stats wilcox.test
 #' @export
-#' @return List object: co-expression values of miRNA sponge modules and their corresponding random miRNA sponge modules.
+#' @return List object: co-expression values of miRNA sponge modules and their corresponding random miRNA sponge modules, 
+#' and statistical significance p-value of co-expression level higher than random miRNA sponge modules.
 #'
 #' @examples 
 #' data(BRCASampleData)
@@ -1605,10 +1612,13 @@ module_Validate <- function(Modulelist, Groundtruth) {
 #' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
 #' miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, 
 #'                                            miRSM_WGCNA_SRVC_genes, 
-#'                                            resample = 10, method = "mean")
+#'                                            resample = 10, method = "mean",
+#'                                            test.method = "t.test")
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
-module_Coexpress <- function(ceRExp, mRExp, Modulelist, resample = 1000, method = c("mean", "median")) {
+module_Coexpress <- function(ceRExp, mRExp, Modulelist, resample = 1000, 
+                             method = c("mean", "median"),
+                             test.method = c("t.test", "wilcox.test")) {
   
   ceRExp <- assay(ceRExp)
   mRExp <- assay(mRExp)
@@ -1626,6 +1636,7 @@ module_Coexpress <- function(ceRExp, mRExp, Modulelist, resample = 1000, method 
   }
   
   module_avg_cor_resample <- c()
+  module_avg_cor_pvalue <- c()
   for (i in seq_along(Modulelist)){
     temp1 <- replicate(resample, sample(seq_len(ncol(ceRExp)), size = ncol(module_ceRExp[[i]])))
     temp2 <- replicate(resample, sample(seq_len(ncol(mRExp)), size = ncol(module_mRExp[[i]])))
@@ -1633,15 +1644,29 @@ module_Coexpress <- function(ceRExp, mRExp, Modulelist, resample = 1000, method 
     module_mRExp_resample <- lapply(seq_len(resample), function(i) mRExp[, temp2[, i]])
     
       if (method == "mean"){
-          module_avg_cor_resample[i] <- mean(unlist(lapply(seq_len(resample), function(i) 
-            mean(na.omit(abs(cor(module_ceRExp_resample[[i]], module_mRExp_resample[[i]])))))))
+          temp <- unlist(lapply(seq_len(resample), function(i) 
+            mean(na.omit(abs(cor(module_ceRExp_resample[[i]], module_mRExp_resample[[i]]))))))
+          module_avg_cor_resample[i] <- mean(temp)
+          if (test.method == "t.test"){
+          module_avg_cor_pvalue[i] <- t.test(temp, alternative = "less", mu = module_avg_cor[i])$p.value
+          } 
+          if (test.method == "wilcox.test"){
+          module_avg_cor_pvalue[i] <- wilcox.test(temp, alternative = "less", mu = module_avg_cor[i])$p.value
+          }
       } else if (method == "median"){
-          module_avg_cor_resample[i] <- median(unlist(lapply(seq_len(resample), function(i) 
-            median(na.omit(abs(cor(module_ceRExp_resample[[i]], module_mRExp_resample[[i]])))))))
+        temp <- unlist(lapply(seq_len(resample), function(i) 
+          median(na.omit(abs(cor(module_ceRExp_resample[[i]], module_mRExp_resample[[i]]))))))
+        module_avg_cor_resample[i] <- median(temp)
+        if (test.method == "t.test"){
+          module_avg_cor_pvalue[i] <- t.test(temp, alternative = "less", mu = module_avg_cor[i])$p.value
+        } 
+        if (test.method == "wilcox.test"){
+          module_avg_cor_pvalue[i] <- wilcox.test(temp, alternative = "less", mu = module_avg_cor[i])$p.value
+        }
       }
   }
-  module_coexpress <- list(module_avg_cor, module_avg_cor_resample)
-  names(module_coexpress) <- c("Real miRNA sponge modules", "Random miRNA sponge modules")
+  module_coexpress <- list(module_avg_cor, module_avg_cor_resample, module_avg_cor_pvalue)
+  names(module_coexpress) <- c("Real miRNA sponge modules", "Random miRNA sponge modules", "Statistical significance p-value")
   return(module_coexpress)
 }
 

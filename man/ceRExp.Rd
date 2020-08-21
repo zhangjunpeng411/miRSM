@@ -4,8 +4,10 @@
 \name{ceRExp}
 \alias{ceRExp}
 \title{ceRNA expression data}
-\format{ceRExp: A SummarizedExperiment object with 72 BRCA 
-and 72 normal samples (rows) and 305 lncRNAs (columns).}
+\format{
+ceRExp: A SummarizedExperiment object with 72 BRCA 
+and 72 normal samples (rows) and 305 lncRNAs (columns).
+}
 \description{
 ceRNA expression data
 }

@@ -44,7 +44,7 @@ Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
 miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 
 # Co-expression analysis of miRNA sponge modules
-miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes, resample = 10, method = "mean")
+miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes, resample = 10, method = "mean", test.method = "t.test")
 
 # miRNA distribution analysis of sharing miRNAs
 miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_SRVC_genes)

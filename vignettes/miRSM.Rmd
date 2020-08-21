@@ -147,7 +147,7 @@ miRSM_WGCNA_SRVC_DEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'DEA')
 ```
 
 ## Cancer enrichment analysis of miRNA sponge modules
-To investigate whether the identified miRNA sponge modules are functionally associated with cancer, we implement 'module_CEA' function to conduct cancer enrichment analysis by using a hypergeometric test.
+To investigate whether the identified miRNA sponge modules are functionally associated with cancer of interest, we implement 'module_CEA' function to conduct cancer enrichment analysis by using a hypergeometric test.
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(150)], 
@@ -162,7 +162,7 @@ miRSM.CEA.pvalue
 ```
 
 ## Validation of miRNA sponge interactions in miRNA sponge modules
-The function 'module_Validate' is implemented validate the miRNA sponge interactions existd in each miRNA sponge module.
+The function 'module_Validate' is implemented to validate the miRNA sponge interactions existed in each miRNA sponge module.
 
 ```{r, eval=FALSE, include=TRUE}
 # Using the built-in groundtruth from the miRspongeR package
@@ -174,11 +174,11 @@ miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 ```
 
 ## Co-expression analysis of miRNA sponge modules
-To evaluate whether the ceRNAs and mRNAs iin the miRNA sponge modules are highly correlated with each other, we implement 'module_Coexpress' function calculate average (mean and median) absolute Pearson correlation of all the ceRNA-mRNA pairs in each miRNA sponge module to see the overall co-expression level between the ceRNAs and mRNAs in the miRNA sponge module. For each miRNA sponge module, we perform a permutation test by generating random modules (the number is 'resample' in the 'module_Coexpress' function) with the same number of ceRNAs and mRNAs for it to compute the statistical significance of the co-expression level.
+To evaluate whether the ceRNAs and mRNAs in the miRNA sponge modules are not randomly co-expressed, we implement 'module_Coexpress' function calculate average (mean and median) absolute Pearson correlation of all the ceRNA-mRNA pairs in each miRNA sponge module to see the overall co-expression level between the ceRNAs and mRNAs in the miRNA sponge module. For each miRNA sponge module, we perform a permutation test by generating random modules (the parameter 'resample' is the number of random modules to be generated) with the same number of ceRNAs and mRNAs for it to compute the statistical significance p-value of the co-expression level.
 
 ```{r, eval=TRUE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
-miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes, resample = 10, method = "mean")
+miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes, resample = 10, method = "mean", test.method = "t.test")
 miRSM_WGCNA_Coexpress
 ```
 
@@ -193,7 +193,7 @@ head(miRSM_WGCNA_miRdistribute)
 ```
 
 ## Predict miRNA-target interactions
-Since the identified miRNA sponge modules and their sharing miRNAs can also be used to predict miRNA-target interactions (including miRNA-ceRNA and miRNA-mRNA interactions), we implement 'module_miRtarget' function to extract miRNA-target interactions of each miRNA sponge module. 
+Since the identified miRNA sponge modules and their sharing miRNAs can also be used to predict miRNA-target interactions (including miRNA-ceRNA and miRNA-mRNA interactions), we implement 'module_miRtarget' function to predict miRNA-target interactions underlying in each miRNA sponge module. 
 
 ```{r, eval=FALSE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
@@ -201,7 +201,7 @@ miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_SR
 ```
 
 ## Identify miRNA sponge interactions
-To extract miRNA sponge interactions of each miRNA sponge module, we implement 'module_miRsponge' function to identify ceRNA related miRNA sponge interactions.
+To extract miRNA sponge interactions of each miRNA sponge module, we implement 'module_miRsponge' function to identify miRNA sponge interactions.
 
 ```{r, eval=FALSE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)

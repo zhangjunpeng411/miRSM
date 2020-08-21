@@ -4,8 +4,10 @@
 \name{miRTarget}
 \alias{miRTarget}
 \title{miRNA-target ineractions}
-\format{miRTarget: A SummarizedExperiment object with
-29901 miRNA-target interactions.}
+\format{
+miRTarget: A SummarizedExperiment object with
+29901 miRNA-target interactions.
+}
 \description{
 miRNA-target ineractions
 }
