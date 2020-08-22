@@ -994,7 +994,7 @@ cor_binary <- function(ceRExp, mRExp, cor.method = "pearson",
 ## Identify miRNA sponge modules using sensitivity canonical correlation (SCC) method
 miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
                       typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3,
-                      pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.3) {
+                      pvalue.cutoff = 0.05, CC.cutoff = 0.8, SCC.cutoff = 0.1) {
   
   miRNames <- colnames(miRExp)
   ceRNames <- colnames(ceRExp)
@@ -1101,7 +1101,7 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 ## Identify miRNA sponge modules using sensitivity distance correlation (SDC) method 
 miRSM_SDC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
                       num_shared_miRNAs = 3, pvalue.cutoff = 0.05, 
-                      DC.cutoff = 0.8, SDC.cutoff = 0.3) {    
+                      DC.cutoff = 0.8, SDC.cutoff = 0.1) {    
   
   miRNames <- colnames(miRExp)
   ceRNames <- colnames(ceRExp)
@@ -1181,7 +1181,7 @@ miRSM_SDC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 ## Identify miRNA sponge modules using sensitivity RV coefficient (SRVC) method
 miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
                        num_shared_miRNAs = 3, pvalue.cutoff = 0.05, RVC.cutoff = 0.8, 
-                       SRVC.cutoff = 0.3, RV_method = "RV") {    
+                       SRVC.cutoff = 0.1, RV_method = "RV") {    
   
   miRNames <- colnames(miRExp)
   ceRNames <- colnames(ceRExp)
@@ -1418,7 +1418,7 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     typex = "standard", typez = "standard", nperms = 100, method = c("SCC",
     "SDC", "SRVC"), num_shared_miRNAs = 3, pvalue.cutoff = 0.05, MC.cutoff = 0.8,
-    SMC.cutoff = 0.3, RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri")) {
+    SMC.cutoff = 0.1, RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri")) {
 
     if (method == "SCC") {
         Res <- miRSM_SCC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,

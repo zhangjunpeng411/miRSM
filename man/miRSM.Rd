@@ -17,7 +17,7 @@ miRSM(
   num_shared_miRNAs = 3,
   pvalue.cutoff = 0.05,
   MC.cutoff = 0.8,
-  SMC.cutoff = 0.3,
+  SMC.cutoff = 0.1,
   RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri")
 )
 }
