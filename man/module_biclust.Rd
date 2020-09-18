@@ -22,7 +22,7 @@ rows are samples and columns are mRNAs.}
 
 \item{BCmethod}{Specification of the biclustering method, 
 including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
-'BCSpectral', 'BCXmotifs', 'BCUnibic', iBBiG', 'fabia', 'fabiap', 
+'BCSpectral', 'BCXmotifs', iBBiG', 'fabia', 'fabiap', 
 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 
 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.}
 
@@ -41,7 +41,7 @@ GeneSetCollection object: a list of module genes.
 \description{
 Identification of gene modules from matched ceRNA and mRNA 
 expression data using a series of biclustering packages, 
-including biclust, runibic, iBBiG, fabia, BicARE, isa2, s4vd, 
+including biclust, iBBiG, fabia, BicARE, isa2, s4vd, 
 BiBitR and rqubic
 }
 \examples{
@@ -70,10 +70,6 @@ Pac Symp Biocomput. 2003:77-88.
 Kluger Y, Basri R, Chang JT, Gerstein M. 
 Spectral biclustering of microarray data: coclustering genes 
 and conditions. Genome Res. 2003, 13(4):703-16.
-
-Wang Z, Li G, Robinson RW, Huang X. UniBic: Sequential 
-row-based biclustering algorithm for analysis of gene expression 
-data. Sci Rep. 2016, 6:23466.
 
 Gusenleitner D, Howe EA, Bentink S, Quackenbush J, 
 Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. 

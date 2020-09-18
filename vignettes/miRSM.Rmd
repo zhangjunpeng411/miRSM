@@ -106,7 +106,7 @@ modulegenes_clust
 ```
 
 ## module_biclust
-We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [28], runibic [29], iBBiG [30], fabia [31], BicARE [32], isa2 [33], s4vd [34], BiBitR [35] and rqubic [36]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "BCUnibic", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "fabia".
+We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [28], iBBiG [29], fabia [30], BicARE [31], isa2 [32], s4vd [33], BiBitR [34] and rqubic [35]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "fabia".
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_biclust <- module_biclust(ceRExp[, seq_len(30)],
@@ -281,21 +281,19 @@ Journal of Statistical Software. 2012, 46(11):1-17.
 
 [28] Kaiser S, Santamaria R, Khamiakova T, Sill M, Theron R, Quintales L, Leisch F, De TE. biclust: BiCluster Algorithms. R package version 1.2.0., 2015.
 
-[29] Wang Z, Li G, Robinson RW, Huang X. UniBic: Sequential row-based biclustering algorithm for analysis of gene expression data. Sci Rep., 2016, 6:23466.
+[29] Gusenleitner D, Howe EA, Bentink S, Quackenbush J, Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. Bioinformatics, 2012, 28(19):2484-92.
 
-[30] Gusenleitner D, Howe EA, Bentink S, Quackenbush J, Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. Bioinformatics, 2012, 28(19):2484-92.
+[30] Hochreiter S, Bodenhofer U, Heusel M, Mayr A, Mitterecker A, Kasim A, Khamiakova T, Van Sanden S, Lin D, Talloen W, Bijnens L, G\"{o}hlmann HW, Shkedy Z, Clevert DA. FABIA: factor analysis for bicluster acquisition. Bioinformatics, 2010, 26(12):1520-7.
 
-[31] Hochreiter S, Bodenhofer U, Heusel M, Mayr A, Mitterecker A, Kasim A, Khamiakova T, Van Sanden S, Lin D, Talloen W, Bijnens L, G\"{o}hlmann HW, Shkedy Z, Clevert DA. FABIA: factor analysis for bicluster acquisition. Bioinformatics, 2010, 26(12):1520-7.
+[31] Yang J, Wang H, Wang W, Yu, PS. An improved biclustering method for analyzing gene expression. Int J Artif Intell Tools, 2005, 14(5): 771-789.
 
-[32] Yang J, Wang H, Wang W, Yu, PS. An improved biclustering method for analyzing gene expression. Int J Artif Intell Tools, 2005, 14(5): 771-789.
+[32] Bergmann S, Ihmels J, Barkai N. Iterative signature algorithm for the analysis of large-scale gene expression data. Phys Rev E Stat Nonlin Soft Matter Phys., 2003, 67(3 Pt 1):031902.
 
-[33] Bergmann S, Ihmels J, Barkai N. Iterative signature algorithm for the analysis of large-scale gene expression data. Phys Rev E Stat Nonlin Soft Matter Phys., 2003, 67(3 Pt 1):031902.
+[33] Sill M, Kaiser S, Benner A, Kopp-Schneider A. Robust biclustering by sparse singular value decomposition incorporating stability selection. Bioinformatics, 2011, 27(15):2089-97.
 
-[34] Sill M, Kaiser S, Benner A, Kopp-Schneider A. Robust biclustering by sparse singular value decomposition incorporating stability selection. Bioinformatics, 2011, 27(15):2089-97.
+[34] Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics, 2011, 27(19):2738-45.
 
-[35] Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics, 2011, 27(19):2738-45.
-
-[36] Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res., 2009, 37(15):e101.
+[35] Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res., 2009, 37(15):e101.
 
 # Session information
 ```{r}

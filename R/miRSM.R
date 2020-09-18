@@ -732,7 +732,7 @@ module_clust <- function(ceRExp, mRExp, cluster.method = "kmeans", num.modules =
 
 #' Identification of gene modules from matched ceRNA and mRNA 
 #' expression data using a series of biclustering packages, 
-#' including biclust, runibic, iBBiG, fabia, BicARE, isa2, s4vd, 
+#' including biclust, iBBiG, fabia, BicARE, isa2, s4vd, 
 #' BiBitR and rqubic
 #'
 #' @title module_biclust
@@ -742,7 +742,7 @@ module_clust <- function(ceRExp, mRExp, cluster.method = "kmeans", num.modules =
 #' rows are samples and columns are mRNAs.
 #' @param BCmethod Specification of the biclustering method, 
 #' including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
-#' 'BCSpectral', 'BCXmotifs', 'BCUnibic', iBBiG', 'fabia', 'fabiap', 
+#' 'BCSpectral', 'BCXmotifs', iBBiG', 'fabia', 'fabiap', 
 #' 'fabias', 'mfsc', 'nmfdiv', 'nmfeu', 'nmfsc', 'FLOC', 'isa', 
 #' 'BCs4vd', 'BCssvd', 'bibit' and 'quBicluster'.
 #' @param num.modules The number of modules to be identified. For the 'BCPlaid',
@@ -762,7 +762,6 @@ module_clust <- function(ceRExp, mRExp, cluster.method = "kmeans", num.modules =
 #' @importFrom biclust BCSpectral
 #' @importFrom biclust BCXmotifs
 #' @importFrom biclust biclusternumber
-#' @importFrom runibic BCUnibic
 #' @importFrom iBBiG iBBiG
 #' @importFrom fabia fabia
 #' @importFrom fabia fabiap
@@ -810,9 +809,6 @@ module_clust <- function(ceRExp, mRExp, cluster.method = "kmeans", num.modules =
 #' @references Kluger Y, Basri R, Chang JT, Gerstein M. 
 #' Spectral biclustering of microarray data: coclustering genes 
 #' and conditions. Genome Res. 2003, 13(4):703-16.
-#' @references Wang Z, Li G, Robinson RW, Huang X. UniBic: Sequential 
-#' row-based biclustering algorithm for analysis of gene expression 
-#' data. Sci Rep. 2016, 6:23466.
 #' @references Gusenleitner D, Howe EA, Bentink S, Quackenbush J, 
 #' Culhane AC. iBBiG: iterative binary bi-clustering of gene sets. 
 #' Bioinformatics. 2012, 28(19):2484-92.
@@ -860,8 +856,6 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
     } else if (BCmethod == "BCXmotifs") {
         ExpData <- discretize(ExpData)
         BCres <- biclust(ExpData, method = BCXmotifs(), number = num.modules)
-    } else if (BCmethod == "BCUnibic") {
-        BCres <- biclust(t(ExpData), method = BCUnibic(), nbic = num.modules)
     } else if (BCmethod == "iBBiG") {
         ExpData <- binarize(ExpData)
         BCres <- iBBiG(ExpData, nModules = num.modules)
@@ -908,12 +902,6 @@ module_biclust <- function(ceRExp, mRExp, BCmethod = "fabia", num.modules = 10,
         BCresnum <- biclusternumber(BCres)
         Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(ExpData)
             [BCresnum[[i]]$Cols])
-    }
-    
-    if (BCmethod == "BCUnibic") {
-      BCresnum <- biclusternumber(BCres)
-      Modulegenes <- lapply(seq_along(BCresnum), function(i) colnames(ExpData)
-                            [BCresnum[[i]]$Rows])
     }
     
     if (BCmethod == "bibit") {
