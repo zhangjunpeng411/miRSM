@@ -1008,7 +1008,7 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     M4 <- length(miRNames)
     M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
     
-    if (M3 >= 3) {
+    if (M3 >= num_shared_miRNAs) {
       
       # Canonical correlation between a group of ceRNAs and a group of mRNAs
       perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
@@ -1066,7 +1066,7 @@ miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
                      "Canonical correlation of ceRNAs:mRNAs", "Canonical correlation of miRNAs:mRNAs",
                      "Canonical correlation of miRNAs:ceRNAs", "Partial canonical correlation of ceRNAs:mRNAs",
                      "Sensitivity canonical correlation of ceRNAs:mRNAs")
-  index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+  index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
                    Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                    Res[, "Canonical correlation of ceRNAs:mRNAs"] > CC.cutoff &
                    Res[, "Sensitivity canonical correlation of ceRNAs:mRNAs"] > SCC.cutoff)
@@ -1115,7 +1115,7 @@ miRSM_SDC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     M4 <- length(miRNames)
     M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
     
-    if (M3 >= 3) {        
+    if (M3 >= num_shared_miRNAs) {        
       
       # Calculate distance correlation between a group of ceRNAs
       # and a group of mRNAs
@@ -1146,7 +1146,7 @@ miRSM_SDC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
                      "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
                      "Distance correlation of ceRNAs:mRNAs", "Partial distance correlation of ceRNAs:mRNAs",
                      "Sensitivity distance correlation of ceRNAs:mRNAs")
-  index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+  index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
                    Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                    Res[, "Distance correlation of ceRNAs:mRNAs"] > DC.cutoff &
                    Res[, "Sensitivity distance correlation of ceRNAs:mRNAs"] > SDC.cutoff)
@@ -1195,7 +1195,7 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     M4 <- length(miRNames)
     M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
     
-    if (M3 >= 3 & RV_method == "RV") {
+    if (M3 >= num_shared_miRNAs & RV_method == "RV") {
       
       # RV coefficient between a group of ceRNAs and a group of mRNAs       
       M6 <- RV(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
@@ -1217,7 +1217,7 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
       # ceRNAs and a group of mRNAs on condition a group of miRNAs
       M10 <- M6 - M9
       
-    } else if (M3 >= 3 & RV_method == "RV2") {
+    } else if (M3 >= num_shared_miRNAs & RV_method == "RV2") {
       
       # RV coefficient between a group of ceRNAs and a group of mRNAs       
       M6 <- RV2(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
@@ -1239,7 +1239,7 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
       # ceRNAs and a group of mRNAs on condition a group of miRNAs
       M10 <- M6 - M9
       
-    } else if (M3 >= 3 & RV_method == "RVadjMaye") {
+    } else if (M3 >= num_shared_miRNAs & RV_method == "RVadjMaye") {
       
       # RV coefficient between a group of ceRNAs and a group of mRNAs       
       M6 <- RVadjMaye(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
@@ -1261,7 +1261,7 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
       # ceRNAs and a group of mRNAs on condition a group of miRNAs
       M10 <- M6 - M9
       
-    } else if (M3 >= 3 & RV_method == "RVadjGhaziri") {
+    } else if (M3 >= num_shared_miRNAs & RV_method == "RVadjGhaziri") {
       
       # RV coefficient between a group of ceRNAs and a group of mRNAs       
       M6 <- RVadjGhaziri(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
@@ -1300,7 +1300,7 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
                      "RV coefficient of ceRNAs:mRNAs", "RV coefficient of miRNAs:mRNAs",
                      "RV coefficient of miRNAs:ceRNAs", "Partial RV coefficient of ceRNAs:mRNAs",
                      "Sensitivity RV coefficient of ceRNAs:mRNAs")
-  index <- which(Res[, "#Shared miRNAs"] > num_shared_miRNAs &
+  index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
                    Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                    Res[, "RV coefficient of ceRNAs:mRNAs"] > RVC.cutoff &
                    Res[, "Sensitivity RV coefficient of ceRNAs:mRNAs"] > SRVC.cutoff)
