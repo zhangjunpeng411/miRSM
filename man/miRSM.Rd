@@ -18,7 +18,8 @@ miRSM(
   pvalue.cutoff = 0.05,
   MC.cutoff = 0.8,
   SMC.cutoff = 0.1,
-  RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri")
+  RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri"),
+  BCmethod = "BCPlaid"
 )
 }
 \arguments{
@@ -35,7 +36,7 @@ rows are samples and columns are mRNAs.}
 miRNA-target binding information.}
 
 \item{CandidateModulegenes}{List object: a list of candidate 
-miRNA sponge modules.}
+miRNA sponge modules. Only for the SCC, SDC and SRVC methods.}
 
 \item{typex}{The columns of x unordered (type='standard') or 
 ordered (type='ordered'). Only for the SCC method.}
@@ -46,24 +47,28 @@ ordered (type='ordered'). Only for the SCC method.}
 \item{nperms}{The number of permutations. Only for the SCC method.}
 
 \item{method}{The method selected to identify miRNA sponge 
-modules, including 'SCC', 'SDC' and 'SRVC'.}
+modules, including 'SCC', 'SDC', 'SRVC' and 'SM'.}
 
 \item{num_shared_miRNAs}{The number of common miRNAs shared 
-by a group of ceRNAs and mRNAs.}
+by a group of ceRNAs and mRNAs. Only for the SCC, SDC and SRVC methods.}
 
 \item{pvalue.cutoff}{The p-value cutoff of significant sharing 
-of common miRNAs by a group of ceRNAs and mRNAs.}
+of common miRNAs by a group of ceRNAs and mRNAs or significant correlation.}
 
 \item{MC.cutoff}{The cutoff of matrix correlation (canonical correlation, 
-distance correlation and RV coefficient).}
+distance correlation and RV coefficient). Only for the SCC, SDC and SRVC methods.}
 
 \item{SMC.cutoff}{The cutoff of sensitivity matrix correlation
 (sensitivity canonical correlation, sensitivity distance correlation 
-and sensitivity RV coefficient).}
+and sensitivity RV coefficient). Only for the SCC, SDC and SRVC methods.}
 
 \item{RV_method}{the method of calculating RV coefficients. Select
 one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
 Only for the SRVC method.}
+
+\item{BCmethod}{Specification of the biclustering method, 
+including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
+'BCSpectral', 'BCXmotifs'. Only for the SM method.}
 }
 \value{
 List object: Sensitivity correlation,
@@ -71,7 +76,7 @@ and genes of miRNA sponge modules.
 }
 \description{
 Identify miRNA sponge modules using sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC),
-and sensitivity RV coefficient (SRVC) methods.
+sensitivity RV coefficient (SRVC), and sponge module (SM) methods.
 }
 \examples{
 data(BRCASampleData)
