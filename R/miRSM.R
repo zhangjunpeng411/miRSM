@@ -979,6 +979,39 @@ cor_binary <- function(ceRExp, mRExp, cor.method = "pearson",
     return(cor.binary)
 }
 
+## Constructing miRNA-target binary matrix using putative miRNA-target interactions ##
+Bindingmatrix <- function(miRExp, ceRExp, mRExp, miRTarget){
+  
+  miRTarget <- assay(miRTarget)
+  mir <- as.character(miRTarget[, 1])
+  gene <- as.character(miRTarget[, 2])
+  
+  miRNA <- colnames(miRExp)
+  target <- c(colnames(ceRExp), colnames(mRExp))
+  
+  rep <- replicate(length(miRNA), mir)
+  edge = matrix(FALSE, length(miRNA) + length(target), length(miRNA) + length(target))
+  
+  for (i in 1:length(mir)){    
+    if (length(which(rep[i, ] == miRNA)>0)){
+      
+      match1 <- which(rep[i, ] == miRNA, arr.ind = TRUE)      
+      rep2 <- replicate(length(target), gene[i])
+      match2 <- which(rep2 == target, arr.ind = TRUE)
+      edge[match1, match2 + length(miRNA)] = TRUE
+      
+    }
+  }
+  
+  edge <- edge + t(edge)
+  edge <- edge!=0
+  edge <- edge[seq(target) + length(miRNA), seq(miRNA)]*1
+  colnames(edge) <- miRNA
+  rownames(edge) <- target
+  
+  return(edge)
+}
+
 ## Identify miRNA sponge modules using sensitivity canonical correlation (SCC) method
 miRSM_SCC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,  
                       typex = "standard", typez = "standard", nperms = 100, num_shared_miRNAs = 3,
@@ -1320,9 +1353,53 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
   return(Result)
 }
 
+## Identify miRNA sponge modules using sponge module identification (SM) method in 
+## the reference "Zhang J, Le TD, Liu L, Li J. Identifying miRNA sponge modules using biclustering and regulatory scores. 
+## BMC Bioinformatics. 2017 Mar 14;18(Suppl 3):44. doi: 10.1186/s12859-017-1467-5.".
+## Note that miRNA-mRNA correlation matrix using Pearson method and miRNA-mRNA context++ score matrix using putative miRNA-target binding information
+## are converted into two miRNA-mRNA binary matrices.
+## a and b are the contributions of expression data and miRNA-target binding information, respectively.
+miRSM_SM <- function(miRExp, ceRExp, mRExp, miRTarget, 
+                     a = 0.5, b = 0.5, BCmethod = "BCPlaid", 
+                     pvalue.cutoff = 0.05) {
+  
+  Binding_edge <- Bindingmatrix(miRExp, ceRExp, mRExp, miRTarget)
+  
+  Cor.Pvalue <- WGCNA::corAndPvalue(cbind(assay(ceRExp), assay(mRExp)), assay(miRExp))$p
+  index1 <- which(Cor.Pvalue < pvalue.cutoff)
+  index2 <- c(which(Cor.Pvalue >= pvalue.cutoff), 
+              which(Cor.Pvalue %in% NA))
+  Cor.Pvalue[index1] <- 1
+  Cor.Pvalue[index2] <- 0
+  Cor_edge <- Cor.Pvalue
+  
+  colScore <- a*Cor_edge + b*Binding_edge
+  
+  if (BCmethod=="BCBimax"){
+    colScore <- binarize(colScore)
+    BCres <- biclust(colScore, BCBimax())
+  } else if (BCmethod=="BCCC") {
+    BCres <- biclust(colScore, BCCC())
+  } else if (BCmethod=="BCPlaid") {
+    BCres <- biclust(colScore, BCPlaid())
+  } else if (BCmethod=="BCQuest") {
+    BCres <- biclust(colScore, BCQuest())
+  } else if (BCmethod=="BCSpectral") {
+    BCres <- biclust(colScore, BCSpectral())
+  } else if (BCmethod=="BCXmotifs") {
+    colScore <- discretize(colScore)
+    BCres <- biclust(colScore, BCXmotifs())
+  } 
+  
+  BCresnum <- biclusternumber(BCres)
+  Modules <- lapply(seq_along(BCresnum), function(i) rownames(Binding_edge)
+                    [BCresnum[[i]]$Rows])
+  
+  return(Modules)
+}
 
 #' Identify miRNA sponge modules using sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC),
-#' and sensitivity RV coefficient (SRVC) methods.
+#' sensitivity RV coefficient (SRVC), and sponge module (SM) methods.
 #'
 #' @title miRSM
 #' @param miRExp A SummarizedExperiment object. miRNA expression data: 
@@ -1334,26 +1411,29 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' @param miRTarget A SummarizedExperiment object. Putative 
 #' miRNA-target binding information.
 #' @param CandidateModulegenes List object: a list of candidate 
-#' miRNA sponge modules.
+#' miRNA sponge modules. Only for the SCC, SDC and SRVC methods.
 #' @param typex The columns of x unordered (type='standard') or 
 #' ordered (type='ordered'). Only for the SCC method.
 #' @param typez The columns of z unordered (type='standard') or 
 #' ordered (type='ordered'). Only for the SCC method.
 #' @param nperms The number of permutations. Only for the SCC method.
 #' @param method The method selected to identify miRNA sponge 
-#' modules, including 'SCC', 'SDC' and 'SRVC'.
+#' modules, including 'SCC', 'SDC', 'SRVC' and 'SM'.
 #' @param num_shared_miRNAs The number of common miRNAs shared 
-#' by a group of ceRNAs and mRNAs.
+#' by a group of ceRNAs and mRNAs. Only for the SCC, SDC and SRVC methods. 
 #' @param pvalue.cutoff The p-value cutoff of significant sharing 
-#' of common miRNAs by a group of ceRNAs and mRNAs.
+#' of common miRNAs by a group of ceRNAs and mRNAs or significant correlation.
 #' @param MC.cutoff The cutoff of matrix correlation (canonical correlation, 
-#' distance correlation and RV coefficient).
+#' distance correlation and RV coefficient). Only for the SCC, SDC and SRVC methods.
 #' @param SMC.cutoff The cutoff of sensitivity matrix correlation
 #' (sensitivity canonical correlation, sensitivity distance correlation 
-#' and sensitivity RV coefficient).
+#' and sensitivity RV coefficient). Only for the SCC, SDC and SRVC methods.
 #' @param RV_method the method of calculating RV coefficients. Select
 #' one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
 #' Only for the SRVC method.
+#' @param BCmethod Specification of the biclustering method, 
+#' including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
+#' 'BCSpectral', 'BCXmotifs'. Only for the SM method. 
 #' @import SummarizedExperiment
 #' @importFrom PMA CCA.permute
 #' @importFrom PMA CCA
@@ -1365,6 +1445,17 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 #' @importFrom MatrixCorrelation RVadjGhaziri
 #' @importFrom stats phyper
 #' @importFrom GSEABase geneIds
+#' @importFrom WGCNA corAndPvalue
+#' @importFrom biclust biclust
+#' @importFrom biclust binarize
+#' @importFrom biclust discretize
+#' @importFrom biclust BCBimax
+#' @importFrom biclust BCCC
+#' @importFrom biclust BCPlaid
+#' @importFrom biclust BCQuest
+#' @importFrom biclust BCSpectral
+#' @importFrom biclust BCXmotifs
+#' @importFrom biclust biclusternumber
 #' @export
 #' @return List object: Sensitivity correlation,
 #' and genes of miRNA sponge modules.
@@ -1406,7 +1497,8 @@ miRSM_SRVC <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
 miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
     typex = "standard", typez = "standard", nperms = 100, method = c("SCC",
     "SDC", "SRVC"), num_shared_miRNAs = 3, pvalue.cutoff = 0.05, MC.cutoff = 0.8,
-    SMC.cutoff = 0.1, RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri")) {
+    SMC.cutoff = 0.1, RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri"),
+    BCmethod = "BCPlaid") {
 
     if (method == "SCC") {
         Res <- miRSM_SCC(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
@@ -1423,6 +1515,9 @@ miRSM <- function(miRExp, ceRExp, mRExp, miRTarget, CandidateModulegenes,
             num_shared_miRNAs = num_shared_miRNAs,
             pvalue.cutoff = pvalue.cutoff, RVC.cutoff = MC.cutoff, 
             SRVC.cutoff = SMC.cutoff, RV_method = RV_method)
+    } else if (method == "SM") {
+        Res <- miRSM_SM(miRExp, ceRExp, mRExp, miRTarget, 
+            BCmethod = BCmethod, pvalue.cutoff = pvalue.cutoff)
     }
 
     return(Res)

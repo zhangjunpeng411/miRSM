@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.9.3
+-------------------------
+o Add sponge module (SM) method <2021-02-02, Thue>
+
 CHANGES IN VERSION 1.9.1-1.9.2
 -------------------------
 o Update miRSM.R <2020-11-26, Thus>

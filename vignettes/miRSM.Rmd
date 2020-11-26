@@ -115,7 +115,7 @@ modulegenes_biclust
 ```
 
 # Identification of miRNA sponge modules
-The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the sensitivity cannonical correlation (SCC), sensitivity distance correlation (SDC) and sensitivity RV coefficient (SRVC) methods to identify miRNA sponge modules.
+The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the sensitivity cannonical correlation (SCC), sensitivity distance correlation (SDC) and sensitivity RV coefficient (SRVC) methods to identify miRNA sponge modules. In addition, we also added the sponge module (SM) method proposed in [36] to predict miRNA sponge modules. 
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
@@ -294,6 +294,8 @@ Journal of Statistical Software. 2012, 46(11):1-17.
 [34] Rodriguez-Baena DS, Perez-Pulido AJ, Aguilar-Ruiz JS. A biclustering algorithm for extracting bit-patterns from binary datasets. Bioinformatics, 2011, 27(19):2738-45.
 
 [35] Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res., 2009, 37(15):e101.
+
+[36] Zhang J, Le TD, Liu L, Li J. Identifying miRNA sponge modules using biclustering and regulatory scores.BMC Bioinformatics, 2017, 18(Suppl 3):44. 
 
 # Session information
 ```{r}
