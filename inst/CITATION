@@ -1,0 +1,20 @@
+citHeader("To cite miRSM package in publications, please use:")
+citEntry( entry   = "Article",
+          title   = "miRSM: an R package to infer and analyze miRNA sponge modules in heterogeneous data",
+          author  = personList(as.person("Junpeng Zhang"),
+                   as.person("Lin Liu"),
+                   as.person("Taosheng Xu"),
+                   as.person("Wu Zhang"),
+                   as.person("Chunwen Zhao"),
+                   as.person("Sijing Li"),
+                   as.person("Jiuyong Li"),
+		   as.person("Nini Rao"),
+                   as.person("Thuc Duy Le")),
+          journal = "RNA Biology",
+          year    = "2021",
+          url     = "https://doi.org/10.1080/15476286.2021.1905341",
+
+          textVersion  = paste("Junpeng Zhang, Lin Liu, Taosheng Xu, Wu Zhang, Chunwen Zhao, Sijing Li, Jiuyong Li, Nini Rao, Thuc Duy Le
+	  (2021). miRSM: an R package to infer and analyze miRNA sponge modules in heterogeneous data. 
+	  RNA Biology. https://doi.org/10.1080/15476286.2021.1905341.")
+)
