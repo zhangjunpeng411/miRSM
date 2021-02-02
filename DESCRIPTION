@@ -1,13 +1,13 @@
 Package: miRSM
 Type: Package
-Title: Inferring miRNA sponge modules by integrating expression data and miRNA-target binding information
-Version: 1.8.3
+Title: Inferring miRNA sponge modules in heterogeneous data
+Version: 1.8.4
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 
            role=c("aut", "cre"), 
            email = "zhangjunpeng_411@yahoo.com")
-Description: The package aims to identify miRNA sponge modules by integrating expression data and miRNA-target binding information.
+Description: The package aims to identify miRNA sponge modules in heterogeneous data.
     It provides several functions to study miRNA sponge modules, including popular methods for inferring gene modules 
     (candidate miRNA sponge modules), and a function to identify miRNA sponge modules, as well as several functions to conduct 
     modular analysis of miRNA sponge modules.
