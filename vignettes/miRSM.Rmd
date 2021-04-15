@@ -12,7 +12,7 @@ output:
     BiocStyle::pdf_document:
       toc: yes
 vignette: >
-    %\VignetteIndexEntry{miRSM: inferring miRNA sponge modules by integrating expression data and miRNA-target binding information} 
+    %\VignetteIndexEntry{miRSM: inferring miRNA sponge modules in heterogeneous data} 
     %\VignettePackage{miRSM} 
     % \VignetteEngine{knitr::rmarkdown} 
     % \usepackage[utf8]{inputenc} 
