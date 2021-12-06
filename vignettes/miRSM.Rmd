@@ -35,10 +35,10 @@ MicroRNAs (miRNAs) play key roles in many biological processes including cancers
 
 Previous studies [6-9] have shown that a pool of coding and non-coding RNAs that shares common miRNA biding sites competes with each other, thus alter miRNA activity. The corresponding regulatory mechanism is named competing endogenous RNA (ceRNA) hypothesis [10]. These RNAs are called ceRNAs or miRNA sponges or miRNA decoys, and include long non-coding RNAs (lncRNAs), pseudogenes, circular RNAs (circRNAs) and messenger RNAs (mRNAs), etc. To study the module-level properties of miRNA sponges, it is necessary to identify miRNA sponge modules. The miRNA sponge modules will help to reveal the biological mechanism in cancer. 
 
-To speed up the research of miRNA sponge modules, we develop an R/Bioconductor package 'miRSM' to infer miRNA sponge modules. Unlike the existing R/Bioconductor packages ('miRspongeR' and 'SPONGE'), 'miRSM' focuses on identifying miRNA sponge modules by integrating expression data and miRNA-target binding information instead of miRNA sponge interaction networks.
+To speed up the research of miRNA sponge modules, we develop an R/Bioconductor package 'miRSM' to infer miRNA sponge modules. Unlike the existing R/Bioconductor packages ('miRspongeR' and 'SPONGE'), 'miRSM' focuses on identifying miRNA sponge modules by integrating expression data and miRNA-target binding information instead of miRNA sponge interaction networks. In addition to identifying miRNA sponge modules in the form of external competition (e.g. a group of lncRNAs compete with a group of mRNAs), 'miRSM' can also infer miRNA sponge modules in the form of internal competition (e.g. a group of mRNAs compete with another group of mRNAs). Moreover, 'miRSM' can infer miRNA sponge modules at both single-sample and multi-sample levels. 
     
 # Identification of gene modules
-Given matched ceRNA and mRNA expression data, we infer gene modules by using several methods from 21 packages, including 'WGCNA', 'GFA', 'igraph', 'ProNet', 'NMF', 'stats', 'flashClust', 'dbscan', 'subspace', 'mclust', 'SOMbrero', 'ppclust', 'biclust', 'runibic', 'iBBiG', 'fabia', 'BicARE', 'isa2', 's4vd', 'BiBitR' and 'rqubic'. We assemble these methods into 7 functions: module_WGCNA, module_GFA, module_igraph, module_ProNet, module_NMF, module_clust and module_biclust.
+Given matched ceRNA and mRNA expression data or gene expression data, 'miRSM' infers gene modules by using several methods from 21 packages, including 'WGCNA', 'GFA', 'igraph', 'ProNet', 'NMF', 'stats', 'flashClust', 'dbscan', 'subspace', 'mclust', 'SOMbrero', 'ppclust', 'biclust', 'runibic', 'iBBiG', 'fabia', 'BicARE', 'isa2', 's4vd', 'BiBitR' and 'rqubic'. We assemble these methods into 7 functions: module_WGCNA, module_GFA, module_igraph, module_ProNet, module_NMF, module_clust and module_biclust.
 
 ## Load BRCA sample data
 The BRCA sample data includes matched miRNA, lncRNA, mRNA expression data, putative miRNA-target binding information and BRCA-related genes (lncRNAs and mRNAs).
@@ -48,7 +48,7 @@ data(BRCASampleData)
 ```
 
 ## module_WGCNA
-By using WGCNA method [11], we identify co-expressed gene modules from matched ceRNA and mRNA expression data.
+By using WGCNA method [11], 'miRSM' identifies co-expressed gene modules from matched ceRNA and mRNA expression data or gene expression data.
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(80)], 
@@ -57,7 +57,7 @@ modulegenes_WGCNA
 ```
 
 ## module_GFA
-The gene modules are identified by using GFA method [12, 13] from matched ceRNA and mRNA expression data.
+The gene modules are identified by using GFA method [12, 13] from matched ceRNA and mRNA expression data or gene expression data.
 
 ```{r, eval=FALSE, include=TRUE}
 modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
@@ -67,7 +67,7 @@ modulegenes_GFA
 ```
 
 ## module_igraph
-By using 'igraph' package [14], we infer gene modules from matched ceRNA and mRNA expression data. In the 'igraph' package, we can select "betweenness", "greedy", "infomap", "prop", "eigen", "louvain" and "walktrap" methods for gene module identification. The default method is "greedy".
+By using 'igraph' package [14], 'miRSM' infers gene modules from matched ceRNA and mRNA expression data or gene expression data. In the 'igraph' package, users can select "betweenness", "greedy", "infomap", "prop", "eigen", "louvain" and "walktrap" methods for gene module identification. The default method is "greedy".
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)],
@@ -76,7 +76,7 @@ modulegenes_igraph
 ```
 
 ## module_ProNet
-In the 'ProNet' package, we can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification. The default method is MCL.
+In the 'ProNet' package, users can select FN [15], MCL [16], LINKCOMM [17] and MCODE [18] for gene module identification from matched ceRNA and mRNA expression data or gene expression data. The default method is MCL.
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_ProNet <- module_ProNet(ceRExp[, seq_len(10)],
@@ -85,7 +85,7 @@ modulegenes_ProNet
 ```
 
 ## module_NMF
-By using 'NMF' package [20], we infer gene modules from matched ceRNA and mRNA expression data. In the 'NMF' package, we can select "brunet", "Frobenius", "KL", "lee", "nsNMF", "offset", "siNMF", "snmf/l" and "snmf/r" methods for gene module identification. The default method is "brunet".
+By using 'NMF' package [20], users infer gene modules from matched ceRNA and mRNA expression data or gene expression data. In the 'NMF' package, we can select "brunet", "Frobenius", "KL", "lee", "nsNMF", "offset", "siNMF", "snmf/l" and "snmf/r" methods for gene module identification. The default method is "brunet".
 
 ```{r, eval=TRUE, include=TRUE}
 # Reimport NMF package to avoid conflicts with DelayedArray package
@@ -96,7 +96,7 @@ modulegenes_NMF
 ```
 
 ## module_clust
-We Identify gene modules from matched ceRNA and mRNA expression data using a series of clustering packages, including stats [21], flashClust [22], dbscan [23], subspace [24], mclust [25], SOMbrero [26] and ppclust [27]. The clustering methods include "kmeans", "hclust", "dbscan", "clique", "gmm", "som" and "fcm". The default method is "kmeans".
+'miRSM' Identifies gene modules from matched ceRNA and mRNA expression data or gene expression data using a series of clustering packages, including stats [21], flashClust [22], dbscan [23], subspace [24], mclust [25], SOMbrero [26] and ppclust [27]. The clustering methods include "kmeans", "hclust", "dbscan", "clique", "gmm", "som" and "fcm". The default method is "kmeans".
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_clust <- module_clust(ceRExp[, seq_len(30)],
@@ -105,7 +105,7 @@ modulegenes_clust
 ```
 
 ## module_biclust
-We Identify gene modules from matched ceRNA and mRNA expression data using a series of biclustering packages, including biclust [28], iBBiG [29], fabia [30], BicARE [31], isa2 [32], s4vd [33], BiBitR [34] and rqubic [35]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "fabia".
+'miRSM' Identifies gene modules from matched ceRNA and mRNA expression data or gene expression data using a series of biclustering packages, including biclust [28], iBBiG [29], fabia [30], BicARE [31], isa2 [32], s4vd [33], BiBitR [34] and rqubic [35]. The biclustering methods include "BCBimax", "BCCC", "BCPlaid", "BCQuest", "BCSpectral", "BCXmotifs", "iBBiG", "fabia", "fabiap", "fabias", "mfsc", "nmfdiv", "nmfeu", "nmfsc", "FLOC", "isa", "BCs4vd", "BCssvd", "bibit" and "quBicluster". The default method is "fabia".
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_biclust <- module_biclust(ceRExp[, seq_len(30)],
@@ -113,8 +113,8 @@ modulegenes_biclust <- module_biclust(ceRExp[, seq_len(30)],
 modulegenes_biclust
 ```
 
-# Identification of miRNA sponge modules
-The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, we use the sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC) and sensitivity RV coefficient (SRVC) methods to identify miRNA sponge modules. In addition, we also added the sponge module (SM) method proposed in [36] to predict miRNA sponge modules. 
+# Discovery of miRNA sponge modules
+The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, 'miRSM' uses the sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC) and sensitivity RV coefficient (SRVC) methods to identify miRNA sponge modules. In addition, the sponge module (SM) method proposed in [36] is also added to predict miRNA sponge modules. 
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
@@ -128,10 +128,30 @@ miRSM_igraph_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
 miRSM_igraph_SRVC
 ```
 
+# Inference of sample-specific miRNA sponge modules
+'miRSM' uses statistical perturbation strategy to infer sample-specific miRNA sponge modules. By using the statistical perturbation strategy, 'miRSM' identifies differential miRNA sponge modules between two cases (all samples and all samples except sample k).
+
+```{r, eval=TRUE, include=TRUE}
+nsamples <- 3
+modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
+modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i,                                         seq(150)], mRExp[-i, seq(150)]))
+miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
+                               modulegenes_igraph_all, method = "SRVC",
+                               SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ],      
+                                   ceRExp[-i, seq(150)], mRExp[-i,  seq(150)], miRTarget,
+                                   modulegenes_WGCNA_exceptk[[i]], method = "SRVC",
+                                   SMC.cutoff = 0.01, RV_method = "RV"))
+Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
+Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
+Modules_SS
+```
+
 # Modular analysis of the identified miRNA sponge modules
 
 ## Functional analysis of miRNA sponge modules
-We implement 'module_FA' function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<http://www.geneontology.org/>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<http://www.genome.jp/kegg/>), and Reactome: Reactome Pathway Database (<http://reactome.org/>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<http://disease-ontology.org/>), DGN: DisGeNET database (<http://www.disgenet.org/>) and NCG: Network of Cancer Genes database (<http://ncg.kcl.ac.uk/>). 
+'miRSM' implements 'module_FA' function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<http://www.geneontology.org/>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<http://www.genome.jp/kegg/>), and Reactome: Reactome Pathway Database (<http://reactome.org/>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<http://disease-ontology.org/>), DGN: DisGeNET database (<http://www.disgenet.org/>) and NCG: Network of Cancer Genes database (<http://ncg.kcl.ac.uk/>). 
 
 ```{r, eval=FALSE, include=TRUE}
 modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(150)], 
@@ -146,7 +166,7 @@ miRSM_WGCNA_SRVC_DEA <- module_FA(miRSM_WGCNA_SRVC_genes, Analysis.type = 'DEA')
 ```
 
 ## Cancer enrichment analysis of miRNA sponge modules
-To investigate whether the identified miRNA sponge modules are functionally associated with cancer of interest, we implement 'module_CEA' function to conduct cancer enrichment analysis by using a hypergeometric test.
+To investigate whether the identified miRNA sponge modules are functionally associated with cancer of interest, 'miRSM' implements 'module_CEA' function to conduct cancer enrichment analysis by using a hypergeometric test.
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(150)], 
@@ -173,7 +193,7 @@ miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 ```
 
 ## Co-expression analysis of miRNA sponge modules
-To evaluate whether the ceRNAs and mRNAs in the miRNA sponge modules are not randomly co-expressed, we implement 'module_Coexpress' function calculate average (mean and median) absolute Pearson correlation of all the ceRNA-mRNA pairs in each miRNA sponge module to see the overall co-expression level between the ceRNAs and mRNAs in the miRNA sponge module. For each miRNA sponge module, we perform a permutation test by generating random modules (the parameter 'resample' is the number of random modules to be generated) with the same number of ceRNAs and mRNAs for it to compute the statistical significance p-value of the co-expression level.
+To evaluate whether the ceRNAs and mRNAs in the miRNA sponge modules are not randomly co-expressed, 'miRSM' implements 'module_Coexpress' function to calculate average (mean and median) absolute Pearson correlation of all the ceRNA-mRNA pairs in each miRNA sponge module to see the overall co-expression level between the ceRNAs and mRNAs in the miRNA sponge module. For each miRNA sponge module, 'miRSM' performs a permutation test by generating random modules (the parameter 'resample' is the number of random modules to be generated) with the same number of ceRNAs and mRNAs for it to compute the statistical significance p-value of the co-expression level.
 
 ```{r, eval=TRUE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
@@ -182,17 +202,17 @@ miRSM_WGCNA_Coexpress
 ```
 
 ## miRNA distribution analysis of sharing miRNAs
-To investigate the distribution of sharing miRNAs in the identified miRNA sponge modules, we implement 'module_miRdistribute' function. The miRNA distribution analysis can understand whether the sharing miRNAs act as crosslinks across different miRNA sponge modules.
+To investigate the distribution of sharing miRNAs in the identified miRNA sponge modules, 'miRSM' implements 'module_miRdistribute' function. The miRNA distribution analysis can understand whether the sharing miRNAs act as crosslinks across different miRNA sponge modules.
 
 ```{r, eval=TRUE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
-miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 head(miRSM_WGCNA_miRdistribute)
 ```
 
 ## Predict miRNA-target interactions
-Since the identified miRNA sponge modules and their sharing miRNAs can also be used to predict miRNA-target interactions (including miRNA-ceRNA and miRNA-mRNA interactions), we implement 'module_miRtarget' function to predict miRNA-target interactions underlying in each miRNA sponge module. 
+Since the identified miRNA sponge modules and their sharing miRNAs can also be used to predict miRNA-target interactions (including miRNA-ceRNA and miRNA-mRNA interactions), 'miRSM' implements 'module_miRtarget' function to predict miRNA-target interactions underlying in each miRNA sponge module. 
 
 ```{r, eval=FALSE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
@@ -200,15 +220,15 @@ miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_SR
 ```
 
 ## Identify miRNA sponge interactions
-To extract miRNA sponge interactions of each miRNA sponge module, we implement 'module_miRsponge' function to identify miRNA sponge interactions.
+To extract miRNA sponge interactions of each miRNA sponge module, 'miRSM' implements 'module_miRsponge' function to identify miRNA sponge interactions.
 
 ```{r, eval=FALSE, include=TRUE}
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
-miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_miRsponge <- module_miRsponge(miRSM_WGCNA_SRVC_genes)
 ```
 
 # Conclusions
-miRSM provides several functions to study miRNA sponge modules, including popular methods for inferring gene modules (candidate miRNA sponge modules), and a function to identify miRNA sponge modules, as well as several functions to conduct modular analysis of miRNA sponge modules. It could provide a useful tool for the research of miRNA sponge modules.
+miRSM provides several functions to study miRNA sponge modules, including popular methods for inferring gene modules (candidate miRNA sponge modules), and a function to identify miRNA sponge modules, as well as several functions to conduct modular analysis of miRNA sponge modules. It could provide a useful tool for the research of miRNA sponge modules at single-sample and multi-sample levels.
 
 # References
 [1] Ambros V. microRNAs: tiny regulators with great potential. Cell, 2001, 107:823–6.
@@ -294,7 +314,7 @@ Journal of Statistical Software. 2012, 46(11):1-17.
 
 [35] Li G, Ma Q, Tang H, Paterson AH, Xu Y. QUBIC: a qualitative biclustering algorithm for analyses of gene expression data. Nucleic Acids Res., 2009, 37(15):e101.
 
-[36] Zhang J, Le TD, Liu L, Li J. Identifying miRNA sponge modules using biclustering and regulatory scores.BMC Bioinformatics, 2017, 18(Suppl 3):44. 
+[36] Zhang J, Le TD, Liu L, Li J. Identifying miRNA sponge modules using biclustering and regulatory scores. BMC Bioinformatics, 2017, 18(Suppl 3):44. 
 
 # Session information
 ```{r}

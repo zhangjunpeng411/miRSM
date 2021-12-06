@@ -1,7 +1,7 @@
 # miRSM R package
 
 # Introduction
-This package provides several functions to study miRNA sponge modules.
+This package provides several utility functions to infer miRNA sponge or ceRNA modules at single-sample and multi-sample levels.
 
 # Installation
 ```{r echo=FALSE, results='hide', message=FALSE}
@@ -27,6 +27,20 @@ miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         modulegenes_WGCNA, method = "SRVC",
                         SMC.cutoff = 0.01, RV_method = "RV")
                         
+# Identify sample-specific miRNA sponge modules
+nsamples <- 3
+modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
+modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
+miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
+                               modulegenes_igraph_all, method = "SRVC",
+                               SMC.cutoff = 0.01, RV_method = "RV")
+miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], ceRExp[-i,                                    seq(150)], mRExp[-i,  seq(150)], miRTarget,
+                                   modulegenes_WGCNA_exceptk[[i]], method = "SRVC",
+                                   SMC.cutoff = 0.01, RV_method = "RV"))
+Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
+Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
+                        
 # Functional analysis of miRNA sponge modules
 miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
 miRSM_WGCNA_SRVC_FEA <- module_FA(miRSM_WGCNA_SRVC_genes,
@@ -47,14 +61,14 @@ miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes, resample = 10, method = "mean", test.method = "t.test")
 
 # miRNA distribution analysis of sharing miRNAs
-miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, ceRExp, mRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 
 # Predict miRNA-target interactions
 miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_SRVC_genes)
 
 # Identify miRNA sponge interactions
-miRSM_WGCNA_miRsponge <- module_miRsponge(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_miRsponge <- module_miRsponge(miRSM_WGCNA_SRVC_genes)
 
 ```
 

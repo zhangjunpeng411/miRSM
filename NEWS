@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.21.1
+-------------------------
+o Add sponge module at single-sample level and internal competition sponge module <2024-01-26, Fri>
+
 CHANGES IN VERSION 1.13.2
 -------------------------
 o Fix bug <2021-12-06, Mon>

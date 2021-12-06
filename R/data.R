@@ -80,7 +80,7 @@ NULL
 #' @format miRTarget: A SummarizedExperiment object with
 #' 29901 miRNA-target interactions.
 #' @details The miRNA-target binding information is
-#' from miRTarBase v7.0 (http://mirtarbase.mbc.nctu.edu.tw/php/index.php),
+#' from miRTarBase v8.0 (http://mirtarbase.mbc.nctu.edu.tw/php/index.php),
 #' and LncBase v2.0
 #' (http://carolina.imis.athena-innovation.gr/diana_tools/web/index.php?r=lncbasev2/index).
 #' Among 226 miRNAs, 305 lncRNAs and 500 mRNAs 

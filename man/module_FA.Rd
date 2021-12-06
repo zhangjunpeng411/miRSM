@@ -72,5 +72,5 @@ Yu G, Wang L, Han Y, He Q (2012).
 OMICS: A Journal of Integrative Biology, 16(5), 284-287.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

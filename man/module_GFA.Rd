@@ -6,7 +6,7 @@
 \usage{
 module_GFA(
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   StrengthCut = 0.9,
   iter.max = 5000,
   num.ModuleceRs = 2,
@@ -17,7 +17,7 @@ module_GFA(
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{StrengthCut}{Desired minimum strength (absolute value of 
@@ -52,5 +52,5 @@ exploratory analysis of multiple data sources with group factor
 analysis. J Mach Learn Res. 2017, 18(39):1-5.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

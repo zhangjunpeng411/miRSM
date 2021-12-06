@@ -6,7 +6,7 @@
 \usage{
 module_WGCNA(
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   RsquaredCut = 0.9,
   num.ModuleceRs = 2,
   num.ModulemRs = 2
@@ -16,7 +16,7 @@ module_WGCNA(
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{RsquaredCut}{Desired minimum scale free topology fitting index 
@@ -44,5 +44,5 @@ Langfelder P, Horvath S. WGCNA: an R package for weighted
 correlation network analysis. BMC Bioinformatics. 2008, 9:559.#'
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

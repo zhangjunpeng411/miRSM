@@ -6,7 +6,7 @@
 \usage{
 module_ProNet(
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   cor.method = "pearson",
   pos.p.value.cutoff = 0.01,
   cluster.method = "MCL",
@@ -18,7 +18,7 @@ module_ProNet(
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{cor.method}{The method of calculating correlation selected, 
@@ -67,5 +67,5 @@ finding molecular complexes in large protein interaction
 networks. BMC Bioinformatics, 2003, 4:2.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

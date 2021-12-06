@@ -4,13 +4,13 @@
 \alias{module_CEA}
 \title{module_CEA}
 \usage{
-module_CEA(ceRExp, mRExp, Cancergenes, Modulelist)
+module_CEA(ceRExp, mRExp = NULL, Cancergenes, Modulelist)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{Cancergenes}{A SummarizedExperiment object: a list of cancer genes given.}
@@ -40,5 +40,5 @@ Johnson NL, Kotz S, Kemp AW (1992)
 "Univariate Discrete Distributions", Second Edition. New York: Wiley.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

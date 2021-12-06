@@ -32,5 +32,5 @@ miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

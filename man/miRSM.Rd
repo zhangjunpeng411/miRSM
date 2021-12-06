@@ -7,13 +7,13 @@
 miRSM(
   miRExp,
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   miRTarget,
   CandidateModulegenes,
   typex = "standard",
   typez = "standard",
   nperms = 100,
-  method = c("SCC", "SDC", "SRVC"),
+  method = c("SCC", "SDC", "SRVC", "SM"),
   num_shared_miRNAs = 3,
   pvalue.cutoff = 0.05,
   MC.cutoff = 0.8,
@@ -29,7 +29,7 @@ rows are samples and columns are miRNAs.}
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{miRTarget}{A SummarizedExperiment object. Putative 
@@ -75,7 +75,8 @@ List object: Sensitivity correlation,
 and genes of miRNA sponge modules.
 }
 \description{
-Identify miRNA sponge modules using sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC),
+Identify miRNA sponge modules using sensitivity canonical correlation (SCC), 
+sensitivity distance correlation (SDC),
 sensitivity RV coefficient (SRVC), and sponge module (SM) methods.
 }
 \examples{
@@ -121,5 +122,5 @@ of association between two datasets; Application to sensory data,
 Food Quality and Preference, 2015, 40(A):116-124.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

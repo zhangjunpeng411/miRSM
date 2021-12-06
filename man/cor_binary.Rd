@@ -4,13 +4,18 @@
 \alias{cor_binary}
 \title{cor_binary}
 \usage{
-cor_binary(ceRExp, mRExp, cor.method = "pearson", pos.p.value.cutoff = 0.01)
+cor_binary(
+  ceRExp,
+  mRExp = NULL,
+  cor.method = "pearson",
+  pos.p.value.cutoff = 0.01
+)
 }
 \arguments{
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{cor.method}{The method of calculating correlation selected, 
@@ -24,7 +29,7 @@ A binary matrix.
 }
 \description{
 Generation of positively correlated binary matrix between 
-ceRNAs and mRNAs
+ceRNAs, or ceRNAs and mRNAs
 }
 \examples{
 data(BRCASampleData)
@@ -37,5 +42,5 @@ weighted correlation network analysis. BMC Bioinformatics.
 2008, 9:559.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

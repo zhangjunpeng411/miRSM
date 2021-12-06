@@ -6,7 +6,7 @@
 \usage{
 module_NMF(
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   NMF.algorithm = "brunet",
   num.modules = 10,
   num.ModuleceRs = 2,
@@ -17,7 +17,7 @@ module_NMF(
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{NMF.algorithm}{Specification of the NMF algorithm, 
@@ -50,5 +50,5 @@ Gaujoux R, Seoighe C. A flexible R package for
 nonnegative matrix factorization. BMC Bioinformatics. 2010, 11:367.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

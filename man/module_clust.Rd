@@ -6,7 +6,7 @@
 \usage{
 module_clust(
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   cluster.method = "kmeans",
   num.modules = 10,
   num.ModuleceRs = 2,
@@ -17,7 +17,7 @@ module_clust(
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{cluster.method}{Specification of the clustering method, 
@@ -102,5 +102,5 @@ Bezdek JC. Pattern recognition with fuzzy objective function
 algorithms. Plenum, NY, 1981.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

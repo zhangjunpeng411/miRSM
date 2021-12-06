@@ -6,7 +6,7 @@
 \usage{
 module_biclust(
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   BCmethod = "fabia",
   num.modules = 10,
   num.ModuleceRs = 2,
@@ -17,7 +17,7 @@ module_biclust(
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{BCmethod}{Specification of the biclustering method, 
@@ -108,5 +108,5 @@ QUBIC: a qualitative biclustering algorithm for analyses of
 gene expression data. Nucleic Acids Res. 2009, 37(15):e101.
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }

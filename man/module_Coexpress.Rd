@@ -6,7 +6,7 @@
 \usage{
 module_Coexpress(
   ceRExp,
-  mRExp,
+  mRExp = NULL,
   Modulelist,
   resample = 1000,
   method = c("mean", "median"),
@@ -17,7 +17,7 @@ module_Coexpress(
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
 rows are samples and columns are ceRNAs.}
 
-\item{mRExp}{A SummarizedExperiment object. mRNA expression data: 
+\item{mRExp}{NULL (default) or a SummarizedExperiment object. mRNA expression data: 
 rows are samples and columns are mRNAs.}
 
 \item{Modulelist}{List object: a list of the identified miRNA sponge modules.}
@@ -38,7 +38,7 @@ List object: co-expression values of miRNA sponge modules and their correspondin
 and statistical significance p-value of co-expression level higher than random miRNA sponge modules.
 }
 \description{
-Co-expression analysis of each miRNA sponge module and its corresponding random miRNA sponge module
+Co-expression analysis of each miRNA sponge module and its corresponding random miRNA sponge modules
 }
 \examples{
 data(BRCASampleData)
@@ -55,5 +55,5 @@ miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp,
 
 }
 \author{
-Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng_Zhang3})
+Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 }
