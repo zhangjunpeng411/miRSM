@@ -1,7 +1,7 @@
 Package: miRSM
 Type: Package
 Title: Inferring miRNA sponge modules in heterogeneous data
-Version: 1.16.0
+Version: 1.17.0
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 
