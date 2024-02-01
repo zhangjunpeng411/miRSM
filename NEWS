@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.99.0
+-------------------------
+o Add new methods for identifying miRNA sponge modules <2024-02-02, Fri>
+
 CHANGES IN VERSION 1.21.1
 -------------------------
 o Add sponge module at single-sample level and internal competition sponge module <2024-01-26, Fri>

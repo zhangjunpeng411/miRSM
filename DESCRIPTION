@@ -1,7 +1,7 @@
 Package: miRSM
 Type: Package
 Title: Inferring miRNA sponge modules in heterogeneous data
-Version: 1.21.1
+Version: 1.99.0
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 
@@ -10,7 +10,8 @@ Authors@R:
 Description: The package aims to identify miRNA sponge or ceRNA modules in heterogeneous data.
     It provides several functions to study miRNA sponge modules at single-sample 
     and multi-sample levels, including popular methods for inferring gene modules 
-    (candidate miRNA sponge or ceRNA modules), and a function to identify miRNA sponge modules, 
+    (candidate miRNA sponge or ceRNA modules), and two functions to identify miRNA sponge 
+    modules at single-sample and multi-sample levels, 
     as well as several functions to conduct modular analysis of miRNA sponge modules.
 Depends: R (>= 3.5.0)
 License: GPL-3

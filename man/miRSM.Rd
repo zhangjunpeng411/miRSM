@@ -13,13 +13,14 @@ miRSM(
   typex = "standard",
   typez = "standard",
   nperms = 100,
-  method = c("SCC", "SDC", "SRVC", "SM"),
+  method = c("SCC", "SDC", "SRVC", "SM", "SSI", "SGCD", "SCRC"),
   num_shared_miRNAs = 3,
   pvalue.cutoff = 0.05,
   MC.cutoff = 0.8,
   SMC.cutoff = 0.1,
   RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri"),
-  BCmethod = "BCPlaid"
+  BCmethod = "BCPlaid",
+  CRC_method = c("Coxhead", "Rozeboom")
 )
 }
 \arguments{
@@ -36,7 +37,7 @@ rows are samples and columns are mRNAs.}
 miRNA-target binding information.}
 
 \item{CandidateModulegenes}{List object: a list of candidate 
-miRNA sponge modules. Only for the SCC, SDC and SRVC methods.}
+miRNA sponge modules. Only for the SCC, SDC, SRVC, SSI, SGCD and SCRC methods.}
 
 \item{typex}{The columns of x unordered (type='standard') or 
 ordered (type='ordered'). Only for the SCC method.}
@@ -47,20 +48,23 @@ ordered (type='ordered'). Only for the SCC method.}
 \item{nperms}{The number of permutations. Only for the SCC method.}
 
 \item{method}{The method selected to identify miRNA sponge 
-modules, including 'SCC', 'SDC', 'SRVC' and 'SM'.}
+modules, including 'SCC', 'SDC', 'SRVC', 'SM', 'SSI', 'SGCD' and 'SCRC'.}
 
 \item{num_shared_miRNAs}{The number of common miRNAs shared 
-by a group of ceRNAs and mRNAs. Only for the SCC, SDC and SRVC methods.}
+by a group of ceRNAs and mRNAs. Only for the SCC, SDC, SRVC, SSI, 
+SGCD and SCRC methods.}
 
 \item{pvalue.cutoff}{The p-value cutoff of significant sharing 
 of common miRNAs by a group of ceRNAs and mRNAs or significant correlation.}
 
 \item{MC.cutoff}{The cutoff of matrix correlation (canonical correlation, 
-distance correlation and RV coefficient). Only for the SCC, SDC and SRVC methods.}
+distance correlation and RV coefficient). Only for the SCC, SDC, SRVC, 
+SSI, SGCD and SCRC methods.}
 
 \item{SMC.cutoff}{The cutoff of sensitivity matrix correlation
 (sensitivity canonical correlation, sensitivity distance correlation 
-and sensitivity RV coefficient). Only for the SCC, SDC and SRVC methods.}
+and sensitivity RV coefficient). Only for the SCC, SDC, SRVC, SSI, 
+SGCD and SCRC methods.}
 
 \item{RV_method}{the method of calculating RV coefficients. Select
 one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
@@ -69,15 +73,22 @@ Only for the SRVC method.}
 \item{BCmethod}{Specification of the biclustering method, 
 including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
 'BCSpectral', 'BCXmotifs'. Only for the SM method.}
+
+\item{CRC_method}{the method of calculating matrix correlation. Select
+one of 'Coxhead' and 'Rozeboom' methods.
+Only for the SCRC method.}
 }
 \value{
-List object: Sensitivity correlation,
-and genes of miRNA sponge modules.
+List object: Group competition of miRNA sponge modules,
+and miRNA sponge modules.
 }
 \description{
 Identify miRNA sponge modules using sensitivity canonical correlation (SCC), 
 sensitivity distance correlation (SDC),
-sensitivity RV coefficient (SRVC), and sponge module (SM) methods.
+sensitivity RV coefficient (SRVC), sensitivity similarity index (SSI), 
+sensitivity generalized coefficient of determination (SGCD), 
+sensitivity Coxhead's or Rozeboom's coefficient (SCRC), 
+and sponge module (SM) methods.
 }
 \examples{
 data(BRCASampleData)
@@ -120,6 +131,20 @@ the adjusted RV coefficient". Stat Appl Genet Mol Biol.,
 EIGhaziri A, Qannari EM. Measures 
 of association between two datasets; Application to sensory data, 
 Food Quality and Preference, 2015, 40(A):116-124.
+
+Indahl UG, Næs T, Liland KH. A similarity index for 
+comparing coupled matrices. Journal of Chemometrics. 2018; 32:e3049.
+
+Yanai H. Unification of various techniques of multivariate 
+analysis by means of generalized coefficient of determination (GCD). 
+Journal of Behaviormetrics, 1974, 1(1): 45-54.
+
+Coxhead P. Measuring the relationship between two sets 
+of variables. British journal of mathematical and statistical psychology, 
+1974, 27(2): 205-212.
+
+Rozeboom WW. Linear correlations between sets of variables.
+Psychometrika, 1965, 30(1): 57-71.
 }
 \author{
 Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
