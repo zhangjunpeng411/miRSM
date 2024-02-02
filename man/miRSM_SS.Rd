@@ -30,17 +30,23 @@ Inferring sample-specific miRNA sponge modules
 data(BRCASampleData)
 nsamples <- 3
 modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
+modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) 
+                             module_WGCNA(ceRExp[-i, seq(150)], 
+                             mRExp[-i, seq(150)]))
  
-miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
-                         modulegenes_igraph_all, method = "SRVC",
-                         SMC.cutoff = 0.01, RV_method = "RV")
-miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], miRTarget,
-                         modulegenes_WGCNA_exceptk[[i]], method = "SRVC",
-                         SMC.cutoff = 0.01, RV_method = "RV"))
+miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], 
+                               miRTarget, modulegenes_igraph_all, 
+                               method = "SRVC", SMC.cutoff = 0.01, 
+                               RV_method = "RV")
+miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
+                                   ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], 
+                                   miRTarget, modulegenes_WGCNA_exceptk[[i]],#'                                     
+                                   method = "SRVC",
+                                   SMC.cutoff = 0.01, RV_method = "RV"))
 
 Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
-Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+Modulegenes_exceptk <- lapply(seq(nsamples), function(i) 
+                              miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
 
 Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
 

@@ -62,7 +62,8 @@ miRSM_igraph_SRVC
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 nsamples <- 3
 modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i,                                         seq(150)], mRExp[-i, seq(150)]))
+modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) 
+                                  module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
 miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
                                modulegenes_igraph_all, method = "SRVC",
                                SMC.cutoff = 0.01, RV_method = "RV")

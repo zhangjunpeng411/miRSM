@@ -11,7 +11,7 @@
 
 <meta name="author" content=" Junpeng Zhang (zhangjunpeng411@gmail.com) School of Engineering, Dali University" />
 
-<meta name="date" content="2024-02-02" />
+<meta name="date" content="2024-02-03" />
 
 <title>miRSM: inferring miRNA sponge modules in heterogeneous data</title>
 
@@ -727,7 +727,7 @@ function toggle_visibility(id1) {
 <p class="author-name">\
 Junpeng Zhang (zhangjunpeng411@gmail.com)\
 School of Engineering, Dali University</p>
-<h4 class="date">2024-02-02</h4>
+<h4 class="date">2024-02-03</h4>
 
 </div>
 
@@ -868,11 +868,11 @@ modulegenes_NMF &lt;- module_NMF(ceRExp[, seq_len(10)],
                               mRExp[, seq_len(10)])
 modulegenes_NMF</code></pre>
 <pre><code>## GeneSetCollection
-##   names:  (0 total)
-##   unique identifiers:  (0 total)
+##   names: Module 1 (1 total)
+##   unique identifiers: A1BG-AS1, ABCA11P, ..., C1orf43 (6 total)
 ##   types in collection:
-##     geneIdType:  (0 total)
-##     collectionType:  (0 total)</code></pre>
+##     geneIdType: NullIdentifier (1 total)
+##     collectionType: NullCollection (1 total)</code></pre>
 </div>
 <div id="module_clust" class="section level2" number="2.7">
 <h2><span class="header-section-number">2.7</span> module_clust</h2>
@@ -881,8 +881,8 @@ modulegenes_NMF</code></pre>
                                   mRExp[, seq_len(30)])
 modulegenes_clust</code></pre>
 <pre><code>## GeneSetCollection
-##   names: Module 1, Module 2 (2 total)
-##   unique identifiers: ADAM21P1, ADORA2A-AS1, ..., FLVCR1 (19 total)
+##   names: Module 1 (1 total)
+##   unique identifiers: A1BG-AS1, ABCA11P, ..., FLVCR1 (12 total)
 ##   types in collection:
 ##     geneIdType: NullIdentifier (1 total)
 ##     collectionType: NullCollection (1 total)</code></pre>
@@ -946,7 +946,8 @@ miRSM_igraph_SRVC</code></pre>
 <p>‘miRSM’ uses statistical perturbation strategy to infer sample-specific miRNA sponge modules. By using the statistical perturbation strategy, ‘miRSM’ identifies differential miRNA sponge modules between two cases (all samples and all samples except sample k).</p>
 <pre class="r"><code>nsamples &lt;- 3
 modulegenes_igraph_all &lt;- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-modulegenes_WGCNA_exceptk &lt;- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i,                                         seq(150)], mRExp[-i, seq(150)]))</code></pre>
+modulegenes_WGCNA_exceptk &lt;- lapply(seq(nsamples), function(i) 
+                                  module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))</code></pre>
 <pre><code>##    Power SFT.R.sq  slope truncated.R.sq mean.k. median.k. max.k.
 ## 1      1   0.0965  0.328         0.1180  98.900  119.0000 155.00
 ## 2      2   0.0678 -0.225         0.3120  50.900   60.7000 105.00
@@ -1237,10 +1238,10 @@ miRSM_WGCNA_Coexpress</code></pre>
 ## [1] 0.7512547
 ## 
 ## $`Random miRNA sponge modules`
-## [1] 0.2263774
+## [1] 0.2794157
 ## 
 ## $`Statistical significance p-value`
-## [1] 2.526924e-09</code></pre>
+## [1] 2.25922e-09</code></pre>
 </div>
 <div id="mirna-distribution-analysis-of-sharing-mirnas" class="section level2" number="5.5">
 <h2><span class="header-section-number">5.5</span> miRNA distribution analysis of sharing miRNAs</h2>
@@ -1272,7 +1273,7 @@ miRSM_WGCNA_miRsponge &lt;- module_miRsponge(miRSM_WGCNA_SRVC_genes)</code></pre
 </div>
 <div id="conclusions" class="section level1" number="6">
 <h1><span class="header-section-number">6</span> Conclusions</h1>
-<p>miRSM provides several functions to study miRNA sponge modules, including popular methods for inferring gene modules (candidate miRNA sponge modules), and a function to identify miRNA sponge modules, as well as several functions to conduct modular analysis of miRNA sponge modules. It could provide a useful tool for the research of miRNA sponge modules at single-sample and multi-sample levels.</p>
+<p>miRSM provides several functions to study miRNA sponge modules at single-sample and multi-sample levels, including popular methods for inferring gene modules (candidate miRNA sponge or ceRNA modules), and two functions to identify miRNA sponge modules at single-sample and multi-sample levels, as well as several functions to conduct modular analysis of miRNA sponge modules. It could provide a useful tool for the research of miRNA sponge modules at single-sample and multi-sample levels.</p>
 </div>
 <div id="references" class="section level1" number="7">
 <h1><span class="header-section-number">7</span> References</h1>
@@ -1357,7 +1358,7 @@ Possibilistic Cluster Analysis. R package version 0.1.1, 2018.</p>
 ## 
 ## other attached packages:
 ## [1] NMF_0.26            cluster_2.1.4       rngtools_1.5.2     
-## [4] registry_0.5-1      BiocStyle_2.30.0    miRSM_1.99.0       
+## [4] registry_0.5-1      BiocStyle_2.30.0    miRSM_1.99.1       
 ## [7] Biobase_2.62.0      BiocGenerics_0.48.1
 ## 
 ## loaded via a namespace (and not attached):

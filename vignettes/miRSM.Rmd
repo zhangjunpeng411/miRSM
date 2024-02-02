@@ -134,7 +134,8 @@ miRSM_igraph_SRVC
 ```{r, eval=TRUE, include=TRUE}
 nsamples <- 3
 modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i,                                         seq(150)], mRExp[-i, seq(150)]))
+modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) 
+                                  module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
 miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
                                modulegenes_igraph_all, method = "SRVC",
                                SMC.cutoff = 0.01, RV_method = "RV")
@@ -228,7 +229,7 @@ miRSM_WGCNA_miRsponge <- module_miRsponge(miRSM_WGCNA_SRVC_genes)
 ```
 
 # Conclusions
-miRSM provides several functions to study miRNA sponge modules, including popular methods for inferring gene modules (candidate miRNA sponge modules), and a function to identify miRNA sponge modules, as well as several functions to conduct modular analysis of miRNA sponge modules. It could provide a useful tool for the research of miRNA sponge modules at single-sample and multi-sample levels.
+miRSM provides several functions to study miRNA sponge modules at single-sample and multi-sample levels, including popular methods for inferring gene modules (candidate miRNA sponge or ceRNA modules), and two functions to identify miRNA sponge modules at single-sample and multi-sample levels, as well as several functions to conduct modular analysis of miRNA sponge modules. It could provide a useful tool for the research of miRNA sponge modules at single-sample and multi-sample levels.
 
 # References
 [1] Ambros V. microRNAs: tiny regulators with great potential. Cell, 2001, 107:823–6.

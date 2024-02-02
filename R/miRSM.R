@@ -291,8 +291,8 @@ CandModgenes <- function(ceRExp,
     return(CandidateModulegenes)
 }
 
-## Internal function Module_group_sim_matrix for Calculating similarity matrix between two list of module groups
-Module_group_sim_matrix <- function(Module.group1, 
+## Internal function module_group_sim_matrix for Calculating similarity matrix between two list of module groups
+module_group_sim_matrix <- function(Module.group1, 
                                     Module.group2, 
                                     sim.method = "Simpson"){
   
@@ -2455,7 +2455,7 @@ miRSM_SCRC <- function(miRExp,
 
 #' Calculating similarity between two list of module groups
 #'
-#' @title Module_group_sim
+#' @title module_group_sim
 #' @param Module.group1 List object, the first list of module group.
 #' @param Module.group2 List object, the second list of module group.
 #' @param sim.method Methods for calculating similatiry between two modules, select one of three methods (Simpson, Jaccard and Lin). Default method is Simpson.
@@ -2467,13 +2467,13 @@ miRSM_SCRC <- function(miRExp,
 #' data(BRCASampleData)
 #' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
 #' modulegenes_igraph <- module_igraph(ceRExp, mRExp)
-#' Sim <- Module_group_sim(geneIds(modulegenes_WGCNA), geneIds(modulegenes_igraph))
+#' Sim <- module_group_sim(geneIds(modulegenes_WGCNA), geneIds(modulegenes_igraph))
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 #' @references Simpson E H. Measurement of diversity. Nature, 1949, 163(4148): 688-688.
 #' @references Jaccard P. The distribution of the flora in the alpine zone. 1. New phytologist, 1912, 11(2): 37-50.
 #' @references Lin D. An information-theoretic definition of similarity. in: Icml. 1998, 98(1998): 296-304.
-Module_group_sim <- function(Module.group1, 
+module_group_sim <- function(Module.group1, 
                              Module.group2, 
                              sim.method = "Simpson"){
   
@@ -2487,7 +2487,7 @@ Module_group_sim <- function(Module.group1,
   m <- length(Module.group1)
   n <- length(Module.group2)
   
-  Sim <- Module_group_sim_matrix(Module.group1, Module.group2, sim.method = sim.method)
+  Sim <- module_group_sim_matrix(Module.group1, Module.group2, sim.method = sim.method)
   
   if (m < n) {        
     GS <- mean(unlist(lapply(seq(m), function(i) Sim[i, max.col(Sim)[i]])))*m/n
@@ -2503,7 +2503,7 @@ Module_group_sim <- function(Module.group1,
 
 #' Inferring differential modules between two list of module groups
 #'
-#' @title Diff_module
+#' @title diff_module
 #' @param Module.group1 List object, the first list of module group.
 #' @param Module.group2 List object, the second list of module group.
 #' @param sim.cutoff Similarity cutoff between modules, the interval is [0 1].
@@ -2516,10 +2516,10 @@ Module_group_sim <- function(Module.group1,
 #' data(BRCASampleData)
 #' modulegenes_WGCNA_all <- module_WGCNA(ceRExp, mRExp)
 #' modulegenes_WGCNA_1 <- module_WGCNA(ceRExp[-1, ], mRExp[-1, ])
-#' Differential_module <- Diff_module(geneIds(modulegenes_WGCNA_all), geneIds(modulegenes_WGCNA_1))
+#' Differential_module <- diff_module(geneIds(modulegenes_WGCNA_all), geneIds(modulegenes_WGCNA_1))
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
-Diff_module <- function(Module.group1, 
+diff_module <- function(Module.group1, 
                         Module.group2,
                         sim.cutoff = 0.8, 
                         sim.method = "Simpson"){
@@ -2529,9 +2529,9 @@ Diff_module <- function(Module.group1,
   } else if (class(Module.group1[[1]]) == "list" | class(Module.group2[[1]]) == "list"){
     Module.group1.interin <- lapply(seq(Module.group1), function(i) unique(unlist(Module.group1[[i]])))
     Module.group2.interin <- lapply(seq(Module.group2), function(i) unique(unlist(Module.group2[[i]])))
-    Sim <- Module_group_sim_matrix(Module.group1.interin, Module.group2.interin, sim.method = sim.method)
+    Sim <- module_group_sim_matrix(Module.group1.interin, Module.group2.interin, sim.method = sim.method)
   } else {
-    Sim <- Module_group_sim_matrix(Module.group1, Module.group2, sim.method = sim.method)
+    Sim <- module_group_sim_matrix(Module.group1, Module.group2, sim.method = sim.method)
   }   
   
   row.max.index <- apply(Sim, 1, function(x){which.max(x)})
@@ -2739,17 +2739,23 @@ miRSM <- function(miRExp,
 #' data(BRCASampleData)
 #' nsamples <- 3
 #' modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-#' modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
+#' modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) 
+#'                              module_WGCNA(ceRExp[-i, seq(150)], 
+#'                              mRExp[-i, seq(150)]))
 #'  
-#' miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
-#'                          modulegenes_igraph_all, method = "SRVC",
-#'                          SMC.cutoff = 0.01, RV_method = "RV")
-#' miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], miRTarget,
-#'                          modulegenes_WGCNA_exceptk[[i]], method = "SRVC",
-#'                          SMC.cutoff = 0.01, RV_method = "RV"))
+#' miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], 
+#'                                miRTarget, modulegenes_igraph_all, 
+#'                                method = "SRVC", SMC.cutoff = 0.01, 
+#'                                RV_method = "RV")
+#' miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
+#'                                    ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], 
+#'                                    miRTarget, modulegenes_WGCNA_exceptk[[i]],#'                                     
+#'                                    method = "SRVC",
+#'                                    SMC.cutoff = 0.01, RV_method = "RV"))
 #' 
 #' Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
-#' Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+#' Modulegenes_exceptk <- lapply(seq(nsamples), function(i) 
+#'                               miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
 #' 
 #' Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
 #'
@@ -2763,7 +2769,7 @@ miRSM_SS <- function(Modulelist.all,
     stop("Please check your input module group! The input module group should be list object! \n")
   } 
   
-  Res <- lapply(seq(Modulelist.exceptk), function(i) Diff_module(Modulelist.all, Modulelist.exceptk[[i]], sim.cutoff = sim.cutoff, sim.method = sim.method))
+  Res <- lapply(seq(Modulelist.exceptk), function(i) diff_module(Modulelist.all, Modulelist.exceptk[[i]], sim.cutoff = sim.cutoff, sim.method = sim.method))
   
   names(Res) <- paste("Sample", seq(Res), sep=" ")
   return(Res)
