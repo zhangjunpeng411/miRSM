@@ -67,6 +67,10 @@ Zhang J, Liu L, Xu T, Xie Y, Zhao C, Li J, Le TD (2019).
 “miRspongeR: an R/Bioconductor package for the identification and analysis of 
 miRNA sponge interaction networks and modules.” BMC Bioinformatics, 20, 235.
 
+Zhang J, Liu L, Zhang W, Li X, Zhao C, Li S, Li J, Le TD. 
+miRspongeR 2.0: an enhanced R package for exploring miRNA sponge regulation. 
+Bioinform Adv. 2022 Sep 2;2(1):vbac063.
+
 Yu G, Wang L, Han Y, He Q (2012). 
 “clusterProfiler: an R package for comparing biological themes among gene clusters.” 
 OMICS: A Journal of Integrative Biology, 16(5), 284-287.

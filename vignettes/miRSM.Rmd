@@ -185,9 +185,8 @@ miRSM.CEA.pvalue
 The function 'module_Validate' is implemented to validate the miRNA sponge interactions existed in each miRNA sponge module.
 
 ```{r, eval=FALSE, include=TRUE}
-# Using the built-in groundtruth from the miRspongeR package
-library(miRspongeR)
-Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
+# Using the built-in groundtruth from the miRSM package
+Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
 Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
 miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)

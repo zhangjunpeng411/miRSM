@@ -52,8 +52,7 @@ miRSM_WGCNA_SRVC_DEA <- module_FA(miRSM_WGCNA_SRVC_genes,
 miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_SRVC_genes)
 
 # Validation of miRNA sponge interactions in miRNA sponge modules
-library(miRspongeR)
-Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
+Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
 Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
 miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 

@@ -332,6 +332,51 @@ module_group_sim_matrix <- function(Module.group1,
   return(Sim)
 }
 
+## Internal function cluster from miRspongeR package
+## Disease enrichment analysis of modules
+moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", ont = "DO", padjustvaluecutoff = 0.05,
+                      padjustedmethod = "BH") {
+  
+  entrezIDs <- lapply(seq_along(Modulelist), function(i) bitr(Modulelist[[i]], fromType = "SYMBOL",
+                                                              toType = "ENTREZID", OrgDb = OrgDb)$ENTREZID)
+  
+  entrezIDs <- lapply(seq_along(Modulelist), function(i) as.character(entrezIDs[[i]]))
+  
+  enrichDOs <- lapply(seq_along(Modulelist), function(i) enrichDO(entrezIDs[[i]], ont = ont, pvalueCutoff = padjustvaluecutoff,
+                                                                  pAdjustMethod = padjustedmethod))
+  
+  enrichDGNs <- lapply(seq_along(Modulelist), function(i) enrichDGN(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
+                                                                    pAdjustMethod = padjustedmethod))
+  
+  enrichNCGs <- lapply(seq_along(Modulelist), function(i) enrichNCG(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
+                                                                    pAdjustMethod = padjustedmethod))
+  
+  return(list(enrichDOs, enrichDGNs, enrichNCGs))
+}
+
+## Internal function cluster from miRspongeR package
+## Functional GO, KEGG and Reactome enrichment analysis of modules
+moduleFEA <- function(Modulelist, ont = "BP", KEGGorganism = "hsa", Reactomeorganism = "human",
+                      OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05, padjustedmethod = "BH") {
+  
+  entrezIDs <- lapply(seq_along(Modulelist), function(i) bitr(Modulelist[[i]], fromType = "SYMBOL",
+                                                              toType = "ENTREZID", OrgDb = OrgDb)$ENTREZID)
+  
+  entrezIDs <- lapply(seq_along(Modulelist), function(i) as.character(entrezIDs[[i]]))
+  
+  enrichGOs <- lapply(seq_along(Modulelist), function(i) enrichGO(entrezIDs[[i]], OrgDb = OrgDb,
+                                                                  ont = ont, pvalueCutoff = padjustvaluecutoff, pAdjustMethod = padjustedmethod))
+  
+  enrichKEGGs <- lapply(seq_along(Modulelist), function(i) enrichKEGG(entrezIDs[[i]], organism = KEGGorganism,
+                                                                      pvalueCutoff = padjustvaluecutoff, pAdjustMethod = padjustedmethod))
+  
+  enrichReactomes <- lapply(seq_along(Modulelist), function(i) enrichPathway(entrezIDs[[i]], organism = Reactomeorganism,
+                                                                             pvalueCutoff = padjustvaluecutoff, pAdjustMethod = padjustedmethod))
+  
+  return(list(enrichGOs, enrichKEGGs, enrichReactomes))
+  
+}
+
 #' Identification of co-expressed gene modules from matched ceRNA and mRNA
 #' expression data using WGCNA package
 #'
@@ -2795,8 +2840,14 @@ miRSM_SS <- function(Modulelist.all,
 #' including 'FEA' (functional enrichment analysis) and 'DEA' 
 #' (disease enrichment analysis).
 #' @import org.Hs.eg.db
-#' @importFrom miRspongeR moduleFEA
-#' @importFrom miRspongeR moduleDEA
+#' @importFrom clusterProfiler bitr
+#' @importFrom clusterProfiler enrichGO
+#' @importFrom clusterProfiler enrichKEGG
+#' @importFrom clusterProfiler compareCluster
+#' @importFrom DOSE enrichDO
+#' @importFrom DOSE enrichDGN
+#' @importFrom DOSE enrichNCG
+#' @importFrom ReactomePA enrichPathway
 #' @export
 #' @return List object: a list of enrichment analysis results.
 #'
@@ -2817,6 +2868,9 @@ miRSM_SS <- function(Modulelist.all,
 #' @references Zhang J, Liu L, Xu T, Xie Y, Zhao C, Li J, Le TD (2019). 
 #' “miRspongeR: an R/Bioconductor package for the identification and analysis of 
 #' miRNA sponge interaction networks and modules.” BMC Bioinformatics, 20, 235.
+#' @references Zhang J, Liu L, Zhang W, Li X, Zhao C, Li S, Li J, Le TD. 
+#' miRspongeR 2.0: an enhanced R package for exploring miRNA sponge regulation. 
+#' Bioinform Adv. 2022 Sep 2;2(1):vbac063.
 #' @references Yu G, Wang L, Han Y, He Q (2012). 
 #' “clusterProfiler: an R package for comparing biological themes among gene clusters.” 
 #' OMICS: A Journal of Integrative Biology, 16(5), 284-287.
@@ -2922,8 +2976,7 @@ module_CEA <- function(ceRExp,
 #'                         modulegenes_WGCNA, method = "SRVC",
 #'                         SMC.cutoff = 0.01, RV_method = "RV")
 #' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-#' library(miRspongeR)
-#' Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
+#' Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
 #' Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",") 
 #' miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 #'

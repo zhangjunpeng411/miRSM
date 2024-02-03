@@ -99,9 +99,8 @@ miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_SRVC_genes
 miRSM.CEA.pvalue
 
 ## ----eval=FALSE, include=TRUE-------------------------------------------------
-#  # Using the built-in groundtruth from the miRspongeR package
-#  library(miRspongeR)
-#  Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRspongeR")
+#  # Using the built-in groundtruth from the miRSM package
+#  Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
 #  Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
 #  # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
 #  miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
