@@ -22,8 +22,8 @@ Calculating similarity between two list of module groups
 \examples{
 library(GSEABase)
 data(BRCASampleData)
-modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-modulegenes_igraph <- module_igraph(ceRExp, mRExp)
+modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp) 
+modulegenes_igraph <- module_igraph (ceRExp, mRExp) 
 Sim <- module_group_sim(geneIds(modulegenes_WGCNA), geneIds(modulegenes_igraph))
 
 }

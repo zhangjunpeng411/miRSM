@@ -2498,7 +2498,7 @@ miRSM_SCRC <- function(miRExp,
   return(Result)
 }
 
-#' Calculating similarity between two list of module groups
+#' Calculating similarity between two list of module groups  
 #'
 #' @title module_group_sim
 #' @param Module.group1 List object, the first list of module group.
@@ -2510,8 +2510,8 @@ miRSM_SCRC <- function(miRExp,
 #' @examples
 #' library(GSEABase)
 #' data(BRCASampleData)
-#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp)
-#' modulegenes_igraph <- module_igraph(ceRExp, mRExp)
+#' modulegenes_WGCNA <- module_WGCNA(ceRExp, mRExp) 
+#' modulegenes_igraph <- module_igraph (ceRExp, mRExp) 
 #' Sim <- module_group_sim(geneIds(modulegenes_WGCNA), geneIds(modulegenes_igraph))
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
@@ -2527,7 +2527,7 @@ module_group_sim <- function(Module.group1,
   } else if (class(Module.group1[[1]]) == "list" | class(Module.group2[[1]]) == "list"){
     Module.group1 <- lapply(seq(Module.group1), function(i) unique(unlist(Module.group1[[i]])))
     Module.group2 <- lapply(seq(Module.group2), function(i) unique(unlist(Module.group2[[i]])))    
-  }    
+  }     
   
   m <- length(Module.group1)
   n <- length(Module.group2)
@@ -2546,7 +2546,7 @@ module_group_sim <- function(Module.group1,
   return(GS)
 }
 
-#' Inferring differential modules between two list of module groups
+#' Inferring differential modules between two list of module groups 
 #'
 #' @title diff_module
 #' @param Module.group1 List object, the first list of module group.
