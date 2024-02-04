@@ -149,7 +149,7 @@ Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
 Modules_SS
 ```
 
-# Modular analysis of the identified miRNA sponge modules
+# Modular analysis of miRNA sponge modules
 
 ## Functional analysis of miRNA sponge modules
 `miRSM` implements _module_FA_ function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<http://www.geneontology.org/>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<http://www.genome.jp/kegg/>), and Reactome: Reactome Pathway Database (<http://reactome.org/>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<http://disease-ontology.org/>), DGN: DisGeNET database (<http://www.disgenet.org/>) and NCG: Network of Cancer Genes database (<http://ncg.kcl.ac.uk/>). 
@@ -201,7 +201,7 @@ miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes
 miRSM_WGCNA_Coexpress
 ```
 
-## miRNA distribution analysis of sharing miRNAs
+## Distribution analysis of sharing miRNAs
 To investigate the distribution of sharing miRNAs in the identified miRNA sponge modules, `miRSM` implements _module_miRdistribute_ function. The miRNA distribution analysis can understand whether the sharing miRNAs act as crosslinks across different miRNA sponge modules.
 
 ```{r, eval=TRUE, include=TRUE}
@@ -211,7 +211,7 @@ miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 head(miRSM_WGCNA_miRdistribute)
 ```
 
-## Predict miRNA-target interactions
+## Predicting miRNA-target interactions
 Since the identified miRNA sponge modules and their sharing miRNAs can also be used to predict miRNA-target interactions (including miRNA-ceRNA and miRNA-mRNA interactions), `miRSM` implements _module_miRtarget_ function to predict miRNA-target interactions underlying in each miRNA sponge module. 
 
 ```{r, eval=FALSE, include=TRUE}
@@ -219,7 +219,7 @@ Since the identified miRNA sponge modules and their sharing miRNAs can also be u
 miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_SRVC_genes)
 ```
 
-## Identify miRNA sponge interactions
+## Identifying miRNA sponge interactions
 To extract miRNA sponge interactions of each miRNA sponge module, `miRSM` implements _module_miRsponge_ function to identify miRNA sponge interactions.
 
 ```{r, eval=FALSE, include=TRUE}

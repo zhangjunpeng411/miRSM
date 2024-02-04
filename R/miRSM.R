@@ -1164,7 +1164,7 @@ cor_binary <- function(ceRExp,
 }
 
 ## Constructing miRNA-target binary matrix using putative miRNA-target interactions
-Bindingmatrix <- function(miRExp, 
+Bindingmatrix <- function(miRExp = NULL, 
                           ceRExp, 
                           mRExp = NULL, 
                           miRTarget){
@@ -1173,15 +1173,20 @@ Bindingmatrix <- function(miRExp,
   mir <- as.character(miRTarget[, 1])
   gene <- as.character(miRTarget[, 2])
   
-  miRNA <- colnames(miRExp)
-  if(is.null(mRExp)){
-  target <- colnames(ceRExp)
+  if(!is.null(miRExp)){
+    miRNA <- colnames(miRExp)
   } else {
-  target <- c(colnames(ceRExp), colnames(mRExp))
+    miRNA <- unique(mir)
+  }
+  
+  if(is.null(mRExp)){
+    target <- colnames(ceRExp)
+  } else {
+    target <- c(colnames(ceRExp), colnames(mRExp))
   }
   
   rep <- replicate(length(miRNA), mir)
-  edge = matrix(FALSE, length(miRNA) + length(target), length(miRNA) + length(target))
+  edge <- matrix(FALSE, length(miRNA) + length(target), length(miRNA) + length(target))
   
   for (i in 1:length(mir)){    
     if (length(which(rep[i, ] == miRNA)>0)){
@@ -1189,14 +1194,14 @@ Bindingmatrix <- function(miRExp,
       match1 <- which(rep[i, ] == miRNA, arr.ind = TRUE)      
       rep2 <- replicate(length(target), gene[i])
       match2 <- which(rep2 == target, arr.ind = TRUE)
-      edge[match1, match2 + length(miRNA)] = TRUE
+      edge[match1, match2 + length(miRNA)] <- TRUE
       
     }
   }
   
   edge <- edge + t(edge)
   edge <- edge!=0
-  edge <- edge[seq(target) + length(miRNA), seq(miRNA)]*1
+  edge <- edge[seq(target) + length(miRNA), seq(miRNA)] * 1
   colnames(edge) <- miRNA
   rownames(edge) <- target
   
@@ -1204,7 +1209,7 @@ Bindingmatrix <- function(miRExp,
 }
 
 ## Identify miRNA sponge modules using sensitivity canonical correlation (SCC) method
-miRSM_SCC <- function(miRExp, 
+miRSM_SCC <- function(miRExp = NULL, 
                       ceRExp, 
                       mRExp = NULL, 
                       miRTarget, 
@@ -1217,7 +1222,9 @@ miRSM_SCC <- function(miRExp,
                       CC.cutoff = 0.8, 
                       SCC.cutoff = 0.1) {
   
-  miRNames <- colnames(miRExp)
+  if(!is.null(miRExp)){
+    miRNames <- colnames(miRExp)
+  }
   ceRNames <- colnames(ceRExp)
   if(!is.null(mRExp)){
     mRNames <- colnames(mRExp)
@@ -1229,7 +1236,7 @@ miRSM_SCC <- function(miRExp,
   if(is.null(mRExp) & length(CandidateModulegenes) < 2){
     index <- NULL
     
-  } else if (is.null(mRExp) & length(CandidateModulegenes) > 1){
+  } else if (!is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
                                               which(miRTarget[, 2] %in% ceRNames)), ]
     
@@ -1310,6 +1317,96 @@ miRSM_SCC <- function(miRExp,
                      Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                      Res[, "Canonical correlation of ceRNA1:ceRNA2"] > CC.cutoff &
                      Res[, "Sensitivity canonical correlation of ceRNA1:ceRNA2"] > SCC.cutoff)
+    
+  } else if (is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% ceRNames), ]
+    
+    comb_index <- t(combn(length(CandidateModulegenes), 2))
+    
+    for (i in nrow(comb_index)){
+      # Calculate significance of miRNAs shared by each ceRNAs:ceRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 2]]], ceRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {
+        
+        # Canonical correlation between a group of ceRNAs and another group of ceRNAs
+        perm.out_ceR1_ceR2 <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
+                                                                  CandidateModulegenes[[comb_index[i, 1]]])], assay(ceRExp)[, which(ceRNames %in%
+                                                                                                                                      CandidateModulegenes[[comb_index[i, 2]]])], typex = typex, typez = typez,
+                                          nperms = nperms)
+        out_ceR1_ceR2 <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                             assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])],
+                             typex = typex, typez = typez, penaltyx = perm.out_ceR1_ceR2$bestpenaltyx,
+                             penaltyz = perm.out_ceR1_ceR2$bestpenaltyz, v = perm.out_ceR1_ceR2$v.init)
+        M6 <- out_ceR1_ceR2$cor        
+        
+      } else {
+        M6 <- NA        
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNA1", "#miRNAs regulating ceRNA2",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Canonical correlation of ceRNA1:ceRNA2")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Canonical correlation of ceRNA1:ceRNA2"] > CC.cutoff)
+    
+  } else if (is.null(miRExp) & !is.null(mRExp)){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% c(ceRNames, mRNames)), ]
+    
+    for (i in seq_along(CandidateModulegenes)) {
+      # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], mRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {
+        
+        # Canonical correlation between a group of ceRNAs and a group of mRNAs
+        perm.out_ceR_mR <- CCA.permute(assay(ceRExp)[, which(ceRNames %in%
+                                                               CandidateModulegenes[[i]])], assay(mRExp)[, which(mRNames %in%
+                                                                                                                   CandidateModulegenes[[i]])], typex = typex, typez = typez,
+                                       nperms = nperms)
+        out_ceR_mR <- CCA(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                          assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])],
+                          typex = typex, typez = typez, penaltyx = perm.out_ceR_mR$bestpenaltyx,
+                          penaltyz = perm.out_ceR_mR$bestpenaltyz, v = perm.out_ceR_mR$v.init)
+        M6 <- out_ceR_mR$cor        
+        
+      } else {
+        M6 <- NA        
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Canonical correlation of ceRNAs:mRNAs")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Canonical correlation of ceRNAs:mRNAs"] > CC.cutoff)
     
   } else {
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
@@ -1418,7 +1515,7 @@ miRSM_SCC <- function(miRExp,
 }
 
 ## Identify miRNA sponge modules using sensitivity distance correlation (SDC) method 
-miRSM_SDC <- function(miRExp, 
+miRSM_SDC <- function(miRExp = NULL, 
                       ceRExp, 
                       mRExp = NULL, 
                       miRTarget, 
@@ -1428,7 +1525,9 @@ miRSM_SDC <- function(miRExp,
                       DC.cutoff = 0.8, 
                       SDC.cutoff = 0.1) {    
   
-  miRNames <- colnames(miRExp)
+  if(!is.null(miRExp)){
+    miRNames <- colnames(miRExp)
+  }
   ceRNames <- colnames(ceRExp)
   if(!is.null(mRExp)){
     mRNames <- colnames(mRExp)
@@ -1440,7 +1539,7 @@ miRSM_SDC <- function(miRExp,
   if(is.null(mRExp) & length(CandidateModulegenes) < 2){
     index <- NULL
     
-  } else if (is.null(mRExp) & length(CandidateModulegenes) > 1){
+  } else if (!is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
                                               which(miRTarget[, 2] %in% ceRNames)), ]
     
@@ -1493,6 +1592,83 @@ miRSM_SDC <- function(miRExp,
                      Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                      Res[, "Distance correlation of ceRNA1:ceRNA2"] > DC.cutoff &
                      Res[, "Sensitivity distance correlation of ceRNA1:ceRNA2"] > SDC.cutoff)
+    
+  } else if (is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% ceRNames), ]
+    
+    comb_index <- t(combn(length(CandidateModulegenes), 2))
+    
+    for (i in nrow(comb_index)){
+      # Calculate significance of miRNAs shared by each ceRNAs:ceRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 2]]], ceRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {
+        
+        # Calculate distance correlation between a group of ceRNAs and another group of ceRNAs      
+        M6 <- dcor(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                   assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])
+        
+      } else {
+        M6 <- NA         
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNA1", "#miRNAs regulating ceRNA2",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Distance correlation of ceRNA1:ceRNA2")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Distance correlation of ceRNA1:ceRNA2"] > DC.cutoff)
+    
+  } else if (is.null(miRExp) & !is.null(mRExp)){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% c(ceRNames, mRNames)), ]
+    
+    for (i in seq_along(CandidateModulegenes)) {
+      # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], mRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {        
+        
+        # Calculate distance correlation between a group of ceRNAs
+        # and a group of mRNAs
+        M6 <- dcor(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                   assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])        
+        
+      } else {
+        M6 <- NA        
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Distance correlation of ceRNAs:mRNAs")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Distance correlation of ceRNAs:mRNAs"] > DC.cutoff)
     
   } else {
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
@@ -1574,7 +1750,7 @@ miRSM_SDC <- function(miRExp,
 }
 
 ## Identify miRNA sponge modules using sensitivity RV coefficient (SRVC) method
-miRSM_SRVC <- function(miRExp, 
+miRSM_SRVC <- function(miRExp = NULL, 
                        ceRExp, 
                        mRExp = NULL, 
                        miRTarget, 
@@ -1585,7 +1761,9 @@ miRSM_SRVC <- function(miRExp,
                        SRVC.cutoff = 0.1, 
                        RV_method = "RV") {    
   
-  miRNames <- colnames(miRExp)
+  if(!is.null(miRExp)){
+    miRNames <- colnames(miRExp)
+  }
   ceRNames <- colnames(ceRExp)
   if(!is.null(mRExp)){
     mRNames <- colnames(mRExp)
@@ -1597,7 +1775,7 @@ miRSM_SRVC <- function(miRExp,
   if(is.null(mRExp) & length(CandidateModulegenes) < 2){
     index <- NULL
     
-  } else if (is.null(mRExp) & length(CandidateModulegenes) > 1){
+  } else if (!is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
                                               which(miRTarget[, 2] %in% ceRNames)), ]
     
@@ -1725,6 +1903,118 @@ miRSM_SRVC <- function(miRExp,
                      Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                      Res[, "RV coefficient of ceRNA1:ceRNA2"] > RVC.cutoff &
                      Res[, "Sensitivity RV coefficient of ceRNA1:ceRNA2"] > SRVC.cutoff)
+    
+  } else if (is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% ceRNames), ]
+    
+    comb_index <- t(combn(length(CandidateModulegenes), 2))
+    
+    for (i in nrow(comb_index)){
+      # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 2]]], ceRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs & RV_method == "RV") {
+        
+        # RV coefficient between a group of ceRNAs and another group of ceRNAs       
+        M6 <- RV(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                 assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])
+        
+      } else if (M3 >= num_shared_miRNAs & RV_method == "RV2") {
+        
+        # RV coefficient between a group of ceRNAs and another group of ceRNAs       
+        M6 <- RV2(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                  assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])        
+        
+      } else if (M3 >= num_shared_miRNAs & RV_method == "RVadjMaye") {
+        
+        # RV coefficient between a group of ceRNAs and another group of ceRNAs       
+        M6 <- RVadjMaye(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                        assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])        
+        
+      } else if (M3 >= num_shared_miRNAs & RV_method == "RVadjGhaziri") {
+        
+        # RV coefficient between a group of ceRNAs and another group of ceRNAs       
+        M6 <- RVadjGhaziri(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                           assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])        
+        
+      } else {
+        M6 <- NA       
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+    }
+    
+    colnames(Res) <- c("#miRNAs regulating ceRNA1", "#miRNAs regulating ceRNA2",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "RV coefficient of ceRNA1:ceRNA2")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "RV coefficient of ceRNA1:ceRNA2"] > RVC.cutoff)
+    
+  } else if (is.null(miRExp) & !is.null(mRExp)){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% c(ceRNames, mRNames)), ]
+    
+    for (i in seq_along(CandidateModulegenes)) {
+      # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], mRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs & RV_method == "RV") {
+        
+        # RV coefficient between a group of ceRNAs and a group of mRNAs       
+        M6 <- RV(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                 assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])
+        
+      } else if (M3 >= num_shared_miRNAs & RV_method == "RV2") {
+        
+        # RV coefficient between a group of ceRNAs and a group of mRNAs       
+        M6 <- RV2(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                  assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])        
+        
+      } else if (M3 >= num_shared_miRNAs & RV_method == "RVadjMaye") {
+        
+        # RV coefficient between a group of ceRNAs and a group of mRNAs       
+        M6 <- RVadjMaye(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                        assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])        
+        
+      } else if (M3 >= num_shared_miRNAs & RV_method == "RVadjGhaziri") {
+        
+        # RV coefficient between a group of ceRNAs and a group of mRNAs       
+        M6 <- RVadjGhaziri(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                           assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])        
+        
+      } else {
+        M6 <- NA       
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "RV coefficient of ceRNAs:mRNAs")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "RV coefficient of ceRNAs:mRNAs"] > RVC.cutoff)
     
   } else {  
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
@@ -1885,7 +2175,7 @@ miRSM_SRVC <- function(miRExp,
 ## Note that miRNA-mRNA correlation matrix using Pearson method and miRNA-mRNA context++ score matrix using putative miRNA-target binding information
 ## are converted into two miRNA-mRNA binary matrices.
 ## a and b are the contributions of expression data and miRNA-target binding information, respectively.
-miRSM_SM <- function(miRExp, 
+miRSM_SM <- function(miRExp = NULL, 
                      ceRExp, 
                      mRExp = NULL, 
                      miRTarget, 
@@ -1894,21 +2184,26 @@ miRSM_SM <- function(miRExp,
                      BCmethod = "BCPlaid", 
                      pvalue.cutoff = 0.05) {
   
-  Binding_edge <- Bindingmatrix(miRExp, ceRExp, mRExp = mRExp, miRTarget)
+  Binding_edge <- Bindingmatrix(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget)
   
-  if(is.null(mRExp)){
-  Cor.Pvalue <- WGCNA::corAndPvalue(assay(ceRExp), assay(miRExp))$p
+  if(is.null(miRExp)){
+    colScore <- Binding_edge
+    
   } else {
-  Cor.Pvalue <- WGCNA::corAndPvalue(cbind(assay(ceRExp), assay(mRExp)), assay(miRExp))$p
+    if(is.null(mRExp)){
+      Cor.Pvalue <- WGCNA::corAndPvalue(assay(ceRExp), assay(miRExp))$p
+    } else {
+      Cor.Pvalue <- WGCNA::corAndPvalue(cbind(assay(ceRExp), assay(mRExp)), assay(miRExp))$p
+    }
+    index1 <- which(Cor.Pvalue < pvalue.cutoff)
+    index2 <- c(which(Cor.Pvalue >= pvalue.cutoff), 
+                which(Cor.Pvalue %in% NA))
+    Cor.Pvalue[index1] <- 1
+    Cor.Pvalue[index2] <- 0
+    Cor_edge <- Cor.Pvalue
+    
+    colScore <- a*Cor_edge + b*Binding_edge
   }
-  index1 <- which(Cor.Pvalue < pvalue.cutoff)
-  index2 <- c(which(Cor.Pvalue >= pvalue.cutoff), 
-              which(Cor.Pvalue %in% NA))
-  Cor.Pvalue[index1] <- 1
-  Cor.Pvalue[index2] <- 0
-  Cor_edge <- Cor.Pvalue
-  
-  colScore <- a*Cor_edge + b*Binding_edge
   
   if (BCmethod=="BCBimax"){
     colScore <- binarize(colScore)
@@ -1934,7 +2229,7 @@ miRSM_SM <- function(miRExp,
 }
 
 ## Identify miRNA sponge modules using sensitivity similarity index (SSI) method
-miRSM_SSI <- function(miRExp, 
+miRSM_SSI <- function(miRExp = NULL, 
                       ceRExp, 
                       mRExp = NULL, 
                       miRTarget, 
@@ -1944,7 +2239,9 @@ miRSM_SSI <- function(miRExp,
                       SI.cutoff = 0.8, 
                       SSI.cutoff = 0.1) {    
   
-  miRNames <- colnames(miRExp)
+  if(!is.null(miRExp)){
+    miRNames <- colnames(miRExp)
+  }
   ceRNames <- colnames(ceRExp)
   if(!is.null(mRExp)){
     mRNames <- colnames(mRExp)
@@ -1956,7 +2253,7 @@ miRSM_SSI <- function(miRExp,
   if(is.null(mRExp) & length(CandidateModulegenes) < 2){
     index <- NULL
     
-  } else if (is.null(mRExp) & length(CandidateModulegenes) > 1){
+  } else if (!is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
                                               which(miRTarget[, 2] %in% ceRNames)), ]
     
@@ -2018,6 +2315,82 @@ miRSM_SSI <- function(miRExp,
                      Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                      Res[, "Similarity index of ceRNA1:ceRNA2"] > SI.cutoff &
                      Res[, "Sensitivity similarity index of ceRNA1:ceRNA2"] > SSI.cutoff)
+    
+  } else if (is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% ceRNames), ]
+    
+    comb_index <- t(combn(length(CandidateModulegenes), 2))
+    
+    for (i in nrow(comb_index)){
+      # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 2]]], ceRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {
+        
+        # Similarity index between a group of ceRNAs and another group of ceRNAs       
+        M6 <- SMI(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                  assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])], 1, 1)        
+        
+      } else {
+        M6 <- NA       
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+    }
+    
+    colnames(Res) <- c("#miRNAs regulating ceRNA1", "#miRNAs regulating ceRNA2",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Similarity index of ceRNA1:ceRNA2")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Similarity index of ceRNA1:ceRNA2"] > SI.cutoff)
+    
+  } else if (is.null(miRExp) & !is.null(mRExp)){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% c(ceRNames, mRNames)), ]
+    
+    for (i in seq_along(CandidateModulegenes)) {
+      # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], mRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {
+        
+        # Similarity index between a group of ceRNAs and a group of mRNAs       
+        M6 <- SMI(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                  assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])], 1, 1)        
+        
+      } else {
+        M6 <- NA       
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Similarity index of ceRNAs:mRNAs")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Similarity index of ceRNAs:mRNAs"] > SI.cutoff)
     
   } else {  
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
@@ -2106,9 +2479,8 @@ miRSM_SSI <- function(miRExp,
   return(Result)
 }
 
-
 ## Identify miRNA sponge modules using sensitivity generalized coefficient of determination (SGCD) method
-miRSM_SGCD <- function(miRExp, 
+miRSM_SGCD <- function(miRExp = NULL, 
                        ceRExp, 
                        mRExp = NULL, 
                        miRTarget, 
@@ -2118,7 +2490,9 @@ miRSM_SGCD <- function(miRExp,
                        GCD.cutoff = 0.8, 
                        SGCD.cutoff = 0.1) {    
   
-  miRNames <- colnames(miRExp)
+  if(!is.null(miRExp)){
+    miRNames <- colnames(miRExp)
+  }
   ceRNames <- colnames(ceRExp)
   if(!is.null(mRExp)){
     mRNames <- colnames(mRExp)
@@ -2130,7 +2504,7 @@ miRSM_SGCD <- function(miRExp,
   if(is.null(mRExp) & length(CandidateModulegenes) < 2){
     index <- NULL
     
-  } else if (is.null(mRExp) & length(CandidateModulegenes) > 1){
+  } else if (!is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
                                               which(miRTarget[, 2] %in% ceRNames)), ]
     
@@ -2192,6 +2566,82 @@ miRSM_SGCD <- function(miRExp,
                      Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                      Res[, "Generalized coefficient of determination of ceRNA1:ceRNA2"] > GCD.cutoff &
                      Res[, "Sensitivity generalized coefficient of determination of ceRNA1:ceRNA2"] > SGCD.cutoff)
+    
+  } else if (is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% ceRNames), ]
+    
+    comb_index <- t(combn(length(CandidateModulegenes), 2))
+    
+    for (i in nrow(comb_index)){
+      # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 2]]], ceRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {
+        
+        # Generalized coefficient of determination between a group of ceRNAs and another group of ceRNAs       
+        M6 <- GCD(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                  assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])
+        
+      } else {
+        M6 <- NA        
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+    }
+    
+    colnames(Res) <- c("#miRNAs regulating ceRNA1", "#miRNAs regulating ceRNA2",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Generalized coefficient of determination of ceRNA1:ceRNA2")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Generalized coefficient of determination of ceRNA1:ceRNA2"] > GCD.cutoff)
+    
+  } else if (is.null(miRExp) & !is.null(mRExp)){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% c(ceRNames, mRNames)), ]
+    
+    for (i in seq_along(CandidateModulegenes)) {
+      # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], mRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs) {
+        
+        # Generalized coefficient of determination between a group of ceRNAs and a group of mRNAs       
+        M6 <- GCD(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                  assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])        
+        
+      } else {
+        M6 <- NA        
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "Generalized coefficient of determination of ceRNAs:mRNAs")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "Generalized coefficient of determination of ceRNAs:mRNAs"] > GCD.cutoff)
     
   } else {  
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
@@ -2281,7 +2731,7 @@ miRSM_SGCD <- function(miRExp,
 }
 
 ## Identify miRNA sponge modules using sensitivity Coxhead's or Rozeboom's coefficient (SCRC) method
-miRSM_SCRC <- function(miRExp, 
+miRSM_SCRC <- function(miRExp = NULL, 
                        ceRExp, 
                        mRExp = NULL, 
                        miRTarget, 
@@ -2292,7 +2742,9 @@ miRSM_SCRC <- function(miRExp,
                        SCRC.cutoff = 0.1, 
                        CRC_method = "Coxhead") {    
   
-  miRNames <- colnames(miRExp)
+  if(!is.null(miRExp)){
+    miRNames <- colnames(miRExp)
+  }
   ceRNames <- colnames(ceRExp)
   if(!is.null(mRExp)){
     mRNames <- colnames(mRExp)
@@ -2304,7 +2756,7 @@ miRSM_SCRC <- function(miRExp,
   if(is.null(mRExp) & length(CandidateModulegenes) < 2){
     index <- NULL
     
-  } else if (is.null(mRExp) & length(CandidateModulegenes) > 1){
+  } else if (!is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
                                               which(miRTarget[, 2] %in% ceRNames)), ]
     
@@ -2388,6 +2840,94 @@ miRSM_SCRC <- function(miRExp,
                      Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
                      Res[, "CRC coefficient of ceRNA1:ceRNA2"] > CRC.cutoff &
                      Res[, "Sensitivity CRC coefficient of ceRNA1:ceRNA2"] > SCRC.cutoff)
+    
+  } else if (is.null(miRExp) & is.null(mRExp) & length(CandidateModulegenes) > 1){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% ceRNames), ]
+    
+    comb_index <- t(combn(length(CandidateModulegenes), 2))
+    
+    for (i in nrow(comb_index)){
+      # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[comb_index[i, 2]]], ceRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs & CRC_method == "Coxhead") {
+        
+        # Coxhead's coefficient between a group of ceRNAs and another group of ceRNAs       
+        M6 <- Coxhead(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                      assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])[1]        
+        
+      } else if (M3 >= num_shared_miRNAs & CRC_method == "Rozeboom") {
+        
+        # Rozeboom's coefficient between a group of ceRNAs and another group of ceRNAs       
+        M6 <- Rozeboom(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 1]]])],
+                       assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[comb_index[i, 2]]])])[1]        
+        
+      } else {
+        M6 <- NA       
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+    }
+    
+    colnames(Res) <- c("#miRNAs regulating ceRNA1", "#miRNAs regulating ceRNA2",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "CRC coefficient of ceRNA1:ceRNA2")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "CRC coefficient of ceRNA1:ceRNA2"] > CRC.cutoff)
+    
+  } else if (is.null(miRExp) & !is.null(mRExp)){
+    miRTargetCandidate <- miRTarget[which(miRTarget[, 2] %in% c(ceRNames, mRNames)), ]
+    
+    for (i in seq_along(CandidateModulegenes)) {
+      # Calculate significance of miRNAs shared by each ceRNAs:mRNAs
+      tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], ceRNames)), 1])
+      M1 <- length(tmp1)
+      tmp2 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
+                                                intersect(CandidateModulegenes[[i]], mRNames)), 1])
+      M2 <- length(tmp2)
+      tmp3 <- intersect(tmp1, tmp2)
+      M3 <- length(tmp3)
+      M4 <- length(unique(miRTargetCandidate[, 1]))
+      M5 <- 1 - phyper(M3 - 1, M2, M4 - M2, M1)
+      
+      if (M3 >= num_shared_miRNAs & CRC_method == "Coxhead") {
+        
+        # Coxhead's coefficient between a group of ceRNAs and a group of mRNAs       
+        M6 <- Coxhead(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                      assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])[1]        
+        
+      } else if (M3 >= num_shared_miRNAs & CRC_method == "Rozeboom") {
+        
+        # Rozeboom's coefficient between a group of ceRNAs and a group of mRNAs       
+        M6 <- Rozeboom(assay(ceRExp)[, which(ceRNames %in% CandidateModulegenes[[i]])],
+                       assay(mRExp)[, which(mRNames %in% CandidateModulegenes[[i]])])[1]        
+        
+      } else {
+        M6 <- NA       
+      }
+      
+      tmp <- c(M1, M2, M3, M4, M5, M6)
+      Res <- rbind(Res, tmp)
+      
+    }
+    colnames(Res) <- c("#miRNAs regulating ceRNAs", "#miRNAs regulating mRNAs",
+                       "#Shared miRNAs", "#Background miRNAs", "Sig. p.value of sharing miRNAs",
+                       "CRC coefficient of ceRNAs:mRNAs")
+    index <- which(Res[, "#Shared miRNAs"] >= num_shared_miRNAs &
+                     Res[, "Sig. p.value of sharing miRNAs"] < pvalue.cutoff & 
+                     Res[, "CRC coefficient of ceRNAs:mRNAs"] > CRC.cutoff)
     
   } else {  
     miRTargetCandidate <- miRTarget[intersect(which(miRTarget[, 1] %in% miRNames), 
@@ -2602,7 +3142,7 @@ diff_module <- function(Module.group1,
 #' and sponge module (SM) methods.
 #'
 #' @title miRSM
-#' @param miRExp A SummarizedExperiment object. miRNA expression data: 
+#' @param miRExp NULL (default) or a SummarizedExperiment object. miRNA expression data: 
 #' rows are samples and columns are miRNAs.
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
 #' rows are samples and columns are ceRNAs.
@@ -2630,7 +3170,7 @@ diff_module <- function(Module.group1,
 #' @param SMC.cutoff The cutoff of sensitivity matrix correlation
 #' (sensitivity canonical correlation, sensitivity distance correlation 
 #' and sensitivity RV coefficient). Only for the SCC, SDC, SRVC, SSI, 
-#' SGCD and SCRC methods.
+#' SGCD and SCRC methods when miRExp is not NULL.
 #' @param RV_method the method of calculating RV coefficients. Select
 #' one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
 #' Only for the SRVC method.
@@ -2714,7 +3254,7 @@ diff_module <- function(Module.group1,
 #' 1974, 27(2): 205-212.
 #' @references Rozeboom WW. Linear correlations between sets of variables.
 #' Psychometrika, 1965, 30(1): 57-71.
-miRSM <- function(miRExp, 
+miRSM <- function(miRExp = NULL, 
                   ceRExp, 
                   mRExp = NULL, 
                   miRTarget, 
@@ -2732,35 +3272,35 @@ miRSM <- function(miRExp,
                   CRC_method = c("Coxhead", "Rozeboom")) {
 
     if (method == "SCC") {
-        Res <- miRSM_SCC(miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
+        Res <- miRSM_SCC(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
             typex = "standard", typez = "standard", nperms = nperms, num_shared_miRNAs = num_shared_miRNAs,
             pvalue.cutoff = pvalue.cutoff, CC.cutoff = MC.cutoff, 
             SCC.cutoff = SMC.cutoff)
     } else if (method == "SDC") {
-        Res <- miRSM_SDC(miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
+        Res <- miRSM_SDC(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
             num_shared_miRNAs = num_shared_miRNAs,
             pvalue.cutoff = pvalue.cutoff, DC.cutoff = MC.cutoff, 
             SDC.cutoff = SMC.cutoff)
     } else if (method == "SRVC") {
-        Res <- miRSM_SRVC(miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
+        Res <- miRSM_SRVC(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
             num_shared_miRNAs = num_shared_miRNAs,
             pvalue.cutoff = pvalue.cutoff, RVC.cutoff = MC.cutoff, 
             SRVC.cutoff = SMC.cutoff, RV_method = RV_method)
     } else if (method == "SM") {
-        Res <- miRSM_SM(miRExp, ceRExp, mRExp = mRExp, miRTarget, 
+        Res <- miRSM_SM(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, 
             BCmethod = BCmethod, pvalue.cutoff = pvalue.cutoff)
     } else if (method == "SSI") {
-        Res <- miRSM_SSI(miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
+        Res <- miRSM_SSI(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
                        num_shared_miRNAs = num_shared_miRNAs,
                        pvalue.cutoff = pvalue.cutoff, SI.cutoff = MC.cutoff, 
                        SSI.cutoff = SMC.cutoff)
     } else if (method == "SGCD") {
-        Res <- miRSM_SGCD(miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
+        Res <- miRSM_SGCD(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
                        num_shared_miRNAs = num_shared_miRNAs,
                        pvalue.cutoff = pvalue.cutoff, GCD.cutoff = MC.cutoff, 
                        SGCD.cutoff = SMC.cutoff)
     } else if (method == "SCRC") {
-        Res <- miRSM_SCRC(miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
+        Res <- miRSM_SCRC(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
                         num_shared_miRNAs = num_shared_miRNAs,
                         pvalue.cutoff = pvalue.cutoff, CRC.cutoff = MC.cutoff, 
                         SCRC.cutoff = SMC.cutoff, CRC_method = CRC_method)
