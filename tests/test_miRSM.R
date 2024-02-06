@@ -1,6 +1,6 @@
-library(testthat)
-library(GSEABase)
-library(miRSM)
+suppressPackageStartupMessages(library(testthat))
+suppressPackageStartupMessages(library(GSEABase))
+suppressPackageStartupMessages(library(miRSM))
 
 # Load datasets
 data(BRCASampleData)

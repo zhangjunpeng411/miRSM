@@ -26,7 +26,7 @@ miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         modulegenes_WGCNA, method = "SRVC",
                         SMC.cutoff = 0.01, RV_method = "RV")
 miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, 
                                           miRSM_WGCNA_SRVC_genes)
 

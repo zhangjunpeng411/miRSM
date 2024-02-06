@@ -25,7 +25,7 @@ miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         modulegenes_WGCNA, method = "SRVC",
                         SMC.cutoff = 0.01, RV_method = "RV")
 miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
+Groundtruthcsv <- system.file("extdata", "Groundtruth_high.csv", package="miRSM")
 Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",") 
 miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 

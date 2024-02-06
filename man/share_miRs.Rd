@@ -4,9 +4,12 @@
 \alias{share_miRs}
 \title{share_miRs}
 \usage{
-share_miRs(miRTarget, Modulelist)
+share_miRs(miRExp = NULL, miRTarget, Modulelist)
 }
 \arguments{
+\item{miRExp}{NULL (default) or a SummarizedExperiment object. miRNA expression data: 
+rows are samples and columns are miRNAs.}
+
 \item{miRTarget}{A SummarizedExperiment object. Putative 
 miRNA-target binding information.}
 
@@ -26,7 +29,7 @@ miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         modulegenes_WGCNA, method = "SRVC",
                         SMC.cutoff = 0.01, RV_method = "RV")
 miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 
 }
 \author{

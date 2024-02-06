@@ -11,7 +11,7 @@
 
 <meta name="author" content=" Junpeng Zhang (zhangjunpeng411@gmail.com) School of Engineering, Dali University" />
 
-<meta name="date" content="2024-02-04" />
+<meta name="date" content="2024-02-26" />
 
 <title>miRSM: inferring miRNA sponge modules in heterogeneous data</title>
 
@@ -727,7 +727,7 @@ function toggle_visibility(id1) {
 <p class="author-name">\
 Junpeng Zhang (zhangjunpeng411@gmail.com)\
 School of Engineering, Dali University</p>
-<h4 class="date">2024-02-04</h4>
+<h4 class="date">2024-02-26</h4>
 
 </div>
 
@@ -748,15 +748,15 @@ School of Engineering, Dali University</p>
 </ul></li>
 <li><a href="#discovery-of-mirna-sponge-modules" id="toc-discovery-of-mirna-sponge-modules"><span class="toc-section-number">3</span> Discovery of miRNA sponge modules</a></li>
 <li><a href="#inference-of-sample-specific-mirna-sponge-modules" id="toc-inference-of-sample-specific-mirna-sponge-modules"><span class="toc-section-number">4</span> Inference of sample-specific miRNA sponge modules</a></li>
-<li><a href="#modular-analysis-of-the-identified-mirna-sponge-modules" id="toc-modular-analysis-of-the-identified-mirna-sponge-modules"><span class="toc-section-number">5</span> Modular analysis of the identified miRNA sponge modules</a>
+<li><a href="#modular-analysis-of-mirna-sponge-modules" id="toc-modular-analysis-of-mirna-sponge-modules"><span class="toc-section-number">5</span> Modular analysis of miRNA sponge modules</a>
 <ul>
 <li><a href="#functional-analysis-of-mirna-sponge-modules" id="toc-functional-analysis-of-mirna-sponge-modules"><span class="toc-section-number">5.1</span> Functional analysis of miRNA sponge modules</a></li>
 <li><a href="#cancer-enrichment-analysis-of-mirna-sponge-modules" id="toc-cancer-enrichment-analysis-of-mirna-sponge-modules"><span class="toc-section-number">5.2</span> Cancer enrichment analysis of miRNA sponge modules</a></li>
 <li><a href="#validation-of-mirna-sponge-interactions-in-mirna-sponge-modules" id="toc-validation-of-mirna-sponge-interactions-in-mirna-sponge-modules"><span class="toc-section-number">5.3</span> Validation of miRNA sponge interactions in miRNA sponge modules</a></li>
 <li><a href="#co-expression-analysis-of-mirna-sponge-modules" id="toc-co-expression-analysis-of-mirna-sponge-modules"><span class="toc-section-number">5.4</span> Co-expression analysis of miRNA sponge modules</a></li>
-<li><a href="#mirna-distribution-analysis-of-sharing-mirnas" id="toc-mirna-distribution-analysis-of-sharing-mirnas"><span class="toc-section-number">5.5</span> miRNA distribution analysis of sharing miRNAs</a></li>
-<li><a href="#predict-mirna-target-interactions" id="toc-predict-mirna-target-interactions"><span class="toc-section-number">5.6</span> Predict miRNA-target interactions</a></li>
-<li><a href="#identify-mirna-sponge-interactions" id="toc-identify-mirna-sponge-interactions"><span class="toc-section-number">5.7</span> Identify miRNA sponge interactions</a></li>
+<li><a href="#distribution-analysis-of-sharing-mirnas" id="toc-distribution-analysis-of-sharing-mirnas"><span class="toc-section-number">5.5</span> Distribution analysis of sharing miRNAs</a></li>
+<li><a href="#predicting-mirna-target-interactions" id="toc-predicting-mirna-target-interactions"><span class="toc-section-number">5.6</span> Predicting miRNA-target interactions</a></li>
+<li><a href="#identifying-mirna-sponge-interactions" id="toc-identifying-mirna-sponge-interactions"><span class="toc-section-number">5.7</span> Identifying miRNA sponge interactions</a></li>
 </ul></li>
 <li><a href="#conclusions" id="toc-conclusions"><span class="toc-section-number">6</span> Conclusions</a></li>
 <li><a href="#references" id="toc-references"><span class="toc-section-number">7</span> References</a></li>
@@ -881,8 +881,8 @@ modulegenes_NMF</code></pre>
                                   mRExp[, seq_len(30)])
 modulegenes_clust</code></pre>
 <pre><code>## GeneSetCollection
-##   names: Module 1, Module 2, Module 3, Module 4 (4 total)
-##   unique identifiers: A1BG-AS1, ABCA11P, ..., FEN1 (32 total)
+##   names: Module 1 (1 total)
+##   unique identifiers: A1BG-AS1, ABCA11P, ..., FLVCR1 (13 total)
 ##   types in collection:
 ##     geneIdType: NullIdentifier (1 total)
 ##     collectionType: NullCollection (1 total)</code></pre>
@@ -921,7 +921,7 @@ Cycle: 500</code></pre>
 <pre class="r"><code>modulegenes_biclust</code></pre>
 <pre><code>## GeneSetCollection
 ##   names: Module 1 (1 total)
-##   unique identifiers: ABCC13, FIGF, ..., A2M-AS1 (26 total)
+##   unique identifiers: COL10A1, FIGF, ..., ECE2 (22 total)
 ##   types in collection:
 ##     geneIdType: NullIdentifier (1 total)
 ##     collectionType: NullCollection (1 total)</code></pre>
@@ -939,7 +939,7 @@ miRSM_igraph_SRVC &lt;- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         method = &quot;SRVC&quot;, MC.cutoff = 0.8,
                         SMC.cutoff = 0.01, RV_method = &quot;RV&quot;)
 miRSM_igraph_SRVC</code></pre>
-<pre><code>## [1] &quot;No miRNA sponge modules identified&quot;</code></pre>
+<pre><code>## [1] &quot;No miRNA sponge modules identified!&quot;</code></pre>
 </div>
 <div id="inference-of-sample-specific-mirna-sponge-modules" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Inference of sample-specific miRNA sponge modules</h1>
@@ -1168,8 +1168,8 @@ Modules_SS</code></pre>
 ## [55] &quot;INMT&quot;      &quot;IQSEC3&quot;    &quot;ITIH5&quot;     &quot;ITM2A&quot;     &quot;KANK1&quot;     &quot;KCNAB1&quot;   
 ## [61] &quot;KCNB1&quot;     &quot;KCNIP2&quot;    &quot;KCTD12&quot;    &quot;KIAA0355&quot;  &quot;KIAA0408&quot;  &quot;KIF26A&quot;</code></pre>
 </div>
-<div id="modular-analysis-of-the-identified-mirna-sponge-modules" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Modular analysis of the identified miRNA sponge modules</h1>
+<div id="modular-analysis-of-mirna-sponge-modules" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Modular analysis of miRNA sponge modules</h1>
 <div id="functional-analysis-of-mirna-sponge-modules" class="section level2" number="5.1">
 <h2><span class="header-section-number">5.1</span> Functional analysis of miRNA sponge modules</h2>
 <p><code>miRSM</code> implements <em>module_FA</em> function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<a href="http://www.geneontology.org/" class="uri">http://www.geneontology.org/</a>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<a href="http://www.genome.jp/kegg/" class="uri">http://www.genome.jp/kegg/</a>), and Reactome: Reactome Pathway Database (<a href="http://reactome.org/" class="uri">http://reactome.org/</a>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<a href="http://disease-ontology.org/" class="uri">http://disease-ontology.org/</a>), DGN: DisGeNET database (<a href="http://www.disgenet.org/" class="uri">http://www.disgenet.org/</a>) and NCG: Network of Cancer Genes database (<a href="http://ncg.kcl.ac.uk/" class="uri">http://ncg.kcl.ac.uk/</a>).</p>
@@ -1220,9 +1220,9 @@ miRSM.CEA.pvalue</code></pre>
 </div>
 <div id="validation-of-mirna-sponge-interactions-in-mirna-sponge-modules" class="section level2" number="5.3">
 <h2><span class="header-section-number">5.3</span> Validation of miRNA sponge interactions in miRNA sponge modules</h2>
-<p>The function <em>module_Validate</em> is implemented to validate the miRNA sponge interactions existed in each miRNA sponge module.</p>
+<p>The function <em>module_Validate</em> is implemented to validate the miRNA sponge interactions existed in each miRNA sponge module. The built-in high-confidence groundtruth of miRNA sponge interactions is obtained from miRSponge (<a href="http://bio-bigdata.hrbmu.edu.cn/miRSponge/" class="uri">http://bio-bigdata.hrbmu.edu.cn/miRSponge/</a>), LncACTdb 3.0 (<a href="http://bio-bigdata.hrbmu.edu.cn/LncACTdb/" class="uri">http://bio-bigdata.hrbmu.edu.cn/LncACTdb/</a>), LncCeRBase (<a href="http://www.insect-genome.com/LncCeRBase/front/" class="uri">http://www.insect-genome.com/LncCeRBase/front/</a>). The built-in low-confidence groundtruth of miRNA sponge interactions is obtained from ENCORI (<a href="https://rnasysu.com/encori/" class="uri">https://rnasysu.com/encori/</a>). By using web API of ENCORI, the mRNA related miRNA sponge interactions are from <a href="https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&amp;geneType=mRNA&amp;ceRNA=all&amp;miRNAnum=1&amp;pval=0.05&amp;fdr=0.05&amp;pancancerNum=0" class="uri">https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&amp;geneType=mRNA&amp;ceRNA=all&amp;miRNAnum=1&amp;pval=0.05&amp;fdr=0.05&amp;pancancerNum=0</a>, the lncRNA related miRNA sponge interactions are from <a href="https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&amp;geneType=lncRNA&amp;ceRNA=all&amp;miRNAnum=1&amp;pval=0.05&amp;fdr=0.05&amp;pancancerNum=0" class="uri">https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&amp;geneType=lncRNA&amp;ceRNA=all&amp;miRNAnum=1&amp;pval=0.05&amp;fdr=0.05&amp;pancancerNum=0</a>, and the pseudogene related miRNA sponge interactions are from <a href="https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&amp;geneType=pseudogene&amp;ceRNA=all&amp;miRNAnum=1&amp;pval=0.05&amp;fdr=0.05&amp;pancancerNum=0" class="uri">https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&amp;geneType=pseudogene&amp;ceRNA=all&amp;miRNAnum=1&amp;pval=0.05&amp;fdr=0.05&amp;pancancerNum=0</a>.</p>
 <pre class="r"><code># Using the built-in groundtruth from the miRSM package
-Groundtruthcsv &lt;- system.file(&quot;extdata&quot;, &quot;Groundtruth.csv&quot;, package=&quot;miRSM&quot;)
+Groundtruthcsv &lt;- system.file(&quot;extdata&quot;, &quot;Groundtruth_high.csv&quot;, package=&quot;miRSM&quot;)
 Groundtruth &lt;- read.csv(Groundtruthcsv, header=TRUE, sep=&quot;,&quot;)
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
 miRSM.Validate &lt;- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)</code></pre>
@@ -1237,34 +1237,34 @@ miRSM_WGCNA_Coexpress</code></pre>
 ## [1] 0.7512547
 ## 
 ## $`Random miRNA sponge modules`
-## [1] 0.2270934
+## [1] 0.253481
 ## 
 ## $`Statistical significance p-value`
-## [1] 2.843373e-08</code></pre>
+## [1] 1.934749e-09</code></pre>
 </div>
-<div id="mirna-distribution-analysis-of-sharing-mirnas" class="section level2" number="5.5">
-<h2><span class="header-section-number">5.5</span> miRNA distribution analysis of sharing miRNAs</h2>
+<div id="distribution-analysis-of-sharing-mirnas" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> Distribution analysis of sharing miRNAs</h2>
 <p>To investigate the distribution of sharing miRNAs in the identified miRNA sponge modules, <code>miRSM</code> implements <em>module_miRdistribute</em> function. The miRNA distribution analysis can understand whether the sharing miRNAs act as crosslinks across different miRNA sponge modules.</p>
 <pre class="r"><code># Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
-miRSM_WGCNA_share_miRs &lt;-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs &lt;-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRdistribute &lt;- module_miRdistribute(miRSM_WGCNA_share_miRs)
 head(miRSM_WGCNA_miRdistribute)</code></pre>
-<pre><code>##      miRNA           Module ID Number of modules
-## [1,] &quot;hsa-let-7b-5p&quot; &quot;miRSM 1&quot; &quot;1&quot;              
-## [2,] &quot;hsa-let-7c-5p&quot; &quot;miRSM 1&quot; &quot;1&quot;              
-## [3,] &quot;hsa-let-7d-5p&quot; &quot;miRSM 1&quot; &quot;1&quot;              
-## [4,] &quot;hsa-let-7e-5p&quot; &quot;miRSM 1&quot; &quot;1&quot;              
-## [5,] &quot;hsa-let-7f-5p&quot; &quot;miRSM 1&quot; &quot;1&quot;              
-## [6,] &quot;hsa-miR-1197&quot;  &quot;miRSM 1&quot; &quot;1&quot;</code></pre>
+<pre><code>##      miRNA             Module ID Number of modules
+## [1,] &quot;hsa-let-7b-5p&quot;   &quot;miRSM 1&quot; &quot;1&quot;              
+## [2,] &quot;hsa-let-7d-5p&quot;   &quot;miRSM 1&quot; &quot;1&quot;              
+## [3,] &quot;hsa-let-7e-5p&quot;   &quot;miRSM 1&quot; &quot;1&quot;              
+## [4,] &quot;hsa-miR-125a-5p&quot; &quot;miRSM 1&quot; &quot;1&quot;              
+## [5,] &quot;hsa-miR-148b-3p&quot; &quot;miRSM 1&quot; &quot;1&quot;              
+## [6,] &quot;hsa-miR-149-5p&quot;  &quot;miRSM 1&quot; &quot;1&quot;</code></pre>
 </div>
-<div id="predict-mirna-target-interactions" class="section level2" number="5.6">
-<h2><span class="header-section-number">5.6</span> Predict miRNA-target interactions</h2>
+<div id="predicting-mirna-target-interactions" class="section level2" number="5.6">
+<h2><span class="header-section-number">5.6</span> Predicting miRNA-target interactions</h2>
 <p>Since the identified miRNA sponge modules and their sharing miRNAs can also be used to predict miRNA-target interactions (including miRNA-ceRNA and miRNA-mRNA interactions), <code>miRSM</code> implements <em>module_miRtarget</em> function to predict miRNA-target interactions underlying in each miRNA sponge module.</p>
 <pre class="r"><code># Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
 miRSM_WGCNA_miRtarget &lt;- module_miRtarget(miRSM_WGCNA_share_miRs, miRSM_WGCNA_SRVC_genes)</code></pre>
 </div>
-<div id="identify-mirna-sponge-interactions" class="section level2" number="5.7">
-<h2><span class="header-section-number">5.7</span> Identify miRNA sponge interactions</h2>
+<div id="identifying-mirna-sponge-interactions" class="section level2" number="5.7">
+<h2><span class="header-section-number">5.7</span> Identifying miRNA sponge interactions</h2>
 <p>To extract miRNA sponge interactions of each miRNA sponge module, <code>miRSM</code> implements <em>module_miRsponge</em> function to identify miRNA sponge interactions.</p>
 <pre class="r"><code># Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
 miRSM_WGCNA_miRsponge &lt;- module_miRsponge(miRSM_WGCNA_SRVC_genes)</code></pre>
@@ -1357,7 +1357,7 @@ Possibilistic Cluster Analysis. R package version 0.1.1, 2018.</p>
 ## 
 ## other attached packages:
 ## [1] NMF_0.26            cluster_2.1.4       rngtools_1.5.2     
-## [4] registry_0.5-1      BiocStyle_2.30.0    miRSM_1.99.3       
+## [4] registry_0.5-1      BiocStyle_2.30.0    miRSM_1.99.5       
 ## [7] Biobase_2.62.0      BiocGenerics_0.48.1
 ## 
 ## loaded via a namespace (and not attached):

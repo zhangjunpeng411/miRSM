@@ -5,7 +5,7 @@ knitr::opts_chunk$set(tidy = FALSE,
     message = FALSE)
 
 ## ----echo=FALSE, results='hide', message=FALSE--------------------------------
-library(miRSM)
+suppressPackageStartupMessages(library(miRSM))
 
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 data(BRCASampleData)
@@ -100,7 +100,7 @@ miRSM.CEA.pvalue
 
 ## ----eval=FALSE, include=TRUE-------------------------------------------------
 #  # Using the built-in groundtruth from the miRSM package
-#  Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
+#  Groundtruthcsv <- system.file("extdata", "Groundtruth_high.csv", package="miRSM")
 #  Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
 #  # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
 #  miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
@@ -112,7 +112,7 @@ miRSM_WGCNA_Coexpress
 
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
-miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 head(miRSM_WGCNA_miRdistribute)
 
