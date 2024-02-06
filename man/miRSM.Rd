@@ -5,7 +5,7 @@
 \title{miRSM}
 \usage{
 miRSM(
-  miRExp,
+  miRExp = NULL,
   ceRExp,
   mRExp = NULL,
   miRTarget,
@@ -24,7 +24,7 @@ miRSM(
 )
 }
 \arguments{
-\item{miRExp}{A SummarizedExperiment object. miRNA expression data: 
+\item{miRExp}{NULL (default) or a SummarizedExperiment object. miRNA expression data: 
 rows are samples and columns are miRNAs.}
 
 \item{ceRExp}{A SummarizedExperiment object. ceRNA expression data: 
@@ -64,7 +64,7 @@ SSI, SGCD and SCRC methods.}
 \item{SMC.cutoff}{The cutoff of sensitivity matrix correlation
 (sensitivity canonical correlation, sensitivity distance correlation 
 and sensitivity RV coefficient). Only for the SCC, SDC, SRVC, SSI, 
-SGCD and SCRC methods.}
+SGCD and SCRC methods when miRExp is not NULL.}
 
 \item{RV_method}{the method of calculating RV coefficients. Select
 one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
