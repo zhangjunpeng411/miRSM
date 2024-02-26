@@ -40,7 +40,7 @@ miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300],
                                RV_method = "RV")
 miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
                                    ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], 
-                                   miRTarget, modulegenes_WGCNA_exceptk[[i]],#'                                     
+                                   miRTarget, modulegenes_WGCNA_exceptk[[i]],                                     
                                    method = "SRVC",
                                    SMC.cutoff = 0.01, RV_method = "RV"))
 

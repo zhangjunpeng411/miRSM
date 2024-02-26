@@ -470,7 +470,7 @@ module_WGCNA <- function(ceRExp,
 #' @examples
 #' data(BRCASampleData)
 #' modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
-#'     mRExp[seq_len(20), seq_len(15)], iter.max = 2600)
+#'     mRExp[seq_len(20), seq_len(15)], iter.max = 3000)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 #' @references Bunte K, Lepp\'{a}aho E, Saarinen I, Kaski S. 
@@ -3338,7 +3338,7 @@ miRSM <- function(miRExp = NULL,
 #'                                RV_method = "RV")
 #' miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
 #'                                    ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], 
-#'                                    miRTarget, modulegenes_WGCNA_exceptk[[i]],#'                                     
+#'                                    miRTarget, modulegenes_WGCNA_exceptk[[i]],                                     
 #'                                    method = "SRVC",
 #'                                    SMC.cutoff = 0.01, RV_method = "RV"))
 #' 

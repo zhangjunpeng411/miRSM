@@ -40,7 +40,7 @@ expression data using GFA package
 \examples{
 data(BRCASampleData)
 modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
-    mRExp[seq_len(20), seq_len(15)], iter.max = 2600)
+    mRExp[seq_len(20), seq_len(15)], iter.max = 3000)
 
 }
 \references{

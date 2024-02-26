@@ -15,11 +15,11 @@ modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(80)],
                                   mRExp[, seq_len(80)])
 modulegenes_WGCNA
 
-## ----eval=FALSE, include=TRUE-------------------------------------------------
-#  modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
-#                                mRExp[seq_len(20), seq_len(15)],
-#                                iter.max = 2600)
-#  modulegenes_GFA
+## ----eval=TRUE, include=TRUE--------------------------------------------------
+modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
+                              mRExp[seq_len(20), seq_len(15)], 
+                              iter.max = 3000)
+modulegenes_GFA
 
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)],

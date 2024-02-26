@@ -2,7 +2,7 @@
 title: "miRSM: inferring miRNA sponge modules in heterogeneous data" 
 author: "\\
     
-    Junpeng Zhang (zhangjunpeng411@gmail.com)\\
+    Junpeng Zhang (zjp@dali.edu.cn)\\
     
     School of Engineering, Dali University"
 date: '`r Sys.Date()`'
@@ -59,10 +59,10 @@ modulegenes_WGCNA
 ## module_GFA
 The gene modules are identified by using GFA method [12, 13] from matched ceRNA and mRNA expression data or gene expression data.
 
-```{r, eval=FALSE, include=TRUE}
+```{r, eval=TRUE, include=TRUE}
 modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
                               mRExp[seq_len(20), seq_len(15)], 
-                              iter.max = 2600)
+                              iter.max = 3000)
 modulegenes_GFA
 ```
 
@@ -182,7 +182,9 @@ miRSM.CEA.pvalue
 ```
 
 ## Validation of miRNA sponge interactions in miRNA sponge modules
-The function _module_Validate_ is implemented to validate the miRNA sponge interactions existed in each miRNA sponge module. The built-in high-confidence groundtruth of miRNA sponge interactions is obtained from miRSponge (<http://bio-bigdata.hrbmu.edu.cn/miRSponge/>), LncACTdb 3.0 (<http://bio-bigdata.hrbmu.edu.cn/LncACTdb/>), LncCeRBase (<http://www.insect-genome.com/LncCeRBase/front/>). The built-in low-confidence groundtruth of miRNA sponge interactions is obtained from ENCORI (<https://rnasysu.com/encori/>). By using web API of ENCORI, the mRNA related miRNA sponge interactions are from <https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&geneType=mRNA&ceRNA=all&miRNAnum=1&pval=0.05&fdr=0.05&pancancerNum=0>, the lncRNA related miRNA sponge interactions are from <https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&geneType=lncRNA&ceRNA=all&miRNAnum=1&pval=0.05&fdr=0.05&pancancerNum=0>, and the pseudogene related miRNA sponge interactions are from <https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&geneType=pseudogene&ceRNA=all&miRNAnum=1&pval=0.05&fdr=0.05&pancancerNum=0>.
+The function _module_Validate_ is implemented to validate the miRNA sponge interactions existed in each miRNA sponge module. The built-in high-confidence groundtruth of miRNA sponge interactions is obtained from miRSponge (<http://bio-bigdata.hrbmu.edu.cn/miRSponge/>), LncACTdb 3.0 (<http://bio-bigdata.hrbmu.edu.cn/LncACTdb/>), LncCeRBase (<http://www.insect-genome.com/LncCeRBase/front/>). 
+
+If you want to use low-confidence groundtruth of miRNA sponge interactions for validation, ENCORI (<https://rnasysu.com/encori/>) is suggested. For example, by using web API of ENCORI, the mRNA related miRNA sponge interactions are from <https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&geneType=mRNA&ceRNA=all&miRNAnum=1&pval=0.05&fdr=0.05&pancancerNum=0>, the lncRNA related miRNA sponge interactions are from <https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&geneType=lncRNA&ceRNA=all&miRNAnum=1&pval=0.05&fdr=0.05&pancancerNum=0>, and the pseudogene related miRNA sponge interactions are from <https://rna.sysu.edu.cn/encori/api/ceRNA/?assembly=hg38&geneType=pseudogene&ceRNA=all&miRNAnum=1&pval=0.05&fdr=0.05&pancancerNum=0>.
 
 ```{r, eval=FALSE, include=TRUE}
 # Using the built-in groundtruth from the miRSM package
